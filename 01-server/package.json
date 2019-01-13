@@ -8,14 +8,17 @@
     "nodemon": "nodemon ./bin/www"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "express": "~4.16.0",
+    "hat": "0.0.3",
     "http-errors": "~1.6.2",
     "morgan": "~1.9.0",
     "mysql2": "^1.6.4",
     "sequelize": "^4.42.0",
-    "sequelize-cli": "^5.4.0"
+    "sequelize-cli": "^5.4.0",
+    "validator": "^10.10.0"
   },
   "devDependencies": {
     "nodemon": "^1.18.9"

@@ -9,8 +9,25 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       login: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true
       },
+      passwordHash: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      // userRoleId: {
+      //   type: Sequelize.INTEGER,
+      //   allowNull: false,
+      //   defaultValue: 1,
+      //   reference: {
+      //     model: 'UserRole',
+      //     key: 'id'
+      //   },
+      //   onUpdate: 'cascade',
+      //   onDelete: 'set null'
+      // },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

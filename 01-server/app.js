@@ -4,9 +4,24 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+const models = require('./models');
+
 const api_v1 = require('./routes/api-v1');
 
 var app = express();
+
+// models.sequelize.sync()
+//   .then(result => {
+//     if (result) {
+//       console.log("Tables created.");
+//     }
+//     else {
+//       console.log("Db error");
+//     }
+//   })
+//   .catch(err => {
+//     console.log("DB Error");
+//   });
 
 app.use(logger('dev'));
 app.use(express.json());
