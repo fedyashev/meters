@@ -1,17 +1,15 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('UserRoles', {
+    return queryInterface.createTable('Signs', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      role: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true
+      data: {
+        type: Sequelize.BLOB
       },
       createdAt: {
         allowNull: false,
@@ -24,6 +22,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('UserRoles');
+    return queryInterface.dropTable('Signs');
   }
 };

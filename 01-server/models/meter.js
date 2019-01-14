@@ -1,15 +1,16 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const UserRole = sequelize.define('UserRole', {
-    role: {
+  const Meter = sequelize.define('Meter', {
+    number: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true
     }
   }, {});
-  UserRole.associate = function(models) {
+  Meter.associate = function(models) {
     // associations can be defined here
-    UserRole.hasMany(models.User);  // User.UserRoleId
+    Meter.hasOne(models.Place);
+    Meter.hasMany(models.Data);
   };
-  return UserRole;
+  return Meter;
 };

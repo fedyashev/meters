@@ -8,14 +8,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      // userId: {
-      //   type: Sequelize.INTEGER,
-      //   references: {
-      //     model: 'Users',
-      //     key: 'id',
-      //     as: 'userId'
-      //   }
-      // },
       token: {
         type: Sequelize.STRING,
         allowNull: false
