@@ -1,5 +1,5 @@
 const createError = require('http-errors');
-const {Session, User, UserRole} = require('../models');
+const {Session, User, UserRole, Inspector} = require('../models');
 
 module.exports.session = (req, res, next) => {
     const session_token = req.body.session_token || req.query.session_token;
@@ -119,17 +119,66 @@ module.exports.allowUserSelfExceptRoles = roles => (req, res, next) => {
         .catch(err => next(createError(500, err.message)));
 };
 
-const Role = Object.freeze({
-    'NONE': 'NONE',
-    'ADMIN': 'ADMIN',
-    'OWNER': 'OWNER',
-    'INSPECTOR': 'INSPECTOR',
-    'CONSUMER': 'CONSUMER'
-});
+module.exports.allowInspectorSelfExceptRoles = roles => (req, res, next) => {
+    const operation = async () => {
+        const session_token = req.body.session_token || req.query.session_token;
+        let inspector_id = req.params.inspector_id;
 
-const Roles = Object.freeze({
-    'AO' : [Role.ADMIN, Role.OWNER]
-});
+        if (!session_token) {
+            return next(createError(401, 'Unauthorized'));
+        }
 
-module.exports.Role = Role;
-module.exports.Roles = Roles;
+        if (inspector_id == null) {
+            return next(createError(400, "Inspector id not found"));
+        }
+
+        inspector_id = parseInt(inspector_id);
+
+        const session = await Session.findOne({
+            where: {
+                token: session_token
+            },
+            include: [{
+                model: User,
+                include: [{
+                    model: UserRole
+                }]
+            }]
+        });
+
+        if (!session) {
+            return next(createError(401, 'Unauthorized'));
+        }
+
+        const user_id = session.User.id;
+        const role = session.User.UserRole.role;
+
+        const inspector = await Inspector.findOne({
+            where: {
+                id: inspector_id
+            },
+            include: [
+                {
+                    model: User
+                }
+            ]
+        });
+
+        if (!inspector) {
+            return next(createError(404, 'Inspector not found'));
+        };
+
+        if (inspector.User.id === user_id) {
+            return next();
+        }
+
+        if (roles && Array.isArray(roles) && roles.includes(role)) {
+            return next();
+        }
+
+        return next(createError(404, 'Inspector not found'));
+    };
+    Promise.resolve()
+        .then(operation)
+        .catch(err => next(createError(500, err.message)));
+};

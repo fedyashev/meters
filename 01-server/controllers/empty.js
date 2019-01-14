@@ -1,4 +1,5 @@
-module.exports = (req, res) => {
-    const {baseUrl, method} = req;
-    res.json({baseUrl, method});
+const createError = require('http-errors');
+
+module.exports = (req, res, next) => {
+    next(createError(404, 'TODO'));
 };

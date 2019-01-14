@@ -157,7 +157,7 @@ module.exports = {
         });
       })
       .then(() => {
-        return queryInterface.addColumn('Datas', 'MeterId', {
+        return queryInterface.addColumn('Data', 'MeterId', {
           type: Sequelize.INTEGER,
           reference: {
             model: 'Meter',
@@ -182,7 +182,7 @@ module.exports = {
       .then(() => queryInterface.removeColumn('Reports', 'LastDataId'))
       .then(() => queryInterface.removeColumn('Reports', 'CurrentDataId'))
       .then(() => queryInterface.removeColumn('Reports', 'SignId'))
-      .then(() => queryInterface.removeColumn('Datas', 'MeterId'))
+      .then(() => queryInterface.removeColumn('Data', 'MeterId'))
       .catch(err => console.log(err.message));
   }
 };
