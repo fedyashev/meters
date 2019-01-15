@@ -13,11 +13,31 @@ module.exports = {
       }], {});
     */
       return queryInterface.bulkInsert('UserRoles', [
-        { role: 'NONE' },
-        { role: 'ADMIN' },
-        { role: 'OWNER' },
-        { role: 'INSPECTOR' },
-        { role: 'CONSUMER' }
+        {
+          role: 'NONE',
+          createdAt: '0000-00-00',
+          updatedAt: '0000-00-00'
+        },
+        {
+          role: 'ADMIN',
+          createdAt: '0000-00-00',
+          updatedAt: '0000-00-00'
+        },
+        {
+          role: 'OWNER',
+          createdAt: '0000-00-00',
+          updatedAt: '0000-00-00'
+        },
+        {
+          role: 'INSPECTOR',
+          createdAt: '0000-00-00',
+          updatedAt: '0000-00-00'
+        },
+        {
+          role: 'CONSUMER',
+          createdAt: '0000-00-00',
+          updatedAt: '0000-00-00'
+        }
       ]);
   },
 

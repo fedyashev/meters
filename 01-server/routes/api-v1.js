@@ -5,6 +5,7 @@ const todo = require('../controllers/empty');
 const users = require('../controllers/users');
 const auth = require('../controllers/auth');
 const inspector = require('../controllers/inspestor');
+const consumers = require('../controllers/consumer');
 
 const access = require('../middleware/access');
 
@@ -29,11 +30,12 @@ router.get('/inspectors/:inspector_id', access.allowInspectorSelfExceptRoles(Rol
 router.put('/inspectors/:inspector_id', access.allowInspectorSelfExceptRoles(Roles.AO), inspector.updateInspectorById);  // Change name
 router.delete('/inspectors/:inspector_id', access.allow(Roles.AO), inspector.deleteInspectorById);
 
-router.get('/consumers', todo);
-router.post('/consumers', todo);
+router.get('/consumers', consumers.getAll);
+router.post('/consumers', consumers.create);
 
 router.get('/consumers/:consumers_id', todo);
 router.put('/consumers/:consumers_id', todo);  // Change name, email
+router.delete('/consumers/:consumers_id', todo);
 
 router.get('/meters', todo);
 router.post('/meters', todo);

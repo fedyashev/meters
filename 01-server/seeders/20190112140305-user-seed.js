@@ -6,22 +6,30 @@ module.exports = {
         {
           login: 'redcat',  // woodseed
           passwordHash: '$2a$10$3Ei9DJ/ULqQ7ixw44UETse53ZBPmFgNiNpIPKy0gF/un.kAMRO/li',
-          UserRoleId: 2
+          UserRoleId: 2,
+          createdAt: '0000-00-00',
+          updatedAt: '0000-00-00'
         },
         {
           login: 'owner',  // qwer1234
           passwordHash: '$2a$10$0LuIoP68ldUaU.JEShHTeeCeY/4lkbx13siIpedyduXSds7FqR8hC',
-          UserRoleId: 3
+          UserRoleId: 3,
+          createdAt: '0000-00-00',
+          updatedAt: '0000-00-00'
         },
         {
           login: 'inspector',  //starfrog
           passwordHash: '$2a$10$QX6wVHaWFVWDkVMnKeWAOeyNoOYDTYNsUu2FzlwJVMerO/YFLLxmu',
-          UserRoleId: 4
+          UserRoleId: 4,
+          createdAt: '0000-00-00',
+          updatedAt: '0000-00-00'
         },
         {
           login: 'consumer',  //goldcoin
           passwordHash: '$2a$10$pjmu.hx0dXt0VcZVpkKcFuFqOAwlMTboYsIqLpSfqyXpevUSgauUe',
-          UserRoleId: 5
+          UserRoleId: 5,
+          createdAt: '0000-00-00',
+          updatedAt: '0000-00-00'
         }
       ]);
   },
