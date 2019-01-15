@@ -5,7 +5,8 @@ const todo = require('../controllers/empty');
 const users = require('../controllers/users');
 const auth = require('../controllers/auth');
 const inspector = require('../controllers/inspestor');
-const consumers = require('../controllers/consumer');
+const consumer = require('../controllers/consumer');
+const meter = require('../controllers/meter');
 
 const access = require('../middleware/access');
 
@@ -30,18 +31,19 @@ router.get('/inspectors/:inspector_id', access.allowInspectorSelfExceptRoles(Rol
 router.put('/inspectors/:inspector_id', access.allowInspectorSelfExceptRoles(Roles.AO), inspector.updateInspectorById);  // Change name
 router.delete('/inspectors/:inspector_id', access.allow(Roles.AO), inspector.deleteInspectorById);
 
-router.get('/consumers', consumers.getAll);
-router.post('/consumers', consumers.create);
+router.get('/consumers', consumer.getAll);
+router.post('/consumers', consumer.create);
 
-router.get('/consumers/:consumers_id', todo);
-router.put('/consumers/:consumers_id', todo);  // Change name, email
-router.delete('/consumers/:consumers_id', todo);
+router.get('/consumers/:consumer_id', consumer.getById);
+router.put('/consumers/:consumer_id', consumer.updateById);  // Change name, email
+router.delete('/consumers/:consumer_id', consumer.deleteById);
 
-router.get('/meters', todo);
-router.post('/meters', todo);
+router.get('/meters', meter.getAll);
+router.post('/meters', meter.create);
 
-router.get('/meters/:meter_id', todo);
-router.put('/meters/:meter_id', todo);  // Change number
+router.get('/meters/:meter_id', meter.getById);
+router.put('/meters/:meter_id', meter.updateById);  // Change number
+router.delete('/meters/:meter_id', meter.deleteById);
 
 router.get('/places', todo);
 router.post('/places', todo);
