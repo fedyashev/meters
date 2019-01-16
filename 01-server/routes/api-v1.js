@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
+const multer = require('multer');
+const storage = multer.memoryStorage();
+const uploader = multer({storage});
+
 const todo = require('../controllers/empty');
 const users = require('../controllers/users');
 const auth = require('../controllers/auth');
@@ -8,6 +12,8 @@ const inspector = require('../controllers/inspestor');
 const consumer = require('../controllers/consumer');
 const meter = require('../controllers/meter');
 const place = require('../controllers/place');
+const data = require('../controllers/data');
+const sign = require('../controllers/sign');
 
 const access = require('../middleware/access');
 
@@ -53,25 +59,25 @@ router.get('/places/:place_id', place.getById);
 router.put('/places/:place_id', place.updateById); // Change name, isSignNeed, Consumer, Meter
 router.delete('/places/:place_id', place.deleteById);
 
-router.get('/data', todo);
-router.post('/data', todo);
+router.get('/data', data.getAll);
+router.post('/data',data.create);
 
-router.get('/data/:data_id', todo);
-router.put('/data/:data_id', todo);
-router.detele('/data/:data_id', todo);
+router.get('/data/:data_id', data.getById);
+router.put('/data/:data_id', data.updateById);
+router.delete('/data/:data_id', data.deteleById);
 
-router.get('/signs', todo);
-router.post('/signs', todo);
+router.get('/signs', sign.getAll);
+router.post('/signs', uploader.single('sign'), sign.create);
 
 router.get('/signs/:sign_id', todo);
 router.put('/signs/:sign_id', todo);
-router.detele('/signs/:sign_id', todo);
+router.delete('/signs/:sign_id', todo);
 
 router.get('/report', todo);
 router.post('/report', todo);
 
 router.get('/report/:report_id', todo);
 router.put('/report/:report_id', todo);
-router.detele('/report/:report_id', todo);
+router.delete('/report/:report_id', todo);
 
 module.exports = router;

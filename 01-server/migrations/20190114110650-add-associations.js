@@ -162,7 +162,9 @@ module.exports = {
           reference: {
             model: 'Meter',
             key: 'id',
-          }
+          },
+          onDetele: 'cascade',
+          onUpdate: 'set null'
         });
       })
       .catch(err => console.log(err.message));
