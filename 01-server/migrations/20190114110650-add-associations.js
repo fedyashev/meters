@@ -82,7 +82,7 @@ module.exports = {
       .then(() => {
         return queryInterface.addColumn('Places', 'ConsumerId', {
           type: Sequelize.INTEGER,
-          //allowNull: false,
+          //allowNull: true,
           reference: {
             model: 'Consumer',
             key: 'id'
@@ -92,8 +92,8 @@ module.exports = {
       .then(() => {
         return queryInterface.addColumn('Places', 'MeterId', {
           type: Sequelize.INTEGER,
-          allowNull: false,
-          unique: true,
+          //allowNull: true,
+          //unique: true,
           reference: {
             model: 'Meter',
             key: 'id'

@@ -7,6 +7,7 @@ const auth = require('../controllers/auth');
 const inspector = require('../controllers/inspestor');
 const consumer = require('../controllers/consumer');
 const meter = require('../controllers/meter');
+const place = require('../controllers/place');
 
 const access = require('../middleware/access');
 
@@ -45,10 +46,32 @@ router.get('/meters/:meter_id', meter.getById);
 router.put('/meters/:meter_id', meter.updateById);  // Change number
 router.delete('/meters/:meter_id', meter.deleteById);
 
-router.get('/places', todo);
-router.post('/places', todo);
+router.get('/places', place.getAll);
+router.post('/places', place.create);
 
-router.get('/places/:place_id', todo);
-router.put('/places/:place_id', todo);
+router.get('/places/:place_id', place.getById);
+router.put('/places/:place_id', place.updateById); // Change name, isSignNeed, Consumer, Meter
+router.delete('/places/:place_id', place.deleteById);
+
+router.get('/data', todo);
+router.post('/data', todo);
+
+router.get('/data/:data_id', todo);
+router.put('/data/:data_id', todo);
+router.detele('/data/:data_id', todo);
+
+router.get('/signs', todo);
+router.post('/signs', todo);
+
+router.get('/signs/:sign_id', todo);
+router.put('/signs/:sign_id', todo);
+router.detele('/signs/:sign_id', todo);
+
+router.get('/report', todo);
+router.post('/report', todo);
+
+router.get('/report/:report_id', todo);
+router.put('/report/:report_id', todo);
+router.detele('/report/:report_id', todo);
 
 module.exports = router;
