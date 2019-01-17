@@ -69,9 +69,9 @@ router.delete('/data/:data_id', data.deteleById);
 router.get('/signs', sign.getAll);
 router.post('/signs', uploader.single('sign'), sign.create);
 
-router.get('/signs/:sign_id', todo);
-router.put('/signs/:sign_id', todo);
-router.delete('/signs/:sign_id', todo);
+router.get('/signs/:sign_id', sign.getById);
+router.put('/signs/:sign_id', uploader.single('sign'), sign.updateById);
+router.delete('/signs/:sign_id', sign.deleteById);
 
 router.get('/report', todo);
 router.post('/report', todo);

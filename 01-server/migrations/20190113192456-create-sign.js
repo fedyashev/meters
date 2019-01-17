@@ -8,6 +8,16 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      date: {
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW
+      },
+      mimetype: {
+        type: Sequelize.STRING
+      },
+      filename: {
+        type: Sequelize.STRING
+      },
       data: {
         type: Sequelize.BLOB('long')
       },
