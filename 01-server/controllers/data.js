@@ -27,6 +27,11 @@ module.exports.create = async (req, res, next) => {
             return next(createError(400, 'Meter is not exists'));
         }
 
+        const existsData = await Data.findAll({where: {MeterId: meter_id, date: date}});
+        if (existsData.length > 0) {
+            return next(createError('Data already exists'));
+        }
+
         const isValid = 
             !isNaN(Date.parse(date)) &&
             !Number.isNaN(value) && value >= 0;
@@ -108,6 +113,11 @@ module.exports.updateById = async (req, res, next) => {
         if (!existsMeter) {
             return next(createError(400, 'Meter is not exists'));
         }
+
+        // const existsData = await Data.findAll({where: {MeterId: meter_id, date: date}});
+        // if (existsData.length > 1) {
+        //     return next(createError('Data already exists'));
+        // }
 
         const [count, ...rest] = await Data.update({date, value, MeterId: meter_id}, {where: {id: data_id}});
 

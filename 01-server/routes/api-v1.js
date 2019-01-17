@@ -14,6 +14,7 @@ const meter = require('../controllers/meter');
 const place = require('../controllers/place');
 const data = require('../controllers/data');
 const sign = require('../controllers/sign');
+const report = require('../controllers/report')
 
 const access = require('../middleware/access');
 
@@ -31,12 +32,12 @@ router.get('/users/:user_id', access.allowUserSelfExceptRoles(Roles.AO), users.g
 router.put('/users/:user_id/changePassword', access.allowUserSelfExceptRoles(Roles.AO), users.changeUserPassword);
 router.put('/users/:user_id/changeRole', access.allowUserSelfExceptRoles(Roles.AO), users.changeUserRole);
 
-router.get('/inspectors', access.allow(Roles.AO), inspector.getAll);
-router.post('/inspectors', access.allow(Roles.AO), inspector.createInspector);
+router.get('/inspectors', inspector.getAll);
+router.post('/inspectors', inspector.createInspector);
 
-router.get('/inspectors/:inspector_id', access.allowInspectorSelfExceptRoles(Roles.AO), inspector.getInspectorById);
-router.put('/inspectors/:inspector_id', access.allowInspectorSelfExceptRoles(Roles.AO), inspector.updateInspectorById);  // Change name
-router.delete('/inspectors/:inspector_id', access.allow(Roles.AO), inspector.deleteInspectorById);
+router.get('/inspectors/:inspector_id', inspector.getInspectorById);
+router.put('/inspectors/:inspector_id', inspector.updateInspectorById);  // Change name
+router.delete('/inspectors/:inspector_id', inspector.deleteInspectorById);
 
 router.get('/consumers', consumer.getAll);
 router.post('/consumers', consumer.create);
@@ -73,11 +74,11 @@ router.get('/signs/:sign_id', sign.getById);
 router.put('/signs/:sign_id', uploader.single('sign'), sign.updateById);
 router.delete('/signs/:sign_id', sign.deleteById);
 
-router.get('/report', todo);
-router.post('/report', todo);
+router.get('/reports', report.getAll);
+router.post('/reports', report.create);
 
-router.get('/report/:report_id', todo);
-router.put('/report/:report_id', todo);
-router.delete('/report/:report_id', todo);
+router.get('/reports/:report_id', report.getById);
+router.put('/reports/:report_id', report.updateById);
+router.delete('/reports/:report_id', report.deleteById);
 
 module.exports = router;
