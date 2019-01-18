@@ -7,7 +7,7 @@ const multer = require('multer');
 const uploader = multer(multer.memoryStorage());
 
 const todo = require('../controllers/empty');
-const users = require('../controllers/users');
+const user = require('../controllers/user');
 const auth = require('../controllers/auth');
 const inspector = require('../controllers/inspestor');
 const consumer = require('../controllers/consumer');
@@ -16,6 +16,7 @@ const place = require('../controllers/place');
 const data = require('../controllers/data');
 const sign = require('../controllers/sign');
 const report = require('../controllers/report')
+const userrole = require('../controllers/userrole');
 
 const access = require('../middleware/access');
 
@@ -24,14 +25,16 @@ const {Role, Roles} = require('../lib/roles');
 router.post('/auth/login', auth.login);
 router.post('/auth/logout', access.session, auth.logout);
 
-router.get('/users', access.allow(Roles.AO), users.getUsersList);
-router.post('/users', access.allow(Roles.AO), users.createNewUser);
+router.get('/users', user.getAll);
+router.post('/users', user.create);
 
-router.get('/users/:user_id', access.allowUserSelfExceptRoles(Roles.AO), users.getUserById);
-//router.put('/users/:user_id', empty);
+router.get('/users/:user_id', user.getById);
+router.put('/users/:user_id', user.updateById);
+router.put('/users/:user_id/changePassword', user.changePassword);
+router.put('/users/:user_id/changeRole', user.changeRole);
+router.delete('/users/:user_id', user.deleteById);
 
-router.put('/users/:user_id/changePassword', access.allowUserSelfExceptRoles(Roles.AO), users.changeUserPassword);
-router.put('/users/:user_id/changeRole', access.allowUserSelfExceptRoles(Roles.AO), users.changeUserRole);
+router.get('/userroles', userrole.getAll);
 
 router.get('/inspectors', inspector.getAll);
 router.post('/inspectors', inspector.create);
