@@ -1,7 +1,7 @@
 const createError = require('http-errors');
 const {UserRole} = require('../models');
 
-module.exports.getAll = async (res, res, next) => {
+module.exports.getAll = async (req, res, next) => {
   try {
     const roles = await UserRole.findAll()
       .map(({id, role}) => ({id, role}));
