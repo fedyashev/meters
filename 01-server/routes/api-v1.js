@@ -58,6 +58,7 @@ router.put('/meters/:meter_id', meter.updateById);  // Change number
 router.delete('/meters/:meter_id', meter.deleteById);
 
 router.get('/places', place.getAll);
+router.get('/places/getAllForInspectors', place.getAllForInspectors);
 router.post('/places', place.create);
 
 router.get('/places/:place_id', place.getById);

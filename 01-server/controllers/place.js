@@ -1,6 +1,7 @@
 const createError = require('http-errors');
-const {Place, Meter, Consumer} = require('../models');
+const {Place, Meter, Consumer, Data, Sequelize} = require('../models');
 const validator = require('validator');
+const Op = Sequelize.Op;
 
 const pattern = '[a-zA-Zа-яА-Я0-9.]';
 
@@ -30,6 +31,59 @@ module.exports.getAll = async (req, res, next) => {
     catch (err) {
         return next(createError(500, err.message));
     }
+};
+
+module.exports.getAllForInspectors = async (req, res, next) => {
+    try {
+        const rawPlaces = await Place.findAll({
+            where: {
+                [Op.and]: [
+                    {MeterId: {[Op.ne]: null}},
+                    {ConsumerId: {[Op.ne]: null}}
+                ]
+            },
+            include: [
+                {model: Meter},
+                {model: Consumer}
+            ]
+        });
+        const places = await rawPlaces.map(async (place) => {
+            let lastData = null;
+            const data = await Data.findAll({
+                where: {MeterId: place.Meter.id},
+                order: [['date', 'desc']],
+                limit: 1,
+            });
+            if (data.length > 0) {
+                lastData = {
+                    id: data[0].id,
+                    date: data[0].date,
+                    value: data[0].value
+                };
+            }
+            return {
+                id: place.id,
+                name: place.name,
+                isSignNeed: place.isSignNeed,
+                comsumer: {
+                    id: place.Consumer.id,
+                    name: place.Consumer.name,
+                    email: place.Consumer.email
+                },
+                meter: {
+                    id: place.Meter.id,
+                    number: place.Meter.number,
+                    lastData: lastData
+                }
+            };
+        });
+        Promise.all(places)
+            .then(results => res.json(results))
+            .catch(err => next(createError(500, err.message)));
+    } catch (err) {
+        return next(createError(500, err.message));
+    }
+
 };
 
 module.exports.create = async (req, res, next) => {
