@@ -1,53 +1,68 @@
 const createError = require('http-errors');
-const {Consumer, User, sequelize} = require('../models');
+const {Consumer, User, UserRole, sequelize} = require('../models');
 const validator = require('validator');
 const crypt = require('../lib/crypt');
+const {Role} = require('../lib/roles');
 
 const pattern = '[a-zA-Zа-яА-Я0-9.]';
 
-module.exports.getAll = (req, res, next) => {
-  return Promise.resolve()
-    .then(async () => {
-      const rawConsumers = await Consumer.findAll();
-      const consumers = rawConsumers.map(({id, name, email}) => ({id, name, email}));
-      return res.json(consumers);
-    })
-    .catch(err => next(createError(500, err.message)));
+module.exports.getAll = async (req, res, next) => {
+  try {
+    const consumers = await Consumer.findAll().map(({id, name, email}) => ({id, name, email}));
+    return res.json(consumers);    
+  } catch (err) {
+    return next(createError(500, err.message));
+  }
 };
 
-module.exports.create = (req, res, next) => {
-  return Promise.resolve()
-    .then(async () => {
-      const {email, name, login, password} = req.body;
+module.exports.create = async (req, res, next) => {
+  try {
+    const {email, name, login, password} = req.body;
 
-      if (!email || !name || !login || !password) {
-        return next(createError(400, 'Incorrect input parameters'));
-      }
+    if (!email || !name || !login || !password) {
+      return next(createError(400, 'Incorrect input parameters'));
+    }
 
-      const isValid = 
-        validator.isEmail(email) &&
-        validator.matches(name, pattern) && 
-        validator.isAlphanumeric(login) &&
-        validator.isAlphanumeric(password);
+    const isValid = 
+      validator.isEmail(email) &&
+      validator.matches(name, pattern) && 
+      validator.isAlphanumeric(login) &&
+      validator.isAlphanumeric(password);
 
-      if (!isValid) {
-        console.log("OK");
-        return next(createError(400, 'Incorrect input parameters'));
-      }
+    if (!isValid) {
+      return next(createError(400, 'Incorrect input parameters'));
+    }
 
-      try {
+    const role = await UserRole.findOne({where: {role: Role.CONSUMER}});
+    if (!role) {
+      return next(createError(404, 'User role not found'));
+    }
+
+    let user = null;
+    let consumer = null;
+    try {
+      let result = await sequelize.transaction(async (t) => {
         const passwordHash = await crypt.getPasswordHash(password);
-        let result = await sequelize.transaction(async (t) => {
-          const user = await User.create({login, passwordHash}, {transaction: t});
-          const {id} = await Consumer.create({name, email, UserId: user.id}, {transaction: t});
-          return res.json({id, name, email});
-        });
-      } catch (err) {
-        return next(createError(500, err.message));
-      }
+        user = await User.create({login, passwordHash, UserRoleId: role.id}, {transaction: t});
+        consumer = await Consumer.create({name, email, UserId: user.id}, {transaction: t});
+      });
+    } catch (err) {
+      return next(createError(500, err.message));
+    }
 
-    })
-    .catch(err => next(createError(500, err.message)));
+    return res.json({
+      id: consumer.id,
+      name: consumer.name,
+      email: consumer.email,
+      user: {
+        id: user.id,
+        login: user.login,
+        role: Role.CONSUMER
+      }
+    });
+  } catch (err) {
+    return next(createError(500, err.message));
+  }
 };
 
 module.exports.getById = async (req, res, next) => {
@@ -94,18 +109,18 @@ module.exports.updateById = async (req, res, next) => {
 
     const [count, ...rest] = await Consumer.update({name, email}, {where: {id: consumer_id}});
 
-    if (count > 0) {
-      return res.json({
-        id: consumer_id,
-        name,
-        email
-      });
+    if (!count) {
+      return next(createError(400, 'Updating failed'));  
     }
 
-    return next(createError(400, 'Updating failed'));
+    return res.json({
+      id: consumer_id,
+      name,
+      email
+    });    
    }
   catch(err) {
-    return next(createError(500, err.errors[0].message || err.message));
+    return next(createError(500, err.message));
   }
 };
 
@@ -119,13 +134,13 @@ module.exports.deleteById = async (req, res, next) => {
 
     const count = await Consumer.destroy({where: {id: consumer_id}});
 
-    if (count > 0) {
-      return res.json({done: true});
+    if (!count) {
+      return next(createError(500, 'Deleting failed'));  
     }
 
-    return next(createError(500, 'Deleting failed'));
+    return res.json({done: true});
   }
   catch (err) {
-    return next(createError(500, err.errors[0].message || err.message));
+    return next(createError(500, err.message));
   }
 };

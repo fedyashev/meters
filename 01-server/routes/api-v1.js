@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 
 const multer = require('multer');
-const storage = multer.memoryStorage();
-const uploader = multer({storage});
+// const storage = multer.memoryStorage();
+// const uploader = multer({storage});
+const uploader = multer(multer.memoryStorage());
 
 const todo = require('../controllers/empty');
 const users = require('../controllers/users');
@@ -33,11 +34,11 @@ router.put('/users/:user_id/changePassword', access.allowUserSelfExceptRoles(Rol
 router.put('/users/:user_id/changeRole', access.allowUserSelfExceptRoles(Roles.AO), users.changeUserRole);
 
 router.get('/inspectors', inspector.getAll);
-router.post('/inspectors', inspector.createInspector);
+router.post('/inspectors', inspector.create);
 
-router.get('/inspectors/:inspector_id', inspector.getInspectorById);
-router.put('/inspectors/:inspector_id', inspector.updateInspectorById);  // Change name
-router.delete('/inspectors/:inspector_id', inspector.deleteInspectorById);
+router.get('/inspectors/:inspector_id', inspector.getById);
+router.put('/inspectors/:inspector_id', inspector.updateById);  // Change name
+router.delete('/inspectors/:inspector_id', inspector.deleteById);
 
 router.get('/consumers', consumer.getAll);
 router.post('/consumers', consumer.create);

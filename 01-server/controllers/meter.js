@@ -7,7 +7,7 @@ module.exports.getAll = async (req, res, next) => {
         const meters = (await Meter.findAll()).map(({id, number}) => ({id, number}));
         return res.json(meters);
     } catch (err) {
-        return next(createError(500, err.errors[0].message || err.message));
+        return next(createError(500, err.message));
     }
 };
 
@@ -30,7 +30,7 @@ module.exports.create = async (req, res, next) => {
             number
         });
     } catch (err) {
-        return next(createError(500, err.errors[0].message || err.message));
+        return next(createError(500, err.message));
     }
 };
 
@@ -49,7 +49,7 @@ module.exports.getById = async (req, res, next) => {
             number: meter.number
         });
     } catch (err) {
-        return next(createError(500, err.errors[0].message || err.message));
+        return next(createError(500, err.message));
     }
 };
 
@@ -73,7 +73,7 @@ module.exports.updateById = async (req, res, next) => {
             number
         });
     } catch (err) {
-        return next(createError(500, err.errors[0].message || err.message));
+        return next(createError(500, err.message));
     }
 };
 
@@ -89,6 +89,6 @@ module.exports.deleteById = async (req, res, next) => {
         }
         return res.json({done: true});
     } catch (err) {
-        return next(createError(500, err.errors[0].message || err.message));
+        return next(createError(500, err.message));
     }
 };
