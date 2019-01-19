@@ -18,14 +18,14 @@ const sign = require('../controllers/sign');
 const report = require('../controllers/report')
 const userrole = require('../controllers/userrole');
 
-const access = require('../middleware/access');
+//const access = require('../middleware/access');
+const passport = require('../passport/middleware');
 
 const {Role, Roles} = require('../lib/roles');
 
 router.post('/auth/login', auth.login);
-router.post('/auth/logout', access.session, auth.logout);
 
-router.get('/users', user.getAll);
+router.get('/users', passport.auth, passport.role([Role.ADMIN, Role.OWNER]), user.getAll);
 router.post('/users', user.create);
 
 router.get('/users/:user_id', user.getById);

@@ -3,8 +3,11 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+//const passport = require('passport');
 
 const models = require('./models');
+
+require('./passport');
 
 const api_v1 = require('./routes/api-v1');
 
