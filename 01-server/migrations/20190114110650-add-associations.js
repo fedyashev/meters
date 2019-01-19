@@ -1,51 +1,8 @@
 'use strict';
 
-// module.exports = {
-//   up: (queryInterface, Sequelize) => {
-//     return queryInterface.addColumn('Users', 'UserRoleId', {
-//       type: Sequelize.INTEGER,
-//       allowNull: false,
-//       defaultValue: 1,
-//       reference: {
-//         model: 'UserRole',
-//         key: 'id'
-//       },
-//       onUpdate: 'cascade',
-//       onDelete: 'set null'
-//     })
-//     .then(() => {
-//       return queryInterface.addColumn('Sessions', 'UserId', {
-//         type: Sequelize.INTEGER,
-//         allowNull: false,
-//         reference: {
-//           model: 'User',
-//           key: 'id'
-//         },
-//         onUpdate: 'cascade',
-//         onDelete: 'set null'
-//       });
-//     });
-//   },
-
-//   down: (queryInterface, Sequelize) => {
-//     return queryInterface.removeColumn('Users', 'UserRoleId')
-//       .then(() => queryInterface.removeColumn('Sessions', 'UserId'));
-//   }
-// };
-
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return Promise.resolve()
-      .then(() => {
-        return queryInterface.addColumn('Sessions', 'UserId', {
-          type: Sequelize.INTEGER,
-          allowNull: false,
-          reference: {
-            model: 'User',
-            key: 'id'
-          },
-        });
-      })
       .then(() => {
         return queryInterface.addColumn('Users', 'UserRoleId', {
           type: Sequelize.INTEGER,
@@ -172,7 +129,6 @@ module.exports = {
 
   down: (queryInterface, Sequelize) => {
     return Promise.resolve()
-      .then(() => queryInterface.removeColumn('Sessions', 'UserId'))
       .then(() => queryInterface.removeColumn('Users', 'UserRoleId'))
       .then(() => queryInterface.removeColumn('Inspectors', 'UserId'))
       .then(() => queryInterface.removeColumn('Consumers', 'UserId'))

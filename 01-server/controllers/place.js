@@ -33,7 +33,7 @@ module.exports.getAll = async (req, res, next) => {
     }
 };
 
-module.exports.getAllForInspectors = async (req, res, next) => {
+module.exports.getAllForAudit = async (req, res, next) => {
     try {
         const rawPlaces = await Place.findAll({
             where: {

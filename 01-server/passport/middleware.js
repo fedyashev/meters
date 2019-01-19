@@ -30,7 +30,7 @@ module.exports.login = async (req, res, next) => {
     }
 };
 
-module.exports.auth = async (req, res, next) => {
+module.exports.jwt = async (req, res, next) => {
     try {
         await passport.authenticate('jwt', {session: false}, async (err, user) => {
             if (err) {
@@ -52,7 +52,6 @@ module.exports.auth = async (req, res, next) => {
 };
 
 module.exports.role = roles => (req, res, next) => {
-    console.log(req.user);
     if (!req.user) {
         return next(createError(401, 'Unauthorized'));
     }
@@ -63,9 +62,29 @@ module.exports.role = roles => (req, res, next) => {
     if (!roles || !Array.isArray(roles)) {
         return next(createError(500, 'Roles not found'));
     }
-    const isInclude = roles.includes(role);
-    if (!isInclude) {
-        return next(createError(403, 'Not allow'));
+    return roles.includes(role) ? next() : next(createError(403, 'Forbidden')); 
+};
+
+module.exports.allow = (roles, selfPredicate) => async (req, res, next) => {
+    if (!req.user) {
+        return next(createError(401, 'Unauthorized'));
+    }
+    if (selfPredicate) {
+        try {
+            const isSelf = await selfPredicate(req);
+            if (isSelf) {
+                return next();
+            }
+        } catch (err) {
+            return next(createError(500, err.message));
+        }
+    }
+    if (roles) {
+        const {role} = req.user;
+        if (!Array.isArray(roles)) {
+            return next(createError(500, 'Roles is not array'));
+        }
+        return roles.includes(role) ? next() : next(createError(403, 'Forbidden')); 
     }
     return next();
 };

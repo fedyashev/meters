@@ -4,29 +4,36 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
       return queryInterface.bulkInsert('users', [
         {
-          login: 'redcat',  // woodseed
-          passwordHash: '$2a$10$3Ei9DJ/ULqQ7ixw44UETse53ZBPmFgNiNpIPKy0gF/un.kAMRO/li',
+          login: 'n1',  //cat
+          passwordHash: '$2a$10$Of7OQc.8oLdRYAGkcH6O8O69C0d6Boup7jySovoiJbkCAVsk6HBKC',
+          UserRoleId: 1,
+          createdAt: '0000-00-00',
+          updatedAt: '0000-00-00'
+        },
+        {
+          login: 'a1',  // cat
+          passwordHash: '$2a$10$Of7OQc.8oLdRYAGkcH6O8O69C0d6Boup7jySovoiJbkCAVsk6HBKC',
           UserRoleId: 2,
           createdAt: '0000-00-00',
           updatedAt: '0000-00-00'
         },
         {
-          login: 'owner',  // qwer1234
-          passwordHash: '$2a$10$0LuIoP68ldUaU.JEShHTeeCeY/4lkbx13siIpedyduXSds7FqR8hC',
+          login: 'o1',  // cat
+          passwordHash: '$2a$10$Of7OQc.8oLdRYAGkcH6O8O69C0d6Boup7jySovoiJbkCAVsk6HBKC',
           UserRoleId: 3,
           createdAt: '0000-00-00',
           updatedAt: '0000-00-00'
         },
         {
-          login: 'inspector',  //starfrog
-          passwordHash: '$2a$10$QX6wVHaWFVWDkVMnKeWAOeyNoOYDTYNsUu2FzlwJVMerO/YFLLxmu',
+          login: 'i1',  //cat
+          passwordHash: '$2a$10$Of7OQc.8oLdRYAGkcH6O8O69C0d6Boup7jySovoiJbkCAVsk6HBKC',
           UserRoleId: 4,
           createdAt: '0000-00-00',
           updatedAt: '0000-00-00'
         },
         {
-          login: 'consumer',  //goldcoin
-          passwordHash: '$2a$10$pjmu.hx0dXt0VcZVpkKcFuFqOAwlMTboYsIqLpSfqyXpevUSgauUe',
+          login: 'c1',  //cat
+          passwordHash: '$2a$10$Of7OQc.8oLdRYAGkcH6O8O69C0d6Boup7jySovoiJbkCAVsk6HBKC',
           UserRoleId: 5,
           createdAt: '0000-00-00',
           updatedAt: '0000-00-00'
