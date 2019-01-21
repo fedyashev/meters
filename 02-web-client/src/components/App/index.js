@@ -3,7 +3,11 @@ import {withRouter, Switch, Route} from 'react-router-dom';
 
 import Login from '../Login';
 import Owner from '../Owner';
+import UserList from '../UserList';
+import InspectorList from '../InspectorList';
+
 import Inspector from '../Inspector';
+
 import Consumer from '../Consumer';
 
 import api from '../../lib/api';
@@ -86,6 +90,25 @@ class App extends Component {
           />
 
           <Route exact path='/owner' render={props => <Owner {...props} user={user} handlerLogout={this.handlerLogout}/>}/>
+          
+          <Route exact path='/owner/users'
+            render={
+              props =>
+                <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <UserList {...props} user={user}/>
+                </Owner>
+            }
+          />
+
+          <Route exact path='/owner/inspectors'
+            render={
+              props =>
+                <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <InspectorList {...props} user={user}/>
+                </Owner>
+            }
+          />
+
           <Route exact path='/inspector' render={props => <Inspector {...props} user={user} handlerLogout={this.handlerLogout}/>}/>
           <Route exact path='/consumer' render={props => <Consumer {...props} user={user} handlerLogout={this.handlerLogout}/>}/>
         </Switch>

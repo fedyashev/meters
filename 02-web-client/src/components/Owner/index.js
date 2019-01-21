@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {withRouter} from 'react-router-dom';
 
 import Header from './components/Header';
-import Main from './components/Main';
 import Footer from './components/Footer';
 
 class Owner extends Component {
@@ -20,7 +19,7 @@ class Owner extends Component {
         return (
             <div>
                 <Header user={user} handlerLogout={this.props.handlerLogout}/>
-                <Main />
+                {this.props.children}
                 <Footer />
             </div>
         );

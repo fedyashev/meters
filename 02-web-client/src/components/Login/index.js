@@ -11,7 +11,7 @@ const Login = props => {
     return (
         <div>
             {props.alert && <Alert type={props.alert.type} message={props.alert.message} handlerCloseAlert={handlerCloseAlert}/>}
-            <div className="jumbotron d-flex align-items-center" style={{position: "absolute", top: "0", left: "0", right: "0", bottom: "0"}}>
+            <div className="bg-light d-flex align-items-center" style={{position: "absolute", top: "0", left: "0", right: "0", bottom: "0"}}>
                 <div className="container">
                     <div className="row justify-content-center">
                         <div className="col-12 col-sm-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">

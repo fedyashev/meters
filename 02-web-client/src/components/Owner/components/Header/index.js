@@ -19,10 +19,10 @@ const Header = props => {
                     <div className="collapse navbar-collapse" id="navbarNav">
                         <ul className="navbar-nav">
                             <li className="nav-item">
-                                <a className="nav-link" href="">Пользователи</a>
+                                <Link className="nav-link"  to="/owner/users">Пользователи</Link>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link" href="">Инспекторы</a>
+                            <Link className="nav-link" to="/owner/inspectors">Инспекторы</Link>
                             </li>
                             <li className="nav-item">
                                 <a className="nav-link" href="">Потребители</a>
