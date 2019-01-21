@@ -1,22 +1,22 @@
 import React, {Component} from 'react';
 import api from '../../lib/api';
 
-class UserList extends Component {
+class ConsumerList extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       user: props.user,
-      users: []
+      consumers: []
     };
   }
 
   componentDidMount() {
-    console.log("componentDidMount");
-    api.getAllUsers(this.props.user.token)
-      .then(users => {
-        if (users) {
-          this.setState({...this.state, users: users});
+    api.getAllConsumers(this.props.user.token)
+      .then(consumers => {
+          console.log(consumers);
+        if (consumers) {
+          this.setState({...this.state, consumers: consumers});
         }
       })
       .catch(({error}) => {
@@ -27,7 +27,7 @@ class UserList extends Component {
   render() {
     return (
       <div className="container justify-content-center pt-2">
-        <Table users={this.state.users}/>
+        <Table consumers={this.state.consumers}/>
       </div>
     );
   }
@@ -35,20 +35,20 @@ class UserList extends Component {
 };
 
 const Table = props => {
-  const {users} = props;
-  console.log(users);
+  const {consumers} = props;
   return (
     <table className="table table-bordered table-hover table-sm">
       <thead className="thead-dark">
         <tr>
           <th scope="col" className="text-center">Id</th>
           <th scope="col" className="text-center">Login</th>
-          <th scope="col" className="text-center">Role</th>
+          <th scope="col" className="text-center">Name</th>
+          <th scope="col" className="text-center">Email</th>
         </tr>
       </thead>
       <tbody style={{fontSize: '0.85rem'}}>
         {
-          users && users.map(user => <TableRow key={`${user.id}-${user.login}-${user.role}`} user={user}/>)
+            consumers && consumers.map(consumer => <TableRow key={`${consumer.id}-${consumer.login}-${consumer.name}-${consumer.email}`} consumer={consumer}/>)
         }
       </tbody>
     </table>
@@ -56,14 +56,15 @@ const Table = props => {
 };
 
 const TableRow = props => {
-  const {user} = props;
+  const {consumer} = props;
   return (
     <tr>
-      <td className="text-center">{user.id}</td>
-      <td className="text-center">{user.login}</td>
-      <td className="text-center">{user.role}</td>
+      <td className="text-center">{consumer.id}</td>
+      <td className="text-center">{consumer.login}</td>
+      <td className="text-center">{consumer.name}</td>
+      <td className="text-center">{consumer.email}</td>
     </tr>
   );
 }
 
-export default UserList;
+export default ConsumerList;

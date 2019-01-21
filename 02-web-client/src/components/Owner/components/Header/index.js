@@ -22,22 +22,21 @@ const Header = props => {
                                 <Link className="nav-link"  to="/owner/users">Пользователи</Link>
                             </li>
                             <li className="nav-item">
-                            <Link className="nav-link" to="/owner/inspectors">Инспекторы</Link>
+                                <Link className="nav-link" to="/owner/inspectors">Инспекторы</Link>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link" href="">Потребители</a>
+                                <Link className="nav-link" to="/owner/consumers">Потребители</Link>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link" href="">Счетчики</a>
+                                <Link className="nav-link" to="/owner/meters">Счетчики</Link>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link" href="">Места</a>
+                                <Link className="nav-link" to="/owner/places">Места</Link>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link" href="">Отчеты</a>
+                                <Link className="nav-link" to="/owner/reports">Отчеты</Link>
                             </li>
                             <li className="nav-item">
-                                {/* <a className="nav-link" href="#">Logout</a> */}
                                 <Link className="nav-link text-warning" to="/logout" onClick={onClickLogout}>Выход</Link>
                             </li>
                         </ul>

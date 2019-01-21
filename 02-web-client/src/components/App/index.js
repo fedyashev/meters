@@ -5,6 +5,10 @@ import Login from '../Login';
 import Owner from '../Owner';
 import UserList from '../UserList';
 import InspectorList from '../InspectorList';
+import ConsumerList from '../ConsumerList';
+import MeterList from '../MeterList';
+import ReportList from '../ReportList';
+import PlaceList from '../PlaceList';
 
 import Inspector from '../Inspector';
 
@@ -105,6 +109,42 @@ class App extends Component {
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
                   <InspectorList {...props} user={user}/>
+                </Owner>
+            }
+          />
+
+          <Route exact path='/owner/consumers'
+            render={
+              props =>
+                <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <ConsumerList {...props} user={user}/>
+                </Owner>
+            }
+          />
+
+          <Route exact path='/owner/meters'
+            render={
+              props =>
+                <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <MeterList {...props} user={user}/>
+                </Owner>
+            }
+          />
+
+          <Route exact path='/owner/reports'
+            render={
+              props =>
+                <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <ReportList {...props} user={user}/>
+                </Owner>
+            }
+          />
+
+          <Route exact path='/owner/places'
+            render={
+              props =>
+                <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <PlaceList {...props} user={user}/>
                 </Owner>
             }
           />

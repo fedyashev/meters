@@ -8,7 +8,13 @@ const pattern = '[a-zA-Zа-яА-Я0-9.]';
 
 module.exports.getAll = async (req, res, next) => {
   try {
-    const consumers = await Consumer.findAll().map(({id, name, email}) => ({id, name, email}));
+    const consumers = await Consumer
+      .findAll({
+        include: [
+          {model: User}
+        ]
+      })
+      .map(({id, name, email, User: {login}}) => ({id, name, email, login}));
     return res.json(consumers);    
   } catch (err) {
     return next(createError(500, err.message));
