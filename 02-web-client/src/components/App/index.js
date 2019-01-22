@@ -4,12 +4,19 @@ import {withRouter, Switch, Route} from 'react-router-dom';
 import Login from '../Login';
 import Owner from '../Owner';
 import UserList from '../UserList';
+
 import InspectorList from '../InspectorList';
 import InspectorCreate from '../InspectorCreate';
 import InspectorInfo from '../InspectorInfo';
 import InspectorUpdate from '../InspectorUpdate';
 import InspectorDelete from '../InspectorDelete';
+
 import ConsumerList from '../ConsumerList';
+import ConsumerCreate from '../ConsumerCreate';
+import ConsumerInfo from '../ConsumerInfo';
+import ConsumerUpdate from '../ConsumerUpdate';
+import ConsumerDelete from '../ConsumerDelete';
+
 import MeterList from '../MeterList';
 import ReportList from '../ReportList';
 import PlaceList from '../PlaceList';
@@ -158,6 +165,42 @@ class App extends Component {
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
                   <ConsumerList {...props} user={user}/>
+                </Owner>
+            }
+          />
+
+          <Route exact path='/owner/consumers/create'
+            render={
+              props =>
+                <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <ConsumerCreate {...props} user={user}/>
+                </Owner>
+            }
+          />
+
+          <Route exact path='/owner/consumers/:consumer_id'
+            render={
+              props =>
+                <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <ConsumerInfo {...props} user={user}/>
+                </Owner>
+            }
+          />
+
+          <Route exact path='/owner/consumers/:consumer_id/update'
+            render={
+              props =>
+                <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <ConsumerUpdate {...props} user={user}/>
+                </Owner>
+            }
+          />
+
+          <Route exact path='/owner/consumers/:consumer_id/delete'
+            render={
+              props =>
+                <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <ConsumerDelete {...props} user={user}/>
                 </Owner>
             }
           />

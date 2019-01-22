@@ -22,6 +22,14 @@ class Owner extends Component {
         this.setState({...this.state, alert: {type, message}});
     };
 
+    showWarningAlert = message => {
+        this.setState({...this.state, alert: {type: 'warning', message}});
+    }
+
+    showSuccessAlert = message => {
+        this.setState({...this.state, alert: {type: 'success', message}});
+    }
+
     render() {
         const { user } = this.state;
         console.log('OWNER', user);
@@ -31,7 +39,7 @@ class Owner extends Component {
                 {this.state.alert && <Alert type={this.state.alert.type} message={this.state.alert.message} handlerCloseAlert={this.handlerCloseAlert} />}
                 {
                     this.props.children && React.Children.map(this.props.children, child =>
-                        React.cloneElement(child, {setAlert: this.setAlert})
+                        React.cloneElement(child, {setAlert: this.setAlert, showWarningAlert: this.showWarningAlert, showSuccessAlert: this.showSuccessAlert})
                     )
                 }
                 <Footer />

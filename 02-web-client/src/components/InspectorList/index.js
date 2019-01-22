@@ -27,7 +27,7 @@ class InspectorList extends Component {
 
   render() {
     return (
-      <div className="container justify-content-center pt-2">
+      <div className="container justify-content-center">
         <NavBar/>
         <Table inspectors={this.state.inspectors}/>
       </div>
@@ -38,9 +38,9 @@ class InspectorList extends Component {
 
 const NavBar = props => {
   return (
-  <nav className="nav">
-    <Link className="nav-link" to='/owner/inspectors/create'>Добавить</Link>
-  </nav>
+    <nav className="nav my-2">
+      <Link className="nav-link" to='/owner/inspectors/create'>Добавить</Link>
+    </nav>
   );
 };
 

@@ -79,7 +79,12 @@ module.exports.getById = async (req, res, next) => {
       return next(createError(400, 'Incorrect input parameters'));
     }
 
-    const consumer = await Consumer.findOne({where: {id: consumer_id}});
+    const consumer = await Consumer.findOne({
+      where: {id: consumer_id},
+      include: [
+        {model: User}
+      ]
+    });
     
     if (!consumer) {
       return next(createError(404, 'Consumer not found'));
@@ -88,7 +93,8 @@ module.exports.getById = async (req, res, next) => {
     return res.json({
       id: consumer.id,
       name: consumer.name,
-      email: consumer.email
+      email: consumer.email,
+      login: consumer.User.login
     });
 
   } catch (err) {

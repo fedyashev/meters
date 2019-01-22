@@ -86,6 +86,40 @@ const api = {
             });
     },
 
+    updateInspectorById: (token, id, name) => {
+        const data = {name};
+        const opt = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            },
+            body: JSON.stringify(data)
+        };
+        const url = `/api/v1/inspectors/${id}`;
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
+    },
+
+    deleteInspectorById: (token, id) => {
+        const opt = {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            }
+        };
+        const url = `/api/v1/inspectors/${id}`;
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
+    },
+
     getAllConsumers: (token) => {
         const opt = {
             method: 'GET',
@@ -100,6 +134,74 @@ const api = {
                 const promise = res.json();
                 return res.ok ? promise : promise.then(err => {throw err});
             });
+    },
+
+    createConsumer: (token, login, password, name, email) => {
+        const data = {login, password, name, email};
+        const opt = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            },
+            body: JSON.stringify(data)
+        };
+        const url = '/api/v1/consumers';
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
+    },
+
+    getConsumerById: (token, id) => {
+        const opt = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            }
+        };
+        const url = `/api/v1/consumers/${id}`;
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
+    },
+
+    updateConsumerById: (token, id, name, email) => {
+        const data = {name, email};
+        const opt = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            },
+            body: JSON.stringify(data)
+        };
+        const url = `/api/v1/consumers/${id}`;
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
+    },
+
+    deleteConsumerById: (token, id) => {
+        const opt = {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            }
+        };
+        const url = `/api/v1/consumers/${id}`;
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });  
     },
 
     getAllMeters: (token) => {

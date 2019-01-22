@@ -55,10 +55,8 @@ const NavBar = props => {
   const {inspector} = props;
   return (
     <nav className="nav mb-2">
-      <Link className="nav-link" to={`/owner/inspectors/${inspector.id}/update`}>Редактировать</Link>
+      <Link className="nav-link" to={`/owner/inspectors/${inspector.id}/update`}>Изменить имя</Link>
       <Link className="nav-link" to={`/owner/inspectors/${inspector.id}/delete`}>Удалить</Link>
-      <Link className="nav-link" to={`/owner/inspectors/${inspector.id}/changeName`}>Редактировать</Link>
-      <Link className="nav-link" to={`/owner/inspectors/${inspector.id}/changePassword`}>Редактировать</Link>
     </nav>
   );
 }

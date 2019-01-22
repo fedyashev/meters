@@ -1,49 +1,50 @@
 import React, { Component } from 'react';
 import api from '../../lib/api';
 
-class InspectorDelete extends Component {
+class ConsumerDelete extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       user: props.user,
-      inspector: {
-        id: props.match.params.inspector_id
+      consumer: {
+        id: props.match.params.consumer_id
       }
     }
   }
 
   componentDidMount() {
     const token = this.state.user.token;
-    const inspector_id = this.state.inspector.id;
-    api.getInspectorById(token, inspector_id)
-      .then(inspector => {
-        if (inspector) {
-          this.setState({...this.state, inspector: inspector});
+    const consumer_id = this.state.consumer.id;
+    api.getConsumerById(token, consumer_id)
+      .then(consumer => {
+        if (consumer) {
+          this.setState({...this.state, consumer});
         }
         else {
-          this.setAlert('warning', 'Inspector not found');
+          this.props.showWarningAlert('Потребитель не найден');
           this.props.history.goBack();
         }
       })
       .catch(({error}) => {
-        this.props.setAlert('warning', error.message);
+        this.props.showWarningAlert(error.message);
+        this.props.history.goBack();
       });
   }
 
   handleClickYes = e => {
     e.preventDefault();
     const token = this.state.user.token;
-    const inspector_id = this.state.inspector.id;
-    api.deleteInspectorById(token, inspector_id)
+    const consumer_id = this.state.consumer.id;
+    api.deleteConsumerById(token, consumer_id)
       .then(done => {
         if (done) {
-          this.props.setAlert('success', 'Инспектор удален');
+          this.props.showSuccessAlert('Потребитель удален');
           this.props.history.go(-2);
         }
       })
       .catch(({error}) => {
-        this.props.setAlert('warning', error.message)
+        this.props.showWarningAlert(error.message);
       });
   }
 
@@ -53,12 +54,12 @@ class InspectorDelete extends Component {
   }
 
   render() {
-    const {inspector} = this.state;
+    const {consumer} = this.state;
     return (
       <div className="container pt-2">
         <div className="border p-5">
           <div className="mb-5">
-            <p className="h3 text-center">{`Удалить инспектора ${inspector.name}?`}</p>
+            <p className="h3 text-center">{`Удалить потребителя ${consumer.name}?`}</p>
           </div>
           <div className="d-flex justify-content-between">
             <div className="ml-5">
@@ -74,4 +75,4 @@ class InspectorDelete extends Component {
   }
 };
 
-export default InspectorDelete;
+export default ConsumerDelete;

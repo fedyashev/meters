@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
+import {Link} from 'react-router-dom';
 import api from '../../lib/api';
+import GoBackLink from '../GoBackLink';
 
 class ConsumerList extends Component {
   constructor(props) {
@@ -26,13 +28,23 @@ class ConsumerList extends Component {
 
   render() {
     return (
-      <div className="container justify-content-center pt-2">
+      <div className="container justify-content-center">
+        <NavBar {...this.props}/>
         <Table consumers={this.state.consumers}/>
       </div>
     );
   }
 
 };
+
+const NavBar = props => {
+  return (
+    <nav className="nav my-2">
+      <GoBackLink {...props}/>
+      <Link className="nav-link" to='/owner/consumers/create'>Добавить</Link>
+    </nav>
+  );
+}
 
 const Table = props => {
   const {consumers} = props;
@@ -59,7 +71,9 @@ const TableRow = props => {
   const {consumer} = props;
   return (
     <tr>
-      <td className="text-center">{consumer.id}</td>
+      <td className="text-center">
+        <Link to={`/owner/consumers/${consumer.id}`}>{consumer.id}</Link>
+      </td>
       <td className="text-center">{consumer.login}</td>
       <td className="text-center">{consumer.name}</td>
       <td className="text-center">{consumer.email}</td>
