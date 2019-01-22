@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {Link} from 'react-router-dom';
 import api from '../../lib/api';
 
 class InspectorList extends Component {
@@ -28,7 +29,7 @@ class InspectorList extends Component {
     return (
       <div className="container justify-content-center pt-2">
         <NavBar/>
-        <Table users={this.state.inspectors}/>
+        <Table inspectors={this.state.inspectors}/>
       </div>
     );
   }
@@ -38,7 +39,7 @@ class InspectorList extends Component {
 const NavBar = props => {
   return (
   <nav className="nav">
-    <a className="nav-link" href="#">Добавить</a>
+    <Link className="nav-link" to='/owner/inspectors/create'>Добавить</Link>
   </nav>
   );
 };
@@ -50,6 +51,7 @@ const Table = props => {
       <thead className="thead-dark">
         <tr>
           <th scope="col" className="text-center">Id</th>
+          <th scope="col" className="text-center">Login</th>
           <th scope="col" className="text-center">Name</th>
         </tr>
       </thead>
@@ -66,7 +68,10 @@ const TableRow = props => {
   const {inspector} = props;
   return (
     <tr>
-      <td className="text-center">{inspector.id}</td>
+      <td className="text-center">
+      <Link to={`/owner/inspectors/${inspector.id}`}>{inspector.id}</Link>
+      </td>
+      <td className="text-center">{inspector.login}</td>
       <td className="text-center">{inspector.name}</td>
     </tr>
   );

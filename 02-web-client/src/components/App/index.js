@@ -5,6 +5,10 @@ import Login from '../Login';
 import Owner from '../Owner';
 import UserList from '../UserList';
 import InspectorList from '../InspectorList';
+import InspectorCreate from '../InspectorCreate';
+import InspectorInfo from '../InspectorInfo';
+import InspectorUpdate from '../InspectorUpdate';
+import InspectorDelete from '../InspectorDelete';
 import ConsumerList from '../ConsumerList';
 import MeterList from '../MeterList';
 import ReportList from '../ReportList';
@@ -112,6 +116,42 @@ class App extends Component {
                 </Owner>
             }
           />
+
+          <Route exact path='/owner/inspectors/create'
+            render={
+              props =>
+                <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <InspectorCreate {...props} user={user}/>
+                </Owner>
+            }
+          />
+
+          <Route exact path='/owner/inspectors/:inspector_id'
+            render={
+              props =>
+                <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <InspectorInfo {...props} user={user}/>
+                </Owner>
+            }
+          />
+
+          <Route exact path='/owner/inspectors/:inspector_id/update'
+            render={
+              props =>
+                <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <InspectorUpdate {...props} user={user}/>
+                </Owner>
+            }
+          />
+
+          <Route exact path='/owner/inspectors/:inspector_id/delete'
+            render={
+              props =>
+                <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <InspectorDelete {...props} user={user}/>
+                </Owner>
+            }
+          />          
 
           <Route exact path='/owner/consumers'
             render={

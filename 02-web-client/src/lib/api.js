@@ -50,6 +50,42 @@ const api = {
             });
     },
 
+    createInspector: (token, login, password, name) => {
+        const data = {login, password, name};
+        const opt = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            },
+            body: JSON.stringify(data)
+        };
+        const url = '/api/v1/inspectors';
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
+    },
+
+    getInspectorById: (token, inspector_id) => {
+        const opt = {
+            method: 'GET',
+            cache: 'no-cache',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            }
+        };
+        const url = `/api/v1/inspectors/${inspector_id}`;
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                console.log(promise);
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
+    },
+
     getAllConsumers: (token) => {
         const opt = {
             method: 'GET',

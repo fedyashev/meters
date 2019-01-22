@@ -8,7 +8,13 @@ const pattern = '[a-zA-Zа-яА-Я0-9.]';
 
 module.exports.getAll = async (req, res, next) => {
     try {
-        const inspectors = (await Inspector.findAll()).map(({id, name}) => ({id, name}));
+        const inspectors = await Inspector
+            .findAll({
+                include: [
+                    {model: User}
+                ]
+            })
+            .map(({id, name, User: {login}}) => ({id, login, name}));
         res.json(inspectors);
     } catch (err) {
         return next(createError(500, err.message));
@@ -21,13 +27,17 @@ module.exports.getById = async (req, res, next) => {
         if (!inspector_id) {
             return next(createError(400, 'Incorrect inspector id'));
         }
-        const inspector = await Inspector.findOne({where: {id: inspector_id}});
+        const inspector = await Inspector.findOne({
+            where: {id: inspector_id},
+            include: [{model: User}]
+        });
         if (!inspector) {
             return next(createError(404, 'Inspector not found'));
         }
         return res.json({
             id: inspector.id,
-            name: inspector.name
+            name: inspector.name,
+            login: inspector.User.login
         });
     } catch (err) {
         return next(createError(500, err.message));
