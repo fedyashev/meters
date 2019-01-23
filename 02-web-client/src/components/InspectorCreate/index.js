@@ -1,13 +1,12 @@
 import React, {Component} from 'react';
 
 import api from '../../lib/api';
+import GoBackLink from '../GoBackLink';
 
 class InspectorCreate extends Component {
-  constructor(props) {
-    super(props);
-  }
 
-  handleInspectorCreate = (token, login, password, name) => {
+  handleInspectorCreate = (login, password, name) => {
+    const token = this.props.user.token;
     api.createInspector(token, login, password, name)
       .then(inspector => {
         if (inspector) {
@@ -29,12 +28,13 @@ class InspectorCreate extends Component {
         this.props.setAlert('warning', 'Не верный пароль');
       }
       else {
-        this.handleInspectorCreate(this.props.user.token, login.value, password.value, name.value);
+        this.handleInspectorCreate(login.value, password.value, name.value);
       }
     }
 
     return (
-      <div className="container pt-5">
+      <div className="container">
+        <NavBar {...this.props}/>
         <div className="row justify-content-center">
           <div className="col-12 col-sm-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
             <div className="text-center font-weight-bold mb-5">
@@ -63,5 +63,13 @@ class InspectorCreate extends Component {
     );
   }
 };
+
+const NavBar = props => {
+  return (
+    <nav className="nav my-2">
+      <GoBackLink {...props}/>
+    </nav>
+  );
+}
 
 export default InspectorCreate;

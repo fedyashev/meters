@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import api from '../../lib/api';
+import GoBackLink from '../GoBackLink';
+import {Link} from 'react-router-dom';
 
 class MeterList extends Component {
   constructor(props) {
@@ -20,14 +22,16 @@ class MeterList extends Component {
         }
       })
       .catch(({error}) => {
-        this.props.setAlert('warning', error.message);
+        //this.props.setAlert('warning', error.message);
+        this.props.showWarningAlert(error.message);
       });
   };
 
   render() {
     return (
-      <div className="container justify-content-center pt-2">
-        <Table users={this.state.meters}/>
+      <div className="container justify-content-center">
+        <NavBar {...this.props}/>
+        <Table meters={this.state.meters}/>
       </div>
     );
   }
@@ -57,9 +61,20 @@ const TableRow = props => {
   const {meter} = props;
   return (
     <tr>
-      <td className="text-center">{meter.id}</td>
+      <td className="text-center">
+        <Link to={`/owner/meters/${meter.id}`}>{meter.id}</Link>
+      </td>
       <td className="text-center">{meter.number}</td>
     </tr>
+  );
+};
+
+const NavBar = props => {
+  return (
+    <nav className="nav my-2">
+      <GoBackLink {...props}/>
+      <Link className="nav-link" to="/owner/meters/create">Добавить</Link>
+    </nav>
   );
 }
 

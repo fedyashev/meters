@@ -18,6 +18,11 @@ import ConsumerUpdate from '../ConsumerUpdate';
 import ConsumerDelete from '../ConsumerDelete';
 
 import MeterList from '../MeterList';
+import MeterCreate from '../MeterCreate';
+import MeterInfo from '../MeterInfo';
+import MeterUpdate from '../MeterUpdate';
+import MeterDelete from '../MeterDelete';
+
 import ReportList from '../ReportList';
 import PlaceList from '../PlaceList';
 
@@ -95,16 +100,14 @@ class App extends Component {
       <div>
         <Switch>
 
-          <Route exact path='/login' 
-            render={
-              props => <Login {...props}
-                alert={this.state.alert}
-                handlerLogin={this.handlerlogin}
-                handlerCloseAlert={this.handlerCloseAlert}/>
-            }
-          />
+{/* =================================================================================== */}
 
+          <Route exact path='/login' render={props => <Login {...props} alert={this.state.alert} handlerLogin={this.handlerlogin} handlerCloseAlert={this.handlerCloseAlert}/>}/>
           <Route exact path='/owner' render={props => <Owner {...props} user={user} handlerLogout={this.handlerLogout}/>}/>
+          <Route exact path='/inspector' render={props => <Inspector {...props} user={user} handlerLogout={this.handlerLogout}/>}/>
+          <Route exact path='/consumer' render={props => <Consumer {...props} user={user} handlerLogout={this.handlerLogout}/>}/>
+
+{/* =================================================================================== */}
           
           <Route exact path='/owner/users'
             render={
@@ -114,6 +117,8 @@ class App extends Component {
                 </Owner>
             }
           />
+
+{/* =================================================================================== */}
 
           <Route exact path='/owner/inspectors'
             render={
@@ -158,7 +163,9 @@ class App extends Component {
                   <InspectorDelete {...props} user={user}/>
                 </Owner>
             }
-          />          
+          />
+
+{/* =================================================================================== */}
 
           <Route exact path='/owner/consumers'
             render={
@@ -205,6 +212,8 @@ class App extends Component {
             }
           />
 
+{/* =================================================================================== */}
+
           <Route exact path='/owner/meters'
             render={
               props =>
@@ -213,6 +222,44 @@ class App extends Component {
                 </Owner>
             }
           />
+
+          <Route exact path='/owner/meters/create'
+            render={
+              props =>
+                <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <MeterCreate {...props} user={user}/>
+                </Owner>
+            }
+          />
+
+          <Route exact path='/owner/meters/:meter_id'
+            render={
+              props =>
+                <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <MeterInfo {...props} user={user}/>
+                </Owner>
+            }
+          />
+
+          <Route exact path='/owner/meters/:meter_id/update'
+            render={
+              props =>
+                <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <MeterUpdate {...props} user={user}/>
+                </Owner>
+            }
+          />
+
+          <Route exact path='/owner/meters/:meter_id/delete'
+            render={
+              props =>
+                <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <MeterDelete {...props} user={user}/>
+                </Owner>
+            }
+          />
+
+{/* =================================================================================== */}
 
           <Route exact path='/owner/reports'
             render={
@@ -223,6 +270,8 @@ class App extends Component {
             }
           />
 
+{/* =================================================================================== */}
+
           <Route exact path='/owner/places'
             render={
               props =>
@@ -232,8 +281,9 @@ class App extends Component {
             }
           />
 
-          <Route exact path='/inspector' render={props => <Inspector {...props} user={user} handlerLogout={this.handlerLogout}/>}/>
-          <Route exact path='/consumer' render={props => <Consumer {...props} user={user} handlerLogout={this.handlerLogout}/>}/>
+{/* =================================================================================== */}
+
+
         </Switch>
       </div>
 

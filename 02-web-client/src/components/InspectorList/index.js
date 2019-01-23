@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import api from '../../lib/api';
 
+import GoBackLink from '../GoBackLink';
+
 class InspectorList extends Component {
   constructor(props) {
     super(props);
@@ -28,7 +30,7 @@ class InspectorList extends Component {
   render() {
     return (
       <div className="container justify-content-center">
-        <NavBar/>
+        <NavBar {...this.props}/>
         <Table inspectors={this.state.inspectors}/>
       </div>
     );
@@ -39,6 +41,7 @@ class InspectorList extends Component {
 const NavBar = props => {
   return (
     <nav className="nav my-2">
+      <GoBackLink {...props}/>
       <Link className="nav-link" to='/owner/inspectors/create'>Добавить</Link>
     </nav>
   );

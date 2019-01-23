@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import api from '../../lib/api';
+import GoBackLink from '../GoBackLink';
 
 class InspectorInfo extends Component {
   constructor(props) {
@@ -33,7 +34,7 @@ class InspectorInfo extends Component {
     const {inspector} = this.state;
     return (
       <div className="container pt-2">
-        <NavBar inspector={inspector}/>
+        <NavBar {...this.props} inspector={inspector}/>
         <h3 className="text-center mb-2">Инспектор</h3>
         <div className="border-top border-bottom">
           <div>
@@ -55,6 +56,7 @@ const NavBar = props => {
   const {inspector} = props;
   return (
     <nav className="nav mb-2">
+      <GoBackLink {...props}/>
       <Link className="nav-link" to={`/owner/inspectors/${inspector.id}/update`}>Изменить имя</Link>
       <Link className="nav-link" to={`/owner/inspectors/${inspector.id}/delete`}>Удалить</Link>
     </nav>

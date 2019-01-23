@@ -22,7 +22,6 @@ class ConsumerInfo extends Component {
         const consumer_id = this.state.consumer.id;
         api.getConsumerById(token, consumer_id)
             .then(consumer => {
-                console.log(consumer);
                 if (consumer) {
                     this.setState({ ...this.state, consumer: consumer });
                 }
@@ -70,6 +69,7 @@ const NavBar = props => {
             <Link className="nav-link" to={`/owner/consumers/${consumer.id}/update`}>Изменить</Link>
             <Link className="nav-link" to={`/owner/consumers/${consumer.id}/delete`}>Удалить</Link>
         </nav>
+
     );
 }
 

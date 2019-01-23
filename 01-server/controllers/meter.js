@@ -17,10 +17,10 @@ module.exports.create = async (req, res, next) => {
         if (!number) {
             return next(createError(400, 'Incorrect number'));
         }
-        const isValid = validator.isAlphanumeric(number);
-        if (!isValid) {
-            return next(createError(400, 'Incorrect number'));
-        }
+        // const isValid = validator.isAlphanumeric(number);
+        // if (!isValid) {
+        //     return next(createError(400, 'Incorrect number'));
+        // }
         const meter = await Meter.create({number});
         if (!meter) {
             return next(createError(500, 'Creation faild'));
@@ -60,10 +60,10 @@ module.exports.updateById = async (req, res, next) => {
         if (!number || !meter_id) {
             return next(createError(400, 'Incorrect number id'))
         }
-        const isValid = validator.isAlphanumeric(number);
-        if (!isValid) {
-            return next(createError(400, 'Incorrect number id'));
-        }
+        // const isValid = validator.isAlphanumeric(number);
+        // if (!isValid) {
+        //     return next(createError(400, 'Incorrect number id'));
+        // }
         const [count, ...rest] = await Meter.update({number}, {where: {id: meter_id}});
         if (!count) {
             return next(createError(500, 'Updating failed'));
