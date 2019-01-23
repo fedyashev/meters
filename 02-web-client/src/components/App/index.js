@@ -23,8 +23,13 @@ import MeterInfo from '../MeterInfo';
 import MeterUpdate from '../MeterUpdate';
 import MeterDelete from '../MeterDelete';
 
-import ReportList from '../ReportList';
 import PlaceList from '../PlaceList';
+import PlaceCreate from '../PlaceCreate';
+import PlaceInfo from '../PlaceInfo';
+import PlaceUpdate from '../PlaceUpdate';
+import PlaceDelete from '../PlaceDelete';
+
+import ReportList from '../ReportList';
 
 import Inspector from '../Inspector';
 
@@ -277,6 +282,42 @@ class App extends Component {
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
                   <PlaceList {...props} user={user}/>
+                </Owner>
+            }
+          />
+
+          <Route exact path='/owner/places/create'
+            render={
+              props =>
+                <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <PlaceCreate {...props} user={user}/>
+                </Owner>
+            }
+          />
+
+          <Route exact path='/owner/places/:place_id'
+            render={
+              props =>
+                <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <PlaceInfo {...props} user={user}/>
+                </Owner>
+            }
+          />
+
+          <Route exact path='/owner/places/:place_id/update'
+            render={
+              props =>
+                <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <PlaceUpdate {...props} user={user}/>
+                </Owner>
+            }
+          />
+
+          <Route exact path='/owner/places/:place_id/delete'
+            render={
+              props =>
+                <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <PlaceDelete {...props} user={user}/>
                 </Owner>
             }
           />

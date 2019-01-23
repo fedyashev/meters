@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import api from '../../lib/api';
+import GoBackLink from '../GoBackLink';
+import {Link} from 'react-router-dom';
 
 class PlaceList extends Component {
   constructor(props) {
@@ -7,29 +9,42 @@ class PlaceList extends Component {
 
     this.state = {
       user: props.user,
-      places: []
+      places: [],
+      isLoaded: false
     };
   }
 
   componentDidMount() {
     api.getAllPlaces(this.props.user.token)
-      .then(places => {
-        console.log(places);
-        if (places) {
-          this.setState({...this.state, places: places});
+      .then(
+        places => {
+          if (places) {
+            this.setState({...this.state, places: places, isLoaded: true});
+          }
+        },
+        ({error}) => {
+          this.setState({...this.state, isLoaded: true}, () => {
+            this.props.showWarningAlert(error.message);
+          });
         }
-      })
+      )
       .catch(({error}) => {
-        this.props.setAlert('warning', error.message);
+        this.setState({...this.state, isLoaded: true}, () => {
+          this.props.showWarningAlert(error.message);
+        });
       });
   };
 
   render() {
-    return (
-      <div className="container justify-content-center pt-2">
-        <Table users={this.state.places}/>
-      </div>
-    );
+    if (this.state.isLoaded) {
+      return (
+        <div className="container justify-content-center">
+          <NavBar {...this.props}/>
+          <Table places={this.state.places}/>
+        </div>
+      );
+    }
+    return null;
   }
 
 };
@@ -41,10 +56,10 @@ const Table = props => {
       <thead className="thead-dark">
         <tr>
           <th scope="col" className="text-center">Id</th>
-          <th scope="col" className="text-center">Name</th>
-          <th scope="col" className="text-center">Consumer</th>
-          <th scope="col" className="text-center">Meter</th>
-          <th scope="col" className="text-center">IsSignNeed</th>
+          <th scope="col" className="text-center">Название</th>
+          <th scope="col" className="text-center">Потребитель</th>
+          <th scope="col" className="text-center">Счетчик</th>
+          <th scope="col" className="text-center">Подпись</th>
         </tr>
       </thead>
       <tbody style={{fontSize: '0.85rem'}}>
@@ -60,13 +75,32 @@ const TableRow = props => {
   const {place} = props;
   return (
     <tr>
-      <td className="text-center">{place.id}</td>
+      <td className="text-center">
+        <Link to={`/owner/places/${place.id}`}>{place.id}</Link>
+      </td>
       <td className="text-center">{place.name}</td>
-      <td className="text-center">{place.consumer ? place.consumer.name : null}</td>
-      <td className="text-center">{place.meter ? place.meter.number : null}</td>
-      <td className="text-center">{place.isSignNeed}</td>
+      <td className="text-center">
+        {
+          place.consumer ? <Link to={`/owner/consumers/${place.consumer.id}`}>{place.consumer.name}</Link> : null
+        }
+      </td>
+      <td className="text-center">
+        {
+          place.meter ? <Link to={`/owner/meters/${place.meter.id}`}>{place.meter.number}</Link> : null
+        }
+      </td>
+      <td className="text-center">{place.isSignNeed ? 'Да' : 'Нет'}</td>
     </tr>
   );
-}
+};
+
+const NavBar = props => {
+  return (
+    <nav className="nav my-2">
+      <GoBackLink {...props}/>
+      <Link className="nav-link" to='/owner/places/create'>Добавить</Link>
+    </nav>
+  );
+};
 
 export default PlaceList;

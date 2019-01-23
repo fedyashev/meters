@@ -1,6 +1,7 @@
 const createError = require('http-errors');
-const {Meter} = require('../models');
+const {Meter, Place, Sequelize} = require('../models');
 const validator = require('validator');
+const Op = Sequelize.Op;
 
 module.exports.getAll = async (req, res, next) => {
     try {
@@ -92,3 +93,28 @@ module.exports.deleteById = async (req, res, next) => {
         return next(createError(500, err.message));
     }
 };
+
+module.exports.getAllNotInPlace = async (req, res, next) => {
+    try {
+        const metersInPlace = await Place
+            .findAll({
+                where: {
+                    MeterId: {[Op.ne]: null}
+                },
+                include: [
+                    {model: Meter},
+                ]
+            })
+            .map(place => place.Meter.id)
+        const metersNotInPlace = await Meter
+            .findAll({
+                where: {
+                    id: {[Op.notIn]: metersInPlace}
+                }
+            })
+            .map(({id, number}) => ({id, number}));
+        return res.json(metersNotInPlace);
+    } catch (err) {
+        return next(createError(500, err.message));
+    }
+}

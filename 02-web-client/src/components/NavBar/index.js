@@ -8,7 +8,7 @@ const NavLink = props => {
   };
   return (
     <nav className="nav my-2">
-      <Link className="nav-link" to="/back" onClick={onClickBack}>Назад</Link>
+      <Link className="nav-link" to="/back" onClick={onClickBack}><i className="fas fa-arrow-left"></i></Link>
       {
         props.children
       }

@@ -220,6 +220,22 @@ const api = {
             });
     },
 
+    getAllMetersNotInPlace: (token) => {
+        const opt = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            }
+        };
+        const url = '/api/v1/meters/notInPlace';
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
+    },
+
     createMeter: (token, number) => {
         const data = {number: number};
         const opt = {
@@ -297,6 +313,74 @@ const api = {
             }
         };
         const url = '/api/v1/places';
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
+    },
+
+    createPlace: (token, name, isSignNeed, consumer_id, meter_id) => {
+        const data = {name, isSignNeed, consumer_id, meter_id};
+        const opt = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            },
+            body: JSON.stringify(data)
+        };
+        const url = '/api/v1/places';
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
+    },
+
+    getPlaceById: (token, id) => {
+        const opt = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            }
+        };
+        const url = `/api/v1/places/${id}`;
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
+    },
+
+    updatePlaceById: (token, id, name, isSignNeed, consumer_id, meter_id) => {
+        const data = {name, isSignNeed, consumer_id, meter_id};
+        const opt = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            },
+            body: JSON.stringify(data)
+        };
+        const url = `/api/v1/places/${id}`;
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
+    },
+
+    deletePlaceById: (token, id) => {
+        const opt = {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            }
+        };
+        const url = `/api/v1/places/${id}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();

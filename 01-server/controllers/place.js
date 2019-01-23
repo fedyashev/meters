@@ -207,7 +207,7 @@ module.exports.updateById = async (req, res, next) => {
             }
 
             const existsPlace = await Place.findOne({where: {MeterId: meter_id}});
-            if (existsPlace) {
+            if (existsPlace && existsPlace.id !== Number(place_id)) {
                 return next(createError(400, 'Place with meter already exists'));            
             }
         }

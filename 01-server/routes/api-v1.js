@@ -51,6 +51,7 @@ router.put('/consumers/:consumer_id', jwt, allow([Role.ADMIN, Role.OWNER]), cons
 router.delete('/consumers/:consumer_id', jwt, allow([Role.ADMIN, Role.OWNER]), consumer.deleteById);
 
 router.get('/meters', jwt, allow([Role.ADMIN, Role.OWNER]), meter.getAll);
+router.get('/meters/notInPlace', jwt, allow([Role.ADMIN, Role.OWNER]), meter.getAllNotInPlace);
 router.post('/meters', jwt, allow([Role.ADMIN, Role.OWNER]), meter.create);
 
 router.get('/meters/:meter_id', jwt, allow([Role.ADMIN, Role.OWNER]), meter.getById);

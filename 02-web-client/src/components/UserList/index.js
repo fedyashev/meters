@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import api from '../../lib/api';
+//import ProgressBar from '../ProgressBar';
 
 class UserList extends Component {
   constructor(props) {
@@ -7,27 +8,38 @@ class UserList extends Component {
 
     this.state = {
       user: props.user,
-      users: []
+      users: [],
+      isLoaded: false
     };
   }
 
   componentDidMount() {
-    console.log("componentDidMount");
     api.getAllUsers(this.props.user.token)
-      .then(users => {
-        if (users) {
-          this.setState({...this.state, users: users});
+      .then(
+        users => {
+          if (users) {
+            this.setState({...this.state, users: users, isLoaded: true});
+          }
+        },
+        ({error}) => {
+          this.setState({...this.state, isLoaded: true}, () => {
+            this.props.showWarningAlert(error.message);
+          });
         }
-      })
+      )
       .catch(({error}) => {
-        this.props.setAlert('warning', error.message);
+        this.setState({...this.state, isLoaded: true}, () => {
+          this.props.showWarningAlert(error.message);
+        });
       });
   };
 
   render() {
     return (
       <div className="container justify-content-center pt-2">
-        <Table users={this.state.users}/>
+        {
+          this.state.isLoaded ? <Table users={this.state.users}/> : null
+        }
       </div>
     );
   }
