@@ -1,6 +1,7 @@
 import React from 'react';
 import api from '../../lib/api';
 import NavBar from '../NavBar';
+import {formatDate} from '../../lib/helpers';
 
 const MeterAddData = props => {
   const token = props.user.token;
@@ -48,18 +49,6 @@ const MeterAddData = props => {
       </div>
     </div>
   );
-};
-
-const formatDate = date => {
-  const tmp = new Date(date);
-  const year = tmp.getFullYear();
-  const month = tmp.getMonth() + 1;
-  const day = tmp.getDate();
-  const hour = tmp.getHours();
-  const minutes = tmp.getMinutes();
-  const seconds = tmp.getSeconds();
-  const millis = tmp.getMilliseconds();
-  return `${year}-${month < 9 ? `0${month}` : month}-${day} ${hour}:${minutes}:${seconds}`;
 };
 
 export default MeterAddData;

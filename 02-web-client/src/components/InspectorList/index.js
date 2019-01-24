@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import api from '../../lib/api';
-
-import GoBackLink from '../GoBackLink';
+import NavBar from '../NavBar';
 
 class InspectorList extends Component {
   constructor(props) {
@@ -10,16 +9,16 @@ class InspectorList extends Component {
 
     this.state = {
       user: props.user,
-      inspectors: []
+      inspectors: [],
+      isLoaded: false
     };
   }
 
   componentDidMount() {
     api.getAllInspectors(this.props.user.token)
       .then(inspectors => {
-        console.log(inspectors);
         if (inspectors) {
-          this.setState({...this.state, inspectors: inspectors});
+          this.setState({...this.state, inspectors, isLoaded: true});
         }
       })
       .catch(({error}) => {
@@ -28,9 +27,12 @@ class InspectorList extends Component {
   };
 
   render() {
+    if (!this.state.isLoaded) return null;
     return (
       <div className="container justify-content-center">
-        <NavBar {...this.props}/>
+        <NavBar {...this.props}>
+          <Link className="nav-link" to='/owner/inspectors/create'>Добавить</Link>
+        </NavBar>
         <Table inspectors={this.state.inspectors}/>
       </div>
     );
@@ -38,32 +40,25 @@ class InspectorList extends Component {
 
 };
 
-const NavBar = props => {
-  return (
-    <nav className="nav my-2">
-      <GoBackLink {...props}/>
-      <Link className="nav-link" to='/owner/inspectors/create'>Добавить</Link>
-    </nav>
-  );
-};
-
 const Table = props => {
   const {inspectors} = props;
   return (
-    <table className="table table-bordered table-hover table-sm">
-      <thead className="thead-dark">
-        <tr>
-          <th scope="col" className="text-center">Id</th>
-          <th scope="col" className="text-center">Login</th>
-          <th scope="col" className="text-center">Name</th>
-        </tr>
-      </thead>
-      <tbody style={{fontSize: '0.85rem'}}>
-        {
-          inspectors && inspectors.map(inspector => <TableRow key={`${inspector.id}-${inspector.name}`} inspector={inspector}/>)
-        }
-      </tbody>
-    </table>
+    <div className="table-responsive">
+      <table className="table table-bordered table-hover table-sm">
+        <thead className="thead-dark">
+          <tr>
+            <th scope="col" className="text-center">Id</th>
+            <th scope="col" className="text-center">Login</th>
+            <th scope="col" className="text-center">Name</th>
+          </tr>
+        </thead>
+        <tbody style={{fontSize: '0.85rem'}}>
+          {
+            inspectors && inspectors.map(inspector => <TableRow key={`${inspector.id}-${inspector.name}`} inspector={inspector}/>)
+          }
+        </tbody>
+      </table>
+    </div>
   );
 };
 

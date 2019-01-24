@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import api from '../../lib/api';
-import GoBackLink from '../GoBackLink';
-import {Link} from 'react-router-dom';
+import NavBar from '../NavBar';
+import { Link } from 'react-router-dom';
 
 class PlaceList extends Component {
   constructor(props) {
@@ -19,19 +19,15 @@ class PlaceList extends Component {
       .then(
         places => {
           if (places) {
-            this.setState({...this.state, places: places, isLoaded: true});
+            this.setState({ ...this.state, places: places, isLoaded: true });
           }
         },
-        ({error}) => {
-          this.setState({...this.state, isLoaded: true}, () => {
-            this.props.showWarningAlert(error.message);
-          });
+        ({ error }) => {
+          this.props.showWarningAlert(error.message);
         }
       )
-      .catch(({error}) => {
-        this.setState({...this.state, isLoaded: true}, () => {
-          this.props.showWarningAlert(error.message);
-        });
+      .catch(({ error }) => {
+        this.props.showWarningAlert(error.message);
       });
   };
 
@@ -39,8 +35,10 @@ class PlaceList extends Component {
     if (this.state.isLoaded) {
       return (
         <div className="container justify-content-center">
-          <NavBar {...this.props}/>
-          <Table places={this.state.places}/>
+          <NavBar {...this.props}>
+            <Link className="nav-link" to='/owner/places/create'>Добавить</Link>
+          </NavBar>
+          <Table places={this.state.places} />
         </div>
       );
     }
@@ -50,29 +48,31 @@ class PlaceList extends Component {
 };
 
 const Table = props => {
-  const {places} = props;
+  const { places } = props;
   return (
-    <table className="table table-bordered table-hover table-sm">
-      <thead className="thead-dark">
-        <tr>
-          <th scope="col" className="text-center">Id</th>
-          <th scope="col" className="text-center">Название</th>
-          <th scope="col" className="text-center">Потребитель</th>
-          <th scope="col" className="text-center">Счетчик</th>
-          <th scope="col" className="text-center">Подпись</th>
-        </tr>
-      </thead>
-      <tbody style={{fontSize: '0.85rem'}}>
-        {
-            places && places.map(place => <TableRow key={`${place.id}-${place.name}`} place={place}/>)
-        }
-      </tbody>
-    </table>
+    <div className="table-responsive">
+      <table className="table table-bordered table-hover table-sm">
+        <thead className="thead-dark">
+          <tr>
+            <th scope="col" className="text-center">Id</th>
+            <th scope="col" className="text-center">Название</th>
+            <th scope="col" className="text-center">Потребитель</th>
+            <th scope="col" className="text-center">Счетчик</th>
+            <th scope="col" className="text-center">Подпись</th>
+          </tr>
+        </thead>
+        <tbody style={{ fontSize: '0.85rem' }}>
+          {
+            places && places.map(place => <TableRow key={`${place.id}-${place.name}`} place={place} />)
+          }
+        </tbody>
+      </table>
+    </div>
   );
 };
 
 const TableRow = props => {
-  const {place} = props;
+  const { place } = props;
   return (
     <tr>
       <td className="text-center">
@@ -91,15 +91,6 @@ const TableRow = props => {
       </td>
       <td className="text-center">{place.isSignNeed ? 'Да' : 'Нет'}</td>
     </tr>
-  );
-};
-
-const NavBar = props => {
-  return (
-    <nav className="nav my-2">
-      <GoBackLink {...props}/>
-      <Link className="nav-link" to='/owner/places/create'>Добавить</Link>
-    </nav>
   );
 };
 

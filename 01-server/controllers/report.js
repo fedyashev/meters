@@ -1,5 +1,7 @@
 const createError = require('http-errors');
 const {Report, Inspector, Consumer, Place, Meter, Data, Sign, sequelize} = require('../models');
+const PdfDocument = require('pdfkit');
+const fs = require('fs');
 
 module.exports.getAll = async (req, res, next) => {
     try {
@@ -92,9 +94,6 @@ module.exports.create = async (req, res, next) => {
             if (place.isSignNeed && !sign) {
                 return next(createError(404, 'Sign not found'));
             }
-            // if (!sign || !place.isSignNeed) {
-            //     sign = {id: null};
-            // }
         }
         else {
             return next(createError(404, 'Place not found'));
@@ -112,9 +111,10 @@ module.exports.create = async (req, res, next) => {
         });
 
         let report = null;
+        let currentData = null;
         try {
             let result = await sequelize.transaction(async (t) => {
-                const currentData = await Data.create({MeterId: meter.id, date, value}, {transaction: t});
+                currentData = await Data.create({MeterId: meter.id, date, value}, {transaction: t});
                 //console.log(currentData.id);
                 report = await Report.create({
                     date: date,
@@ -206,6 +206,71 @@ module.exports.getById = async (req, res, next) => {
             sign: report.Sign ? {id: report.Sign.id} : null
         };
         return res.json(resObj);
+    } catch (err) {
+        return next(createError(500, err.message));        
+    }
+};
+
+module.exports.getByIdPdf = async (req, res, next) => {
+    try {
+        const {report_id} = req.params;
+        
+        if (!report_id) {
+            return next(createError(400, 'Incorrect report id'));
+        }
+        
+        const report = await Report.findOne({
+            where: {
+                id: report_id
+            },
+            include: [
+                {model: Inspector},
+                {model: Consumer},
+                {
+                    model: Place,
+                    include: [
+                        {model: Meter},
+                    ]
+                },
+                {model: Data, as: 'LastData'},
+                {model: Data, as: 'CurrentData'},
+                {
+                    model: Sign,
+                    attributes: ['id']
+                }
+            ]
+        });
+        
+        if (!report) {
+            return next(createError(404, 'Report not found'));
+        }
+
+        const doc = new PdfDocument({});
+        doc.registerFont('Roboto', 'fonts/Roboto/Roboto-Regular.ttf');
+        doc.font('Roboto');
+        doc.text(`Дата: ${report.date.toLocaleString()}`);
+        doc.text(`Инспектор: ${report.Inspector.name}`);
+        doc.text(`Потребитель: ${report.Consumer.name}`);
+        doc.text(`Место: ${report.Place.name}`);
+        doc.text(`Счетчик: ${report.Place.Meter.number}`);
+        doc.text(` `);
+        doc.text(`Предыдущие показания:`);
+        doc.text(`   дата: ${report.LastData ? report.LastData.date.toLocaleString() : '---'}`);
+        doc.text(`   показания: ${report.LastData ? report.LastData.value : '---'}`);
+        doc.text(` `);
+        doc.text(`Текущие показания:`);
+        doc.text(`   дата: ${report.CurrentData ? report.CurrentData.date.toLocaleString() : '---'}`);
+        doc.text(`   показания: ${report.CurrentData ? report.CurrentData.value : '---'}`);
+        doc.text(` `);
+        const w = report.LastData ? report.CurrentData.value - report.LastData.value : report.CurrentData.value;
+        doc.text(`Потребление за период: ${w}`);
+        
+        res.set('Content-disposition', `attachment; filename=report-${Date.now()}.pdf`);
+        res.set('Content-Type', 'application/pdf');
+
+        doc.pipe(res);
+        doc.end();
+
     } catch (err) {
         return next(createError(500, err.message));        
     }

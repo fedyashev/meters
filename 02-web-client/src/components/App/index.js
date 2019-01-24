@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {withRouter, Switch, Route} from 'react-router-dom';
+import { withRouter, Switch, Route } from 'react-router-dom';
 
 import Login from '../Login';
 
@@ -40,6 +40,7 @@ import ReportList from '../ReportList';
 import InspectorAppLayout from '../InspectorAppLayout';
 import PlaceAuditList from '../InspectorAppLayout/components/PlaceAuditList';
 import PlaceAuditInfo from '../InspectorAppLayout/components/PlaceAuditInfo';
+import InspectorUserInfo from '../InspectorUserInfo';
 
 import Consumer from '../Consumer';
 
@@ -56,34 +57,37 @@ class App extends Component {
   }
 
   handlerLogout = () => {
-    this.setState({...this.state, user: null}, () => {
-      this.props.history.index = -1;
-      this.props.history.push('/login');
+    this.props.history.index = -1;
+    this.props.history.push('/login');
+    let state = {};
+    Object.keys(this.state).forEach(key => {
+      state[key] = null;
     });
+    this.setState({...state});
   }
 
   handlerlogin = (login, password) => {
     if (!login || !password) {
-      this.setState({...this.state, alert: {type: 'warning', message: 'Incorrect login or password'}});
+      this.setState({ ...this.state, alert: { type: 'warning', message: 'Incorrect login or password' } });
       return;
     }
     api.login(login, password)
       .then(user => {
-        this.setState({...this.state, user}, () => {
+        this.setState({ ...this.state, user }, () => {
           switch (user.role) {
-            case 'ADMIN' : {
+            case 'ADMIN': {
               this.props.history.push('/owner');
               break;
             }
-            case 'OWNER' : {
+            case 'OWNER': {
               this.props.history.push('/owner');
               break;
             }
-            case 'INSPECTOR' : {
+            case 'INSPECTOR': {
               this.props.history.push('/inspector');
               break;
             }
-            case 'CONSUMER' : {
+            case 'CONSUMER': {
               this.props.history.push('/consumer');
               break;
             }
@@ -93,13 +97,13 @@ class App extends Component {
           }
         });
       })
-      .catch(({error}) => {
-        this.setState({...this.state, alert: {type: 'warning', message: error.message}})
+      .catch(({ error }) => {
+        this.setState({ ...this.state, alert: { type: 'warning', message: error.message } })
       });
   }
 
   handlerCloseAlert = () => {
-    this.setState({...this.state, alert: null});
+    this.setState({ ...this.state, alert: null });
   }
 
   componentDidMount() {
@@ -107,26 +111,44 @@ class App extends Component {
   }
 
   render() {
-    const {user} = this.state;
+    const { user } = this.state;
     console.log("APP", user);
     return (
       <div>
         <Switch>
 
-{/* =================================================================================== */}
+          {/* =================================================================================== */}
 
-          <Route exact path='/login' render={props => <Login {...props} alert={this.state.alert} handlerLogin={this.handlerlogin} handlerCloseAlert={this.handlerCloseAlert}/>}/>
-          <Route exact path='/owner' render={props => <Owner {...props} user={user} handlerLogout={this.handlerLogout}/>}/>
-          <Route exact path='/inspector' render={props => <InspectorAppLayout {...props} user={user} handlerLogout={this.handlerLogout}/>}/>
-          <Route exact path='/consumer' render={props => <Consumer {...props} user={user} handlerLogout={this.handlerLogout}/>}/>
+          <Route exact path='/login' render={props => <Login {...props} alert={this.state.alert} handlerLogin={this.handlerlogin} handlerCloseAlert={this.handlerCloseAlert} />} />
+          <Route exact path='/owner' render={props => <Owner {...props} user={user} handlerLogout={this.handlerLogout} />} />
+          <Route exact path='/inspector' render={props => <InspectorAppLayout {...props} user={user} handlerLogout={this.handlerLogout} />} />
+          <Route exact path='/consumer' render={props => <Consumer {...props} user={user} handlerLogout={this.handlerLogout} />} />
 
-{/* =================================================================================== */}
+          {/* =================================================================================== */}
+
+          <Route exact path='/inspector/user'
+            render={
+              props =>
+                <InspectorAppLayout {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <InspectorUserInfo {...props} user={user} />
+                </InspectorAppLayout>
+            }
+          />
+
+          <Route exact path='/inspector/user/changePassword'
+            render={
+              props =>
+                <InspectorAppLayout {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <UserChangePassword {...props} user={user} />
+                </InspectorAppLayout>
+            }
+          />
 
           <Route exact path='/inspector/places'
             render={
               props =>
                 <InspectorAppLayout {...props} user={user} handlerLogout={this.handlerLogout}>
-                  <PlaceAuditList {...props} user={user}/>
+                  <PlaceAuditList {...props} user={user} />
                 </InspectorAppLayout>
             }
           />
@@ -135,12 +157,12 @@ class App extends Component {
             render={
               props =>
                 <InspectorAppLayout {...props} user={user} handlerLogout={this.handlerLogout}>
-                  <PlaceAuditInfo {...props} user={user}/>
+                  <PlaceAuditInfo {...props} user={user} />
                 </InspectorAppLayout>
             }
           />
 
-{/* =================================================================================== */}
+          {/* =================================================================================== */}
 
           {/*
           <Route exact path='/owner/users'
@@ -157,7 +179,7 @@ class App extends Component {
             render={
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
-                  <OwnerInfo {...props} user={user}/>
+                  <OwnerInfo {...props} user={user} />
                 </Owner>
             }
           />
@@ -166,18 +188,18 @@ class App extends Component {
             render={
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
-                  <UserChangePassword {...props} user={user}/>
+                  <UserChangePassword {...props} user={user} />
                 </Owner>
             }
           />
 
-{/* =================================================================================== */}
+          {/* =================================================================================== */}
 
           <Route exact path='/owner/inspectors'
             render={
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
-                  <InspectorList {...props} user={user}/>
+                  <InspectorList {...props} user={user} />
                 </Owner>
             }
           />
@@ -186,7 +208,7 @@ class App extends Component {
             render={
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
-                  <InspectorCreate {...props} user={user}/>
+                  <InspectorCreate {...props} user={user} />
                 </Owner>
             }
           />
@@ -195,7 +217,7 @@ class App extends Component {
             render={
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
-                  <InspectorInfo {...props} user={user}/>
+                  <InspectorInfo {...props} user={user} />
                 </Owner>
             }
           />
@@ -204,7 +226,7 @@ class App extends Component {
             render={
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
-                  <InspectorUpdate {...props} user={user}/>
+                  <InspectorUpdate {...props} user={user} />
                 </Owner>
             }
           />
@@ -213,18 +235,18 @@ class App extends Component {
             render={
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
-                  <InspectorDelete {...props} user={user}/>
+                  <InspectorDelete {...props} user={user} />
                 </Owner>
             }
           />
 
-{/* =================================================================================== */}
+          {/* =================================================================================== */}
 
           <Route exact path='/owner/consumers'
             render={
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
-                  <ConsumerList {...props} user={user}/>
+                  <ConsumerList {...props} user={user} />
                 </Owner>
             }
           />
@@ -233,7 +255,7 @@ class App extends Component {
             render={
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
-                  <ConsumerCreate {...props} user={user}/>
+                  <ConsumerCreate {...props} user={user} />
                 </Owner>
             }
           />
@@ -242,7 +264,7 @@ class App extends Component {
             render={
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
-                  <ConsumerInfo {...props} user={user}/>
+                  <ConsumerInfo {...props} user={user} />
                 </Owner>
             }
           />
@@ -251,7 +273,7 @@ class App extends Component {
             render={
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
-                  <ConsumerUpdate {...props} user={user}/>
+                  <ConsumerUpdate {...props} user={user} />
                 </Owner>
             }
           />
@@ -260,18 +282,18 @@ class App extends Component {
             render={
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
-                  <ConsumerDelete {...props} user={user}/>
+                  <ConsumerDelete {...props} user={user} />
                 </Owner>
             }
           />
 
-{/* =================================================================================== */}
+          {/* =================================================================================== */}
 
           <Route exact path='/owner/meters'
             render={
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
-                  <MeterList {...props} user={user}/>
+                  <MeterList {...props} user={user} />
                 </Owner>
             }
           />
@@ -280,7 +302,7 @@ class App extends Component {
             render={
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
-                  <MeterCreate {...props} user={user}/>
+                  <MeterCreate {...props} user={user} />
                 </Owner>
             }
           />
@@ -289,7 +311,7 @@ class App extends Component {
             render={
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
-                  <MeterInfo {...props} user={user}/>
+                  <MeterInfo {...props} user={user} />
                 </Owner>
             }
           />
@@ -298,7 +320,7 @@ class App extends Component {
             render={
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
-                  <MeterUpdate {...props} user={user}/>
+                  <MeterUpdate {...props} user={user} />
                 </Owner>
             }
           />
@@ -307,7 +329,7 @@ class App extends Component {
             render={
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
-                  <MeterDelete {...props} user={user}/>
+                  <MeterDelete {...props} user={user} />
                 </Owner>
             }
           />
@@ -316,29 +338,29 @@ class App extends Component {
             render={
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
-                  <MeterAddData {...props} user={user}/>
+                  <MeterAddData {...props} user={user} />
                 </Owner>
             }
           />
 
-{/* =================================================================================== */}
+          {/* =================================================================================== */}
 
           <Route exact path='/owner/reports'
             render={
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
-                  <ReportList {...props} user={user}/>
+                  <ReportList {...props} user={user} />
                 </Owner>
             }
           />
 
-{/* =================================================================================== */}
+          {/* =================================================================================== */}
 
           <Route exact path='/owner/places'
             render={
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
-                  <PlaceList {...props} user={user}/>
+                  <PlaceList {...props} user={user} />
                 </Owner>
             }
           />
@@ -347,7 +369,7 @@ class App extends Component {
             render={
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
-                  <PlaceCreate {...props} user={user}/>
+                  <PlaceCreate {...props} user={user} />
                 </Owner>
             }
           />
@@ -356,7 +378,7 @@ class App extends Component {
             render={
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
-                  <PlaceInfo {...props} user={user}/>
+                  <PlaceInfo {...props} user={user} />
                 </Owner>
             }
           />
@@ -365,7 +387,7 @@ class App extends Component {
             render={
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
-                  <PlaceUpdate {...props} user={user}/>
+                  <PlaceUpdate {...props} user={user} />
                 </Owner>
             }
           />
@@ -374,12 +396,12 @@ class App extends Component {
             render={
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
-                  <PlaceDelete {...props} user={user}/>
+                  <PlaceDelete {...props} user={user} />
                 </Owner>
             }
           />
 
-{/* =================================================================================== */}
+          {/* =================================================================================== */}
 
 
         </Switch>

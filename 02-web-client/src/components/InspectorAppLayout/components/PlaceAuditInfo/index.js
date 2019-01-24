@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import api from '../../../../lib/api';
-import {Link} from 'react-router-dom';
 import NavBar from '../../../NavBar';
+import { formatDate, parseDate } from '../../../../lib/helpers';
 
 class PlaceAuditInfo extends Component {
     constructor(props) {
@@ -24,14 +24,14 @@ class PlaceAuditInfo extends Component {
             .then(
                 place => {
                     if (place) {
-                        this.setState({...this.state, place, isLoaded: true});
+                        this.setState({ ...this.state, place, isLoaded: true });
                     }
                     else {
                         this.props.showWarningAlert('Место не найдено');
                         this.props.history.goBack();
                     }
                 },
-                ({error}) => {
+                ({ error }) => {
                     this.props.showWarningAlert(error.message);
                     this.props.history.goBack();
                 }
@@ -44,7 +44,7 @@ class PlaceAuditInfo extends Component {
         const place_id = this.state.place.id;
         const date = formatDate(Date.now());
         const sign_id = null;
-        api.createReport(token, inspector_id, place_id, date, value)
+        api.createReport(token, inspector_id, place_id, sign_id, date, value)
             .then(report => {
                 if (report) {
                     this.props.showSuccessAlert('Показания добавлены. Отчет создан.');
@@ -54,44 +54,26 @@ class PlaceAuditInfo extends Component {
                     this.props.showWarningAlert('Показания не добавлены.');
                 }
             })
-            .catch(({error}) => {
+            .catch(({ error }) => {
                 this.props.showWarningAlert(error.message);
-                //this.props.history.goBack();
             });
     };
 
     render() {
         if (!this.state.isLoaded) return null;
-        const {place} = this.state;
+        const { place } = this.state;
         let val;
         const onClickAdd = e => {
             e.preventDefault();
-            const token = this.state.user.token;
-            const meter_id = this.state.place.meter.id;
             if (!val.value) {
                 this.props.showWarningAlert("Не корректные показания счетчика");
                 return;
             }
-            const date = formatDate(Date.now());
             this.handleCreateReport(val.value);
-            // console.log(meter_id, date, val.value);
-            // api.createData(token, meter_id, date, val.value)
-            //     .then(data => {
-            //         if (data) {
-            //             this.props.showSuccessAlert('Показания добавлены');
-            //             this.props.history.goBack();
-            //         }
-            //         else {
-            //             this.props.showWarningAlert('Неудалось добавить показания счетчика');
-            //         }
-            //     })
-            //     .catch(({error}) => {
-            //         this.props.showWarningAlert(error.message);
-            //     });
         };
         return (
             <div className="container">
-                <NavBar {...this.props}/>
+                <NavBar {...this.props} />
                 <h3 className="text-center mb-2">Место установки счетчика</h3>
                 <div className="border-top border-bottom mb-5">
                     <div>
@@ -114,7 +96,7 @@ class PlaceAuditInfo extends Component {
                             <span className="font-weight-bold">Последние показания:</span>
                         </div>
                         <div>
-                            <span className="font-weight-bold">Дата</span> : <span>{place.meter && place.meter.lastData ? place.meter.lastData.date : '---'}</span>
+                            <span className="font-weight-bold">Дата</span> : <span>{place.meter && place.meter.lastData ? parseDate(place.meter.lastData.date) : '---'}</span>
                         </div>
                         <div>
                             <span className="font-weight-bold">Показание</span> : <span>{place.meter && place.meter.lastData ? place.meter.lastData.value : '---'}</span>
@@ -128,7 +110,7 @@ class PlaceAuditInfo extends Component {
                         </div>
                         <form>
                             <div className="form-group">
-                                <input className="form-control" type="text" placeholder="Показание, кВт" required autoFocus ref={r => val = r}/>
+                                <input className="form-control" type="text" placeholder="Показание, кВт" required autoFocus ref={r => val = r} />
                             </div>
                             <div className="form-group">
                                 <button className="btn btn-primary btn-block" onClick={onClickAdd}>Добавить</button>
@@ -139,18 +121,6 @@ class PlaceAuditInfo extends Component {
             </div>
         );
     }
-};
-
-const formatDate = date => {
-    const tmp = new Date(date);
-    const year = tmp.getFullYear();
-    const month = tmp.getMonth() + 1;
-    const day = tmp.getDate();
-    const hour = tmp.getHours();
-    const minutes = tmp.getMinutes();
-    const seconds = tmp.getSeconds();
-    const millis = tmp.getMilliseconds();
-    return `${year}-${month < 9 ? `0${month}` : month}-${day} ${hour}:${minutes}:${seconds}`;
 };
 
 export default PlaceAuditInfo;

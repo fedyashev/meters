@@ -1,4 +1,5 @@
 import fetch from 'isomorphic-fetch';
+import {saveAs} from 'file-saver';
 
 const api = {
     login: (login, password) => {
@@ -453,6 +454,21 @@ const api = {
                 const promise = res.json();
                 return res.ok ? promise : promise.then(err => {throw err});
             });
+    },
+
+    getReportByIdPdf: (token, report_id) => {
+        const opt = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/pdf',
+                'Authorization': `BEARER ${token}`
+            },
+            responseType: 'blob'
+        };
+        const url = `/api/v1/reports/${report_id}/pdf`;
+        return fetch(url, opt)
+            .then(response => response.blob())
+            .then(blob => saveAs(blob, `report-${Date.now()}.pdf`));
     },
 
     createReport: (token, inspector_id, place_id, sign_id, date, value) => {

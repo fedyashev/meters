@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import api from '../../lib/api';
-import GoBackLink from '../GoBackLink';
+import NavBar from '../NavBar';
 
 class ConsumerList extends Component {
   constructor(props) {
@@ -9,16 +9,16 @@ class ConsumerList extends Component {
 
     this.state = {
       user: props.user,
-      consumers: []
+      consumers: [],
+      isLoaded: false
     };
   }
 
   componentDidMount() {
     api.getAllConsumers(this.props.user.token)
       .then(consumers => {
-          console.log(consumers);
         if (consumers) {
-          this.setState({...this.state, consumers: consumers});
+          this.setState({...this.state, consumers, isLoaded: true});
         }
       })
       .catch(({error}) => {
@@ -27,9 +27,12 @@ class ConsumerList extends Component {
   };
 
   render() {
+    if (!this.state.isLoaded) return null;
     return (
       <div className="container justify-content-center">
-        <NavBar {...this.props}/>
+        <NavBar {...this.props}>
+          <Link className="nav-link" to='/owner/consumers/create'>Добавить</Link>
+        </NavBar>
         <Table consumers={this.state.consumers}/>
       </div>
     );
@@ -37,33 +40,26 @@ class ConsumerList extends Component {
 
 };
 
-const NavBar = props => {
-  return (
-    <nav className="nav my-2">
-      <GoBackLink {...props}/>
-      <Link className="nav-link" to='/owner/consumers/create'>Добавить</Link>
-    </nav>
-  );
-}
-
 const Table = props => {
   const {consumers} = props;
   return (
-    <table className="table table-bordered table-hover table-sm">
-      <thead className="thead-dark">
-        <tr>
-          <th scope="col" className="text-center">Id</th>
-          <th scope="col" className="text-center">Login</th>
-          <th scope="col" className="text-center">Name</th>
-          <th scope="col" className="text-center">Email</th>
-        </tr>
-      </thead>
-      <tbody style={{fontSize: '0.85rem'}}>
-        {
-            consumers && consumers.map(consumer => <TableRow key={`${consumer.id}-${consumer.login}-${consumer.name}-${consumer.email}`} consumer={consumer}/>)
-        }
-      </tbody>
-    </table>
+    <div className="table-responsive">
+      <table className="table table-bordered table-hover table-sm">
+        <thead className="thead-dark">
+          <tr>
+            <th scope="col" className="text-center">Id</th>
+            <th scope="col" className="text-center">Login</th>
+            <th scope="col" className="text-center">Name</th>
+            <th scope="col" className="text-center">Email</th>
+          </tr>
+        </thead>
+        <tbody style={{fontSize: '0.85rem'}}>
+          {
+              consumers && consumers.map(consumer => <TableRow key={`${consumer.id}-${consumer.login}-${consumer.name}-${consumer.email}`} consumer={consumer}/>)
+          }
+        </tbody>
+      </table>
+    </div>
   );
 };
 
