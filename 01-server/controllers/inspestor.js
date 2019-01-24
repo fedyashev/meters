@@ -44,6 +44,29 @@ module.exports.getById = async (req, res, next) => {
     }
 };
 
+module.exports.getByUserId = async (req, res, next) => {
+    try {
+        const {user_id} = req.params;
+        if (!user_id) {
+            return next(createError(400, 'Incorrect inspector id'));
+        }
+        const inspector = await Inspector.findOne({
+            where: {UserId: user_id},
+            include: [{model: User}]
+        });
+        if (!inspector) {
+            return next(createError(404, 'Inspector not found'));
+        }
+        return res.json({
+            id: inspector.id,
+            name: inspector.name,
+            login: inspector.User.login
+        });
+    } catch (err) {
+        return next(createError(500, err.message));
+    }
+};
+
 module.exports.create = async (req, res, next) => {
     try {
         const {name, login, password} = req.body;

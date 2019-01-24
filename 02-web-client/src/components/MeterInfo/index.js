@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
-import GoBackLink from '../GoBackLink';
+import NavBar from '../NavBar';
 import api from '../../lib/api';
 
 class MeterInfo extends Component {
@@ -11,7 +11,9 @@ class MeterInfo extends Component {
       user: props.user,
       meter: {
         id: props.match.params.meter_id
-      }
+      },
+      datas: [],
+      isLoaded: false
     }
   }
 
@@ -21,7 +23,19 @@ class MeterInfo extends Component {
       api.getMeterById(token, meter_id)
           .then(meter => {
               if (meter) {
-                  this.setState({ ...this.state, meter });
+                  api.getAllDataByMeterId(token, meter_id)
+                    .then(datas => {
+                      if (datas) {
+                        this.setState({ ...this.state, meter, datas, isLoaded: true});
+                      }
+                      else {
+                        this.setState({ ...this.state, meter, isLoaded: true});
+                      }
+                    })
+                    .catch(({ error }) => {
+                        this.props.showWarningAlert(error.message);
+                        this.props.history.goBack();
+                    });
               }
               else {
                   this.props.showWarningAlert('Счетчик не найден');
@@ -35,12 +49,17 @@ class MeterInfo extends Component {
   }
 
   render() {
+    if (!this.state.isLoaded) return null;
     const {meter} = this.state;
     return (
       <div className="container">
-        <NavBar {...this.props} meter={meter} />
+        <NavBar {...this.props}>
+            <Link className="nav-link" to={`/owner/meters/${meter.id}/update`}>Изменить</Link>
+            <Link className="nav-link" to={`/owner/meters/${meter.id}/delete`}>Удалить</Link>
+            <Link className="nav-link" to={`/owner/meters/${meter.id}/addData`}>Добавить показания</Link>
+        </NavBar>
         <h3 className="text-center mb-2">Счетчик</h3>
-        <div className="border-top border-bottom">
+        <div className="border-top border-bottom mb-5">
           <div>
             <span className="font-weight-bold">Id</span> : <span>{meter.id}</span>
           </div>
@@ -48,20 +67,40 @@ class MeterInfo extends Component {
             <span className="font-weight-bold">Номер</span> : <span>{meter.number}</span>
           </div>
         </div>
+        <h3 className="text-center mb-2">Показания</h3>
+        <Table datas={this.state.datas}/>
       </div>
     );
   }
 };
 
-const NavBar = props => {
-    const { meter } = props;
-    return (
-        <nav className="nav my-2">
-            <GoBackLink {...props} />
-            <Link className="nav-link" to={`/owner/meters/${meter.id}/update`}>Изменить</Link>
-            <Link className="nav-link" to={`/owner/meters/${meter.id}/delete`}>Удалить</Link>
-        </nav>
-    );
+const Table = props => {
+  const {datas} = props;
+  return (
+    <table className="table table-bordered table-hover table-sm">
+      <thead className="thead-dark">
+        <tr>
+          <th scope="col" className="text-center">Дата</th>
+          <th scope="col" className="text-center">Показание</th>
+        </tr>
+      </thead>
+      <tbody style={{fontSize: '0.85rem'}}>
+        {
+          datas && datas.map(data => <TableRow key={`${data.id}-${data.date}`} data={data}/>)
+        }
+      </tbody>
+    </table>
+  );
+};
+
+const TableRow = props => {
+  const {data} = props;
+  return (
+    <tr>
+      <td className="text-center">{data.date}</td>
+      <td className="text-center">{data.value}</td>
+    </tr>
+  );
 }
 
 export default MeterInfo;

@@ -61,6 +61,12 @@ class PlaceInfo extends Component {
                         <span className="font-weight-bold">Счетчик</span> : <span>{place.meter ? place.meter.number : '---'}</span>
                     </div>
                     <div>
+                        <span className="font-weight-bold">Дата</span> : <span>{place.meter && place.meter.lastData ? place.meter.lastData.date : '---'}</span>
+                    </div>
+                    <div>
+                        <span className="font-weight-bold">Показание</span> : <span>{place.meter && place.meter.lastData ? place.meter.lastData.value : '---'}</span>
+                    </div>
+                    <div>
                         <span className="font-weight-bold">Подпись</span> : <span>{place.isSignNeed ? 'Да' : 'Нет'}</span>
                     </div>
                 </div>

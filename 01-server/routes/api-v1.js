@@ -37,6 +37,7 @@ router.delete('/users/:user_id', jwt, allow([Role.ADMIN, Role.OWNER]), user.dele
 router.get('/userroles', jwt, allow([Role.ADMIN, Role.OWNER]), userrole.getAll);
 
 router.get('/inspectors', jwt, allow([Role.ADMIN, Role.OWNER]), inspector.getAll);
+router.get('/inspectors/user/:user_id', jwt, allow([Role.ADMIN, Role.OWNER, Role.INSPECTOR]), inspector.getByUserId);
 router.post('/inspectors', jwt, allow([Role.ADMIN, Role.OWNER]), inspector.create);
 
 router.get('/inspectors/:inspector_id', jwt, allow([Role.ADMIN, Role.OWNER], self.inspector), inspector.getById);
@@ -62,7 +63,7 @@ router.get('/places', jwt, allow([Role.ADMIN, Role.OWNER]), place.getAll);
 router.get('/places/audit', jwt, allow([Role.ADMIN, Role.OWNER, Role.INSPECTOR]), place.getAllForAudit);
 router.post('/places', jwt, allow([Role.ADMIN, Role.OWNER]), place.create);
 
-router.get('/places/:place_id', jwt, allow([Role.ADMIN, Role.OWNER]), place.getById);
+router.get('/places/:place_id', jwt, allow([Role.ADMIN, Role.OWNER, Role.INSPECTOR]), place.getById);
 router.put('/places/:place_id', jwt, allow([Role.ADMIN, Role.OWNER]), place.updateById); // Change name, isSignNeed, Consumer, Meter
 router.delete('/places/:place_id', jwt, allow([Role.ADMIN, Role.OWNER]), place.deleteById);
 

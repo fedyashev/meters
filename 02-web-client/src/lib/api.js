@@ -34,6 +34,24 @@ const api = {
             });
     },
 
+    changeUserPassword: (token, id, password) => {
+        const data = {password};
+        const opt = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            },
+            body: JSON.stringify(data)
+        };
+        const url = `/api/v1/users/${id}/changePassword`;
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
+    },
+
     getAllInspectors: (token) => {
         const opt = {
             method: 'GET',
@@ -78,6 +96,23 @@ const api = {
             }
         };
         const url = `/api/v1/inspectors/${inspector_id}`;
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                console.log(promise);
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
+    },
+
+    getInspectorByUserId: (token, user_id) => {
+        const opt = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            }
+        };
+        const url = `/api/v1/inspectors/user/${user_id}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -320,6 +355,22 @@ const api = {
             });
     },
 
+    getAllPlacesForAudit: (token) => {
+        const opt = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            }
+        };
+        const url = '/api/v1/places/audit';
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
+    },
+
     createPlace: (token, name, isSignNeed, consumer_id, meter_id) => {
         const data = {name, isSignNeed, consumer_id, meter_id};
         const opt = {
@@ -397,6 +448,58 @@ const api = {
             }
         };
         const url = '/api/v1/reports';
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
+    },
+
+    createReport: (token, inspector_id, place_id, sign_id, date, value) => {
+        const data = {inspector_id, place_id, sign_id, date, value};
+        const opt = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            },
+            body: JSON.stringify(data)
+        };
+        const url = '/api/v1/reports';
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
+    },
+
+    getAllDataByMeterId: (token, meter_id) => {
+        const opt = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            }
+        };
+        const url = `/api/v1/data?meter_id=${meter_id}`;
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
+    },
+
+    createData: (token, meter_id, date, value) => {
+        const data = {date, value, meter_id};
+        const opt = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            },
+            body: JSON.stringify(data)
+        };
+        const url = '/api/v1/data';
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();

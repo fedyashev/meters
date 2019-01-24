@@ -2,8 +2,13 @@ import React, { Component } from 'react';
 import {withRouter, Switch, Route} from 'react-router-dom';
 
 import Login from '../Login';
+
+import UserChangePassword from '../UserChangePassword';
+
 import Owner from '../Owner';
-import UserList from '../UserList';
+import OwnerInfo from '../OwnerInfo';
+
+//import UserList from '../UserList';
 
 import InspectorList from '../InspectorList';
 import InspectorCreate from '../InspectorCreate';
@@ -22,6 +27,7 @@ import MeterCreate from '../MeterCreate';
 import MeterInfo from '../MeterInfo';
 import MeterUpdate from '../MeterUpdate';
 import MeterDelete from '../MeterDelete';
+import MeterAddData from '../MeterAddData';
 
 import PlaceList from '../PlaceList';
 import PlaceCreate from '../PlaceCreate';
@@ -31,7 +37,9 @@ import PlaceDelete from '../PlaceDelete';
 
 import ReportList from '../ReportList';
 
-import Inspector from '../Inspector';
+import InspectorAppLayout from '../InspectorAppLayout';
+import PlaceAuditList from '../InspectorAppLayout/components/PlaceAuditList';
+import PlaceAuditInfo from '../InspectorAppLayout/components/PlaceAuditInfo';
 
 import Consumer from '../Consumer';
 
@@ -109,16 +117,56 @@ class App extends Component {
 
           <Route exact path='/login' render={props => <Login {...props} alert={this.state.alert} handlerLogin={this.handlerlogin} handlerCloseAlert={this.handlerCloseAlert}/>}/>
           <Route exact path='/owner' render={props => <Owner {...props} user={user} handlerLogout={this.handlerLogout}/>}/>
-          <Route exact path='/inspector' render={props => <Inspector {...props} user={user} handlerLogout={this.handlerLogout}/>}/>
+          <Route exact path='/inspector' render={props => <InspectorAppLayout {...props} user={user} handlerLogout={this.handlerLogout}/>}/>
           <Route exact path='/consumer' render={props => <Consumer {...props} user={user} handlerLogout={this.handlerLogout}/>}/>
 
 {/* =================================================================================== */}
-          
+
+          <Route exact path='/inspector/places'
+            render={
+              props =>
+                <InspectorAppLayout {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <PlaceAuditList {...props} user={user}/>
+                </InspectorAppLayout>
+            }
+          />
+
+          <Route exact path='/inspector/places/:place_id'
+            render={
+              props =>
+                <InspectorAppLayout {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <PlaceAuditInfo {...props} user={user}/>
+                </InspectorAppLayout>
+            }
+          />
+
+{/* =================================================================================== */}
+
+          {/*
           <Route exact path='/owner/users'
             render={
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
                   <UserList {...props} user={user}/>
+                </Owner>
+            }
+          />
+          */}
+
+          <Route exact path='/owner/user'
+            render={
+              props =>
+                <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <OwnerInfo {...props} user={user}/>
+                </Owner>
+            }
+          />
+
+          <Route exact path='/owner/user/changePassword'
+            render={
+              props =>
+                <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <UserChangePassword {...props} user={user}/>
                 </Owner>
             }
           />
@@ -260,6 +308,15 @@ class App extends Component {
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
                   <MeterDelete {...props} user={user}/>
+                </Owner>
+            }
+          />
+
+          <Route exact path='/owner/meters/:meter_id/addData'
+            render={
+              props =>
+                <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <MeterAddData {...props} user={user}/>
                 </Owner>
             }
           />

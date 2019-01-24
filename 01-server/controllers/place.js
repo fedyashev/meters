@@ -65,7 +65,7 @@ module.exports.getAllForAudit = async (req, res, next) => {
                 id: place.id,
                 name: place.name,
                 isSignNeed: place.isSignNeed,
-                comsumer: {
+                consumer: {
                     id: place.Consumer.id,
                     name: place.Consumer.name,
                     email: place.Consumer.email
@@ -163,10 +163,24 @@ module.exports.getById = async (req, res, next) => {
             return next(createError(404, 'Place not found'));
         }
 
+        let lastData = null;
+        const data = await Data.findAll({
+            where: {MeterId: place.Meter.id},
+            order: [['date', 'desc']],
+            limit: 1,
+        });
+        if (data.length > 0) {
+            lastData = {
+                id: data[0].id,
+                date: data[0].date,
+                value: data[0].value
+            };
+        }
+
         const c = place.Consumer;
         const m = place.Meter;
         const consumer = c && {id: c.id, name: c.name, email: c.email} || null;
-        const meter = m && {id: m.id, number: m.number} || null;
+        const meter = m && {id: m.id, number: m.number, lastData} || null;
 
         return res.json({
             id: place.id,

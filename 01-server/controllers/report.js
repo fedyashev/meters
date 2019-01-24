@@ -102,7 +102,7 @@ module.exports.create = async (req, res, next) => {
 
         const existsData = await Data.findAll({where: {MeterId: meter.id, date: date}});
         if (existsData.length > 0) {
-            return next(createError('Data already exists'));
+            return next(createError(500, 'Data already exists'));
         }
 
         const lastData = await Data.findAll({
@@ -115,7 +115,7 @@ module.exports.create = async (req, res, next) => {
         try {
             let result = await sequelize.transaction(async (t) => {
                 const currentData = await Data.create({MeterId: meter.id, date, value}, {transaction: t});
-                console.log(currentData.id);
+                //console.log(currentData.id);
                 report = await Report.create({
                     date: date,
                     InspectorId: inspector.id,

@@ -1,0 +1,11 @@
+- Добавить инфу о компании
+- Добавить генерацию отчета в PDF
+- Добавить сохраниение отчетов в PDF в БД
+# Добавить OwnerInfo
+# Добавить UserChangePassword
+# Убрать у Owner таблицу пользователей
+- Добавить isLoaded во все компоненты
+# Добавить InspectorLayout
+- Добавить в Inspector InspectorInfo
+# Добавить в Inspector PlaceAuditList
+- Добавить во все таблицы table-responsive

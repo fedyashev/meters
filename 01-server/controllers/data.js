@@ -4,11 +4,15 @@ const validator = require('validator');
 
 module.exports.getAll = async (req, res, next) => {
     try {
-        const datas = await Data.findAll({
-            include: [
-                {model: Meter}
-            ]
-        });
+        const {meter_id} = req.query;
+        let datas;
+        if (meter_id) {
+            datas = await Data.findAll({where: {MeterId: meter_id}, include: [{model: Meter}]});
+        }
+        else {
+            datas = await Data.findAll({include: [{model: Meter}]});
+        }
+        //const datas = await Data.findAll({include: [{model: Meter}]});
         return res.json(datas);
     } catch (err) {
         return next(createError(500, err.message));    
