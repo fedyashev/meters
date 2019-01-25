@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import api from '../../../../lib/api';
-import NavBar from '../../../NavBar';
-import { formatDate, parseDate } from '../../../../lib/helpers';
+import api from '../../lib/api';
+import NavBar from '../NavBar';
+import { formatDate, parseDate } from '../../lib/helpers';
 
 class PlaceAuditInfo extends Component {
     constructor(props) {

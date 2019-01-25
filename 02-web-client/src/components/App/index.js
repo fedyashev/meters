@@ -38,8 +38,8 @@ import PlaceDelete from '../PlaceDelete';
 import ReportList from '../ReportList';
 
 import InspectorAppLayout from '../InspectorAppLayout';
-import PlaceAuditList from '../InspectorAppLayout/components/PlaceAuditList';
-import PlaceAuditInfo from '../InspectorAppLayout/components/PlaceAuditInfo';
+import PlaceAuditList from '../PlaceAuditList';
+import PlaceAuditInfo from '../PlaceAuditInfo';
 import InspectorUserInfo from '../InspectorUserInfo';
 
 import Consumer from '../Consumer';

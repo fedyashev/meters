@@ -1,17 +1,22 @@
 -   Добавить инфу о компании
+-   Добавить isLoaded во все компоненты
+-   Рефакторинг InspectorAppLayout
+-   Проработать PlaceAuditInfo с sign в web
+-   Добавить просмотр своих отчетов у инстпектора
+
+================================================
+
 #   Добавить генерацию отчета в PDF
 #   Добавить OwnerInfo
 #   Добавить UserChangePassword
 #   Убрать у Owner таблицу пользователей
--   Добавить isLoaded во все компоненты
 #   Добавить InspectorLayout
 #   Добавить в Inspector InspectorInfo
 #   Добавить в Inspector PlaceAuditList
 #   Добавить во все таблицы table-responsive
 #   Отображение человеко читаемой даты
 #   Рефакторинг ReportList
--   Рефакторинг InspectorAppLayout
 #   Добавить в controller и router report маршрут GET /report/:report_id/pdf
 #   Добавить в owner/reports возможность скачивать pdf
--   Проработать PlaceAuditInfo с sign в web
--   Добавить просмотр своих отчетов у инстпектора
+
+

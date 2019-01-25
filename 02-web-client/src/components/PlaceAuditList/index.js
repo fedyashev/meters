@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import api from '../../../../lib/api';
-import NavBar from '../../../NavBar';
+import api from '../../lib/api';
+import NavBar from '../NavBar';
 import { Link } from 'react-router-dom';
 
 class PlaceAuditList extends Component {
