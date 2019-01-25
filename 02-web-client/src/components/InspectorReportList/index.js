@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import api from '../../lib/api';
 import { parseDate } from '../../lib/helpers';
 import NavBar from '../NavBar';
+import {Link} from 'react-router-dom';
 
 class InspectorReportList extends Component {
   constructor(props) {
@@ -66,7 +67,7 @@ const Table = props => {
             <th scope="col" className="text-center">Потребитель</th>
             <th scope="col" className="text-center">Счетчик</th>
             <th scope="col" className="text-center">Показание</th>
-            <th scope="col" className="text-center">PDF</th>
+            <th scope="col" className="text-center"><i class="fas fa-download"></i></th>
           </tr>
         </thead>
         <tbody style={{ fontSize: '0.85rem' }}>
@@ -83,14 +84,16 @@ const TableRow = props => {
   const { report } = props;
   return (
     <tr>
-      <td className="text-center">{report.id}</td>
+      <td className="text-center">
+        <Link to={`/inspector/reports/${report.id}`}>{report.id}</Link>
+      </td>
       <td className="text-center">{parseDate(report.date)}</td>
       <td className="text-center">{report.inspector.name}</td>
       <td className="text-center">{report.place.name}</td>
       <td className="text-center">{report.consumer.name}</td>
-      <td className="text-center">{report.place.meter.number}</td>
+      <td className="text-center">{report.meter.number}</td>
       <td className="text-center">{report.current_data.value}</td>
-      <td className="text-center"><a onClick={props.downloadPdf(report.id)} href={`api/v1/reports/${report.id}/pdf`} download={`report-${Date.now()}.pdf`}>PDF</a></td>
+      <td className="text-center"><a className="text-secondary" onClick={props.downloadPdf(report.id)} href={`api/v1/reports/${report.id}/pdf`} download={`report-${Date.now()}.pdf`}><i class="fas fa-download"></i></a></td>
     </tr>
   );
 };

@@ -87,7 +87,7 @@ router.post('/reports', jwt, allow([Role.ADMIN, Role.OWNER, Role.INSPECTOR]), re
 router.get('/reports/:report_id', jwt, allow([Role.ADMIN, Role.OWNER, Role.INSPECTOR]), report.getById);
 router.get('/reports/:report_id/pdf', jwt, allow([Role.ADMIN, Role.OWNER, Role.INSPECTOR]), report.getByIdPdf);
 //router.get('/reports/:report_id/pdf', report.getByIdPdf);
-router.put('/reports/:report_id', jwt, allow([Role.ADMIN, Role.OWNER]), report.updateById);
+router.put('/reports/:report_id', jwt, allow([Role.ADMIN, Role.OWNER, Role.INSPECTOR]), report.updateById);
 router.delete('/reports/:report_id', jwt, allow([Role.ADMIN, Role.OWNER]), report.deleteById);
 
 module.exports = router;

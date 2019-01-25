@@ -3,88 +3,67 @@ const {Report, Inspector, Consumer, Place, Meter, Data, Sign, sequelize} = requi
 const PdfDocument = require('pdfkit');
 const fs = require('fs');
 
+const reportMapper = report => ({
+    id: report.id,
+    date: report.date,
+    inspector: {
+        id: report.Inspector.id,
+        name: report.Inspector.name
+    },
+    consumer: {
+        id: report.Consumer.id,
+        name: report.Consumer.name,
+        email: report.Consumer.email
+    },
+    place: {
+        id: report.Place.id,
+        name: report.Place.name,
+    },
+    meter: {
+        id: report.Meter.id,
+        number: report.Meter.number
+    },
+    last_data: report.LastData ?
+        {
+            id: report.LastData.id,
+            date: report.LastData.date,
+            value: report.LastData.value
+        } : null,
+    current_data: {
+        id: report.CurrentData.id,
+        date: report.CurrentData.date,
+        value: report.CurrentData.value
+    },
+    sign: report.Sign ? {id: report.Sign.id, filename: report.Sign.filename} : null
+});
+
+const queryIncludes = [
+    {model: Inspector},
+    {model: Consumer},
+    {model: Place},
+    {model: Meter},
+    {model: Data, as: 'LastData'},
+    {model: Data, as: 'CurrentData'},
+    {model: Sign, attributes: ['id', 'filename']}
+];
+
+///////////////////////////////////////////////////////////////////////////////
+
 module.exports.getAll = async (req, res, next) => {
     try {
         const {inspector_id} = req.query;
         let reports = null;
 
-        const reportMapper = report => ({
-            id: report.id,
-            date: report.date,
-            inspector: {
-                id: report.Inspector.id,
-                name: report.Inspector.name
-            },
-            consumer: {
-                id: report.Consumer.id,
-                name: report.Consumer.name,
-                email: report.Consumer.email
-            },
-            place: {
-                id: report.Place.id,
-                name: report.Place.name,
-                meter: {
-                    id: report.Place.Meter.id,
-                    number: report.Place.Meter.number
-                }
-            },
-            last_data: report.LastData ?
-                {
-                    id: report.LastData.id,
-                    date: report.LastData.date,
-                    value: report.LastData.value
-                } : null,
-            current_data: {
-                id: report.CurrentData.id,
-                date: report.CurrentData.date,
-                value: report.CurrentData.value
-            },
-            sign: report.Sign ? {id: report.Sign.id, filename: report.Sign.filename} : null
-        });
-
         if (inspector_id) {
-            reports = await Report.findAll({
-                where: {
-                    InspectorId: inspector_id
-                },
-                include: [
-                    {model: Inspector},
-                    {model: Consumer},
-                    {
-                        model: Place,
-                        include: [
-                            {model: Meter},
-                        ]
-                    },
-                    {model: Data, as: 'LastData'},
-                    {model: Data, as: 'CurrentData'},
-                    {
-                        model: Sign,
-                        attributes: ['id', 'filename']
-                    }
-                ]
-            }).map(reportMapper);
+            reports = await Report
+                .findAll({where: {InspectorId: inspector_id}, include: queryIncludes})
+                .map(reportMapper);
         }
         else {
             // All reports
-            reports = await Report.findAll({
-                include: [
-                    {model: Inspector},
-                    {model: Consumer},
-                    {
-                        model: Place,
-                        include: [
-                            {model: Meter},
-                        ]
-                    },
-                    {model: Data, as: 'LastData'},
-                    {model: Data, as: 'CurrentData'},
-                    {
-                        model: Sign,
-                        attributes: ['id', 'filename']
-                    }
-                ]
-            }).map(reportMapper);
+            reports = await Report
+                .findAll({include: queryIncludes})
+                .map(reportMapper);
         };
         return res.json(reports);
     } catch (err) {
@@ -145,11 +124,11 @@ module.exports.create = async (req, res, next) => {
         try {
             let result = await sequelize.transaction(async (t) => {
                 currentData = await Data.create({MeterId: meter.id, date, value}, {transaction: t});
-                //console.log(currentData.id);
                 report = await Report.create({
                     date: date,
                     InspectorId: inspector.id,
                     ConsumerId: consumer.id,
+                    MeterId: meter.id,
                     PlaceId: place.id,
                     LastDataId: lastData.length > 0 ? lastData[0].id : null,
                     CurrentDataId: currentData.id,
@@ -176,66 +155,13 @@ module.exports.getById = async (req, res, next) => {
         if (!report_id) {
             next(createError(400, 'Incorrect report id'));
         }
-        const report = await Report.findOne({
-            where: {
-                id: report_id
-            },
-            include: [
-                {model: Inspector},
-                {model: Consumer},
-                {
-                    model: Place,
-                    include: [
-                        {model: Meter},
-                    ]
-                },
-                {model: Data, as: 'LastData'},
-                {model: Data, as: 'CurrentData'},
-                {
-                    model: Sign,
-                    attributes: ['id']
-                }
-            ]
-        });
 
+        const report = await Report.findOne({where: {id: report_id}, include: queryIncludes});
         if (!report) {
             return next(createError(404, 'Report not found'));
         }
 
-        const resObj = {
-            id: report.id,
-            date: report.date,
-            inspector: {
-                id: report.Inspector.id,
-                name: report.Inspector.name
-            },
-            consumer: {
-                id: report.Consumer.id,
-                name: report.Consumer.name,
-                email: report.Consumer.email
-            },
-            place: {
-                id: report.Place.id,
-                name: report.Place.name,
-                meter: {
-                    id: report.Place.Meter.id,
-                    number: report.Place.Meter.number
-                }
-            },
-            last_data: report.LastData ?
-                {
-                    id: report.LastData.id,
-                    date: report.LastData.date,
-                    value: report.LastData.value
-                } : null,
-            current_data: {
-                id: report.CurrentData.id,
-                date: report.CurrentData.date,
-                value: report.CurrentData.value
-            },
-            sign: report.Sign ? {id: report.Sign.id} : null
-        };
-        return res.json(resObj);
+        return res.json(reportMapper(report));
     } catch (err) {
         return next(createError(500, err.message));        
     }
@@ -249,27 +175,7 @@ module.exports.getByIdPdf = async (req, res, next) => {
             return next(createError(400, 'Incorrect report id'));
         }
         
-        const report = await Report.findOne({
-            where: {
-                id: report_id
-            },
-            include: [
-                {model: Inspector},
-                {model: Consumer},
-                {
-                    model: Place,
-                    include: [
-                        {model: Meter},
-                    ]
-                },
-                {model: Data, as: 'LastData'},
-                {model: Data, as: 'CurrentData'},
-                {
-                    model: Sign,
-                    attributes: ['id']
-                }
-            ]
-        });
+        const report = await Report.findOne({where: {id: report_id}, include: queryIncludes});
         
         if (!report) {
             return next(createError(404, 'Report not found'));
@@ -282,7 +188,7 @@ module.exports.getByIdPdf = async (req, res, next) => {
         doc.text(`Инспектор: ${report.Inspector.name}`);
         doc.text(`Потребитель: ${report.Consumer.name}`);
         doc.text(`Место: ${report.Place.name}`);
-        doc.text(`Счетчик: ${report.Place.Meter.number}`);
+        doc.text(`Счетчик: ${report.Meter.number}`);
         doc.text(` `);
         doc.text(`Предыдущие показания:`);
         doc.text(`   дата: ${report.LastData ? report.LastData.date.toLocaleString() : '---'}`);
@@ -308,7 +214,19 @@ module.exports.getByIdPdf = async (req, res, next) => {
 
 module.exports.updateById = async (req, res, next) => {
     try {
-        return next(createError(501, 'Report update not implemented'));
+        //return next(createError(501, 'Report update not implemented'));
+        const {value} = req.body;
+        const {report_id} = req.params;
+        if (!value || !report_id) {
+            return next(createError(400, 'Incorrect input parameters'));
+        }
+        const report = await Report.findOne({where: {id: report_id}, include: [{model: Data, as: 'CurrentData'}]});
+        const [count, ...rest] = await Data.update({value}, {where: {id: report.CurrentData.id}});
+        if (!count) {
+            return next(createError(500, 'Failed to update current data'));
+        }
+
+        return res.json({done: true});
     } catch (err) {
         return next(createError(500, err.message));        
     }

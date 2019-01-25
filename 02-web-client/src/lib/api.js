@@ -456,6 +456,22 @@ const api = {
             });
     },
 
+    getReportById: (token, id) => {
+        const opt = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            }
+        };
+        const url = `/api/v1/reports/${id}`;
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
+    },
+
     getReportByIdPdf: (token, report_id) => {
         const opt = {
             method: 'GET',
@@ -498,6 +514,24 @@ const api = {
             body: JSON.stringify(data)
         };
         const url = '/api/v1/reports';
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
+    },
+
+    updateReportById: (token, id, value) => {
+        const data = {value};
+        const opt = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            },
+            body: JSON.stringify(data)
+        };
+        const url = `/api/v1/reports/${id}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();

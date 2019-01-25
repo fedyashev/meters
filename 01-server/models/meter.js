@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     // associations can be defined here
     Meter.hasOne(models.Place);
     Meter.hasMany(models.Data);
+    Meter.hasMany(models.Report);
   };
   return Meter;
 };

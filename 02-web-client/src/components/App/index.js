@@ -42,6 +42,8 @@ import PlaceAuditList from '../PlaceAuditList';
 import PlaceAuditInfo from '../PlaceAuditInfo';
 import InspectorUserInfo from '../InspectorUserInfo';
 import InspectorReportList from '../InspectorReportList';
+import InspectorReportInfo from '../InspectorReportInfo';
+import InspectorReportUpdate from '../InspectorReportUpdate';
 
 import Consumer from '../Consumer';
 
@@ -163,7 +165,6 @@ class App extends Component {
             }
           />
 
-
           <Route exact path='/inspector/reports'
             render={
               props =>
@@ -171,7 +172,25 @@ class App extends Component {
                   <InspectorReportList {...props} user={user} />
                 </InspectorAppLayout>
             }
-          />          
+          />
+
+          <Route exact path='/inspector/reports/:report_id'
+            render={
+              props =>
+                <InspectorAppLayout {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <InspectorReportInfo {...props} user={user} />
+                </InspectorAppLayout>
+            }
+          />
+
+          <Route exact path='/inspector/reports/:report_id/update'
+            render={
+              props =>
+                <InspectorAppLayout {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <InspectorReportUpdate {...props} user={user} />
+                </InspectorAppLayout>
+            }
+          />
 
           {/* =================================================================================== */}
 

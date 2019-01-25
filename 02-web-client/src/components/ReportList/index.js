@@ -84,7 +84,7 @@ const TableRow = props => {
       <td className="text-center">{report.inspector.name}</td>
       <td className="text-center">{report.place.name}</td>
       <td className="text-center">{report.consumer.name}</td>
-      <td className="text-center">{report.place.meter.number}</td>
+      <td className="text-center">{report.meter.number}</td>
       <td className="text-center">{report.current_data.value}</td>
       <td className="text-center"><a onClick={props.downloadPdf(report.id)} href={`api/v1/reports/${report.id}/pdf`} download={`report-${Date.now()}.pdf`}>PDF</a></td>
     </tr>

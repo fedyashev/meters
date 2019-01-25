@@ -49,17 +49,19 @@ module.exports.getAllForAudit = async (req, res, next) => {
         });
         const places = await rawPlaces.map(async (place) => {
             let lastData = null;
-            const data = await Data.findAll({
-                where: {MeterId: place.Meter.id},
-                order: [['date', 'desc']],
-                limit: 1,
-            });
-            if (data.length > 0) {
-                lastData = {
-                    id: data[0].id,
-                    date: data[0].date,
-                    value: data[0].value
-                };
+            if (place.Meter) {
+                const data = await Data.findAll({
+                    where: {MeterId: place.Meter.id},
+                    order: [['date', 'desc']],
+                    limit: 1,
+                });
+                if (data.length > 0) {
+                    lastData = {
+                        id: data[0].id,
+                        date: data[0].date,
+                        value: data[0].value
+                    };
+                }
             }
             return {
                 id: place.id,
@@ -164,17 +166,19 @@ module.exports.getById = async (req, res, next) => {
         }
 
         let lastData = null;
-        const data = await Data.findAll({
-            where: {MeterId: place.Meter.id},
-            order: [['date', 'desc']],
-            limit: 1,
-        });
-        if (data.length > 0) {
-            lastData = {
-                id: data[0].id,
-                date: data[0].date,
-                value: data[0].value
-            };
+        if (place.Meter) {
+            const data = await Data.findAll({
+                where: {MeterId: place.Meter.id},
+                order: [['date', 'desc']],
+                limit: 1,
+            });
+            if (data.length > 0) {
+                lastData = {
+                    id: data[0].id,
+                    date: data[0].date,
+                    value: data[0].value
+                };
+            }
         }
 
         const c = place.Consumer;
