@@ -471,6 +471,22 @@ const api = {
             .then(blob => saveAs(blob, `report-${Date.now()}.pdf`));
     },
 
+    getAllReportsByInspectorId: (token, inspector_id) => {
+        const opt = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            }
+        };
+        const url = `/api/v1/reports?inspector_id=${inspector_id}`;
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
+    },
+
     createReport: (token, inspector_id, place_id, sign_id, date, value) => {
         const data = {inspector_id, place_id, sign_id, date, value};
         const opt = {

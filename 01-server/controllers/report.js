@@ -5,57 +5,87 @@ const fs = require('fs');
 
 module.exports.getAll = async (req, res, next) => {
     try {
-        const reports = (await Report.findAll({
-            include: [
-                {model: Inspector},
-                {model: Consumer},
-                {
-                    model: Place,
-                    include: [
-                        {model: Meter},
-                    ]
-                },
-                {model: Data, as: 'LastData'},
-                {model: Data, as: 'CurrentData'},
-                {
-                    model: Sign,
-                    attributes: ['id', 'filename']
+        const {inspector_id} = req.query;
+        let reports = null;
+
+        const reportMapper = report => ({
+            id: report.id,
+            date: report.date,
+            inspector: {
+                id: report.Inspector.id,
+                name: report.Inspector.name
+            },
+            consumer: {
+                id: report.Consumer.id,
+                name: report.Consumer.name,
+                email: report.Consumer.email
+            },
+            place: {
+                id: report.Place.id,
+                name: report.Place.name,
+                meter: {
+                    id: report.Place.Meter.id,
+                    number: report.Place.Meter.number
                 }
-            ]
-        }))
-            .map(report => ({
-                id: report.id,
-                date: report.date,
-                inspector: {
-                    id: report.Inspector.id,
-                    name: report.Inspector.name
+            },
+            last_data: report.LastData ?
+                {
+                    id: report.LastData.id,
+                    date: report.LastData.date,
+                    value: report.LastData.value
+                } : null,
+            current_data: {
+                id: report.CurrentData.id,
+                date: report.CurrentData.date,
+                value: report.CurrentData.value
+            },
+            sign: report.Sign ? {id: report.Sign.id, filename: report.Sign.filename} : null
+        });
+
+        if (inspector_id) {
+            reports = await Report.findAll({
+                where: {
+                    InspectorId: inspector_id
                 },
-                consumer: {
-                    id: report.Consumer.id,
-                    name: report.Consumer.name,
-                    email: report.Consumer.email
-                },
-                place: {
-                    id: report.Place.id,
-                    name: report.Place.name,
-                    meter: {
-                        id: report.Place.Meter.id,
-                        number: report.Place.Meter.number
-                    }
-                },
-                last_data: report.LastData ?
+                include: [
+                    {model: Inspector},
+                    {model: Consumer},
                     {
-                        id: report.LastData.id,
-                        date: report.LastData.date,
-                        value: report.LastData.value
-                    } : null,
-                current_data: {
-                    id: report.CurrentData.id,
-                    date: report.CurrentData.date,
-                    value: report.CurrentData.value
-                },
-                sign: report.Sign ? {id: report.Sign.id, filename: report.Sign.filename} : null
-            }));
+                        model: Place,
+                        include: [
+                            {model: Meter},
+                        ]
+                    },
+                    {model: Data, as: 'LastData'},
+                    {model: Data, as: 'CurrentData'},
+                    {
+                        model: Sign,
+                        attributes: ['id', 'filename']
+                    }
+                ]
+            }).map(reportMapper);
+        }
+        else {
+            // All reports
+            reports = await Report.findAll({
+                include: [
+                    {model: Inspector},
+                    {model: Consumer},
+                    {
+                        model: Place,
+                        include: [
+                            {model: Meter},
+                        ]
+                    },
+                    {model: Data, as: 'LastData'},
+                    {model: Data, as: 'CurrentData'},
+                    {
+                        model: Sign,
+                        attributes: ['id', 'filename']
+                    }
+                ]
+            }).map(reportMapper);
+        };
         return res.json(reports);
     } catch (err) {
         return next(createError(500, err.message));        

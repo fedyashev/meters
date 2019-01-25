@@ -41,6 +41,7 @@ import InspectorAppLayout from '../InspectorAppLayout';
 import PlaceAuditList from '../PlaceAuditList';
 import PlaceAuditInfo from '../PlaceAuditInfo';
 import InspectorUserInfo from '../InspectorUserInfo';
+import InspectorReportList from '../InspectorReportList';
 
 import Consumer from '../Consumer';
 
@@ -161,6 +162,16 @@ class App extends Component {
                 </InspectorAppLayout>
             }
           />
+
+
+          <Route exact path='/inspector/reports'
+            render={
+              props =>
+                <InspectorAppLayout {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <InspectorReportList {...props} user={user} />
+                </InspectorAppLayout>
+            }
+          />          
 
           {/* =================================================================================== */}
 

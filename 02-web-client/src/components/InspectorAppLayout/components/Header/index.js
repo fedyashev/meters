@@ -22,6 +22,9 @@ const Header = props => {
                                 <Link className="nav-link" to="/inspector/places">Места</Link>
                             </li>
                             <li className="nav-item">
+                                <Link className="nav-link" to="/inspector/reports">Отчеты</Link>
+                            </li>
+                            <li className="nav-item">
                                 <Link className="nav-link text-warning" to="/logout" onClick={onClickLogout}>Выход</Link>
                             </li>
                         </ul>
