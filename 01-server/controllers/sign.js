@@ -16,7 +16,8 @@ module.exports.getAll = async (req, res, next) => {
 
 module.exports.create = async (req, res, next) => {
     try {
-        const file = req.file;
+        console.log(req);
+        const file = req.file // || (req.body.sign ? {mimetype: 'image/png', originalname: `sign-${Date.now()}.png`, buffer: new Buffer(req.body.sign, 'base64')} : null);
 
         if (!file) {
             return next(createError(400, 'Incorrect input data'));

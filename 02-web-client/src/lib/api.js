@@ -1,5 +1,6 @@
 import fetch from 'isomorphic-fetch';
 import {saveAs} from 'file-saver';
+import { prettyDate } from './helpers';
 
 const api = {
     login: (login, password) => {
@@ -472,7 +473,7 @@ const api = {
             });
     },
 
-    getReportByIdPdf: (token, report_id) => {
+    getReportByIdPdf: (token, id) => {
         const opt = {
             method: 'GET',
             headers: {
@@ -481,7 +482,7 @@ const api = {
             },
             responseType: 'blob'
         };
-        const url = `/api/v1/reports/${report_id}/pdf`;
+        const url = `/api/v1/reports/${id}/pdf`;
         return fetch(url, opt)
             .then(response => response.blob())
             .then(blob => saveAs(blob, `report-${Date.now()}.pdf`));
@@ -539,6 +540,22 @@ const api = {
             });
     },
 
+    deleteReportById: (token, id) => {
+        const opt = {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            }
+        };
+        const url = `/api/v1/reports/${id}`;
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
+    },
+
     getAllDataByMeterId: (token, meter_id) => {
         const opt = {
             method: 'GET',
@@ -566,6 +583,41 @@ const api = {
             body: JSON.stringify(data)
         };
         const url = '/api/v1/data';
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
+    },
+
+    createSign: (token, data) => {
+        const formData = new FormData();
+        formData.append('sign', data, `sing-${Date.now()}.png`);
+        const opt = {
+            method: 'POST',
+            headers: {
+                // 'Content-Type': 'multipart/form-data',
+                'Authorization': `BEARER ${token}`
+            },
+            body: formData
+        };
+        const url = '/api/v1/signs';
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
+    },
+
+    deleteSignById: (token, id) => {
+        const opt = {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            }
+        };
+        const url = `/api/v1/signs/${id}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();

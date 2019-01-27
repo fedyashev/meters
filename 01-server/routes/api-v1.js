@@ -22,6 +22,7 @@ const {login, jwt, allow} = require('../passport/middleware');
 const self = require('../passport/self-predicate');
 
 const {Role, Roles} = require('../lib/roles');
+const {Role: {ADMIN, OWNER, INSPECTOR}} = require('../lib/roles');
 
 router.post('/auth/login', login);
 
@@ -44,7 +45,7 @@ router.get('/inspectors/:inspector_id', jwt, allow([Role.ADMIN, Role.OWNER], sel
 router.put('/inspectors/:inspector_id', jwt, allow([Role.ADMIN, Role.OWNER]), inspector.updateById);  // Change name
 router.delete('/inspectors/:inspector_id', jwt, allow([Role.ADMIN, Role.OWNER]), inspector.deleteById);
 
-router.get('/consumers', jwt, allow([Role.ADMIN, Role.OWNER]), consumer.getAll);
+router.get('/consumers', jwt, allow([ADMIN, OWNER, INSPECTOR]), consumer.getAll);
 router.post('/consumers', jwt, allow([Role.ADMIN, Role.OWNER]), consumer.create);
 
 router.get('/consumers/:consumer_id', jwt, allow([Role.ADMIN, Role.OWNER], self.consumer), consumer.getById);
@@ -52,19 +53,19 @@ router.put('/consumers/:consumer_id', jwt, allow([Role.ADMIN, Role.OWNER]), cons
 router.delete('/consumers/:consumer_id', jwt, allow([Role.ADMIN, Role.OWNER]), consumer.deleteById);
 
 router.get('/meters', jwt, allow([Role.ADMIN, Role.OWNER]), meter.getAll);
-router.get('/meters/notInPlace', jwt, allow([Role.ADMIN, Role.OWNER]), meter.getAllNotInPlace);
+router.get('/meters/notInPlace', jwt, allow([ADMIN, OWNER, INSPECTOR]), meter.getAllNotInPlace);
 router.post('/meters', jwt, allow([Role.ADMIN, Role.OWNER]), meter.create);
 
 router.get('/meters/:meter_id', jwt, allow([Role.ADMIN, Role.OWNER]), meter.getById);
 router.put('/meters/:meter_id', jwt, allow([Role.ADMIN, Role.OWNER]), meter.updateById);  // Change number
 router.delete('/meters/:meter_id', jwt, allow([Role.ADMIN, Role.OWNER]), meter.deleteById);
 
-router.get('/places', jwt, allow([Role.ADMIN, Role.OWNER]), place.getAll);
-router.get('/places/audit', jwt, allow([Role.ADMIN, Role.OWNER, Role.INSPECTOR]), place.getAllForAudit);
-router.post('/places', jwt, allow([Role.ADMIN, Role.OWNER]), place.create);
+router.get('/places', jwt, allow([ADMIN, OWNER, INSPECTOR]), place.getAll);
+router.get('/places/audit', jwt, allow([ADMIN, OWNER, INSPECTOR]), place.getAllForAudit);
+router.post('/places', jwt, allow([ADMIN, OWNER, INSPECTOR]), place.create);
 
-router.get('/places/:place_id', jwt, allow([Role.ADMIN, Role.OWNER, Role.INSPECTOR]), place.getById);
-router.put('/places/:place_id', jwt, allow([Role.ADMIN, Role.OWNER]), place.updateById); // Change name, isSignNeed, Consumer, Meter
+router.get('/places/:place_id', jwt, allow([ADMIN, OWNER, INSPECTOR]), place.getById);
+router.put('/places/:place_id', jwt, allow([ADMIN, OWNER, INSPECTOR]), place.updateById); // Change name, isSignNeed, Consumer, Meter
 router.delete('/places/:place_id', jwt, allow([Role.ADMIN, Role.OWNER]), place.deleteById);
 
 router.get('/data', jwt, allow([Role.ADMIN, Role.OWNER]), data.getAll);
@@ -75,11 +76,12 @@ router.put('/data/:data_id', jwt, allow([Role.ADMIN, Role.OWNER]), data.updateBy
 router.delete('/data/:data_id', jwt, allow([Role.ADMIN, Role.OWNER]), data.deteleById);
 
 router.get('/signs', jwt, allow([Role.ADMIN, Role.OWNER]), sign.getAll);
-router.post('/signs', jwt, allow([Role.ADMIN, Role.OWNER, Role.INSPECTOR]), uploader.single('sign'), sign.create);
+router.post('/signs', jwt, allow([ADMIN, OWNER, INSPECTOR]), uploader.single('sign'), sign.create);
 
-router.get('/signs/:sign_id', jwt, allow([Role.ADMIN, Role.OWNER]), sign.getById);
-router.put('/signs/:sign_id', jwt, allow([Role.ADMIN, Role.OWNER]), uploader.single('sign'), sign.updateById);
-router.delete('/signs/:sign_id', jwt, allow([Role.ADMIN, Role.OWNER]), sign.deleteById);
+//router.get('/signs/:sign_id', jwt, allow([Role.ADMIN, Role.OWNER]), sign.getById);
+router.get('/signs/:sign_id', sign.getById);
+router.put('/signs/:sign_id', jwt, allow([ADMIN, OWNER]), uploader.single('sign'), sign.updateById);
+router.delete('/signs/:sign_id', jwt, allow([ADMIN, OWNER, INSPECTOR]), sign.deleteById);
 
 router.get('/reports', jwt, allow([Role.ADMIN, Role.OWNER, Role.INSPECTOR]), report.getAll);
 router.post('/reports', jwt, allow([Role.ADMIN, Role.OWNER, Role.INSPECTOR]), report.create);

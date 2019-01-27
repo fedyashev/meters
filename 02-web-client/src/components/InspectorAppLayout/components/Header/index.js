@@ -12,7 +12,9 @@ const Header = props => {
         <div>
             <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
                 <div className="container">
-                    <Link className="navbar-brand" to="/inspector/user">{user.login}</Link>
+                    <Link className="navbar-brand" to="/inspector/user">
+                        <span>{user.login}</span> <i className="fas fa-user-secret"></i>
+                    </Link>
                     <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon"></span>
                     </button>

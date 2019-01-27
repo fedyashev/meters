@@ -1,10 +1,10 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import api from '../../lib/api';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import NavBar from '../NavBar';
-import {prettyDate} from '../../lib/helpers';
+import { prettyDate } from '../../lib/helpers';
 
-class PlaceInfo extends Component {
+class InspectorPlaceInfo extends Component {
     constructor(props) {
         super(props);
 
@@ -24,14 +24,14 @@ class PlaceInfo extends Component {
             .then(
                 place => {
                     if (place) {
-                        this.setState({...this.state, place, isLoaded: true});
+                        this.setState({ ...this.state, place, isLoaded: true });
                     }
                     else {
                         this.props.showWarningAlert('Место не найдено');
                         this.props.history.goBack();
                     }
                 },
-                ({error}) => {
+                ({ error }) => {
                     this.props.showWarningAlert(error.message);
                     this.props.history.goBack();
                 }
@@ -39,13 +39,13 @@ class PlaceInfo extends Component {
     }
 
     render() {
-        const {place} = this.state;
-        if (this.state.isLoaded) {
-            return (
+        if (!this.state.isLoaded) return null;
+        const { place } = this.state;
+        return (
             <div className="container">
                 <NavBar {...this.props}>
-                    <Link className="nav-link" to={`/owner/places/${place.id}/update`}>Изменить</Link>
-                    <Link className="nav-link" to={`/owner/places/${place.id}/delete`}>Удалить</Link>
+                    <Link className="nav-link" to={`/inspector/places/${place.id}/update`}>Изменить</Link>
+                    <Link className="nav-link" to={`/inspector/places/${place.id}/addData`}>Добавить показания</Link>
                 </NavBar>
                 <h3 className="text-center mb-2">Место установки счетчика</h3>
                 <div className="table-responsive">
@@ -86,10 +86,8 @@ class PlaceInfo extends Component {
                     </table>
                 </div>
             </div>
-            );
-        }
-        return null;
+        );
     }
 };
 
-export default PlaceInfo;
+export default InspectorPlaceInfo;

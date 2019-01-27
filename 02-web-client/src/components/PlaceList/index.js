@@ -15,11 +15,12 @@ class PlaceList extends Component {
   }
 
   componentDidMount() {
-    api.getAllPlaces(this.props.user.token)
+    const token = this.state.user.token;
+    api.getAllPlaces(token)
       .then(
         places => {
           if (places) {
-            this.setState({ ...this.state, places: places, isLoaded: true });
+            this.setState({ ...this.state, places, isLoaded: true });
           }
         },
         ({ error }) => {
@@ -32,13 +33,14 @@ class PlaceList extends Component {
   };
 
   render() {
+    const {app} = this.state;
     if (this.state.isLoaded) {
       return (
         <div className="container justify-content-center">
           <NavBar {...this.props}>
-            <Link className="nav-link" to='/owner/places/create'>Добавить</Link>
+            <Link className="nav-link" to={`/owner/places/create`}>Добавить</Link>
           </NavBar>
-          <Table places={this.state.places} />
+          <Table places={this.state.places} app={app}/>
         </div>
       );
     }
@@ -63,7 +65,7 @@ const Table = props => {
         </thead>
         <tbody style={{ fontSize: '0.85rem' }}>
           {
-            places && places.map(place => <TableRow key={`${place.id}-${place.name}`} place={place} />)
+            places && places.map(place => <TableRow key={`${place.id}-${place.name}`} place={place}/>)
           }
         </tbody>
       </table>
@@ -72,7 +74,7 @@ const Table = props => {
 };
 
 const TableRow = props => {
-  const { place } = props;
+  const { place} = props;
   return (
     <tr>
       <td className="text-center">

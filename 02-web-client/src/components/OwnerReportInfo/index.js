@@ -1,10 +1,11 @@
+
 import React, {Component} from 'react';
 import api from '../../lib/api';
 import NavBar from '../NavBar';
 import {prettyDate} from '../../lib/helpers';
 import {Link} from 'react-router-dom';
 
-class InspectorReportInfo extends Component {
+class OwnerReportInfo extends Component {
     constructor(props) {
         super(props);
 
@@ -42,7 +43,8 @@ class InspectorReportInfo extends Component {
         return (
                 <div className="container">
                     <NavBar {...this.props} user={user}>
-                        <Link className="nav-link" to={`/inspector/reports/${report.id}/update`}>Изменить</Link>
+                        <Link className="nav-link" to={`/owner/reports/${report.id}/update`}>Изменить</Link>
+                        <Link className="nav-link" to={`/owner/reports/${report.id}/delete`}>Удалить</Link>
                     </NavBar>
                     <h3 className="text-center mb-2">{`Отчет № ${report.id}`}</h3>
                     <div className="table-responsive">
@@ -118,4 +120,4 @@ class InspectorReportInfo extends Component {
     }
 };
 
-export default InspectorReportInfo;
+export default OwnerReportInfo;

@@ -35,8 +35,12 @@ class InspectorReportUpdate extends Component {
   }
 
   handleUpdateReport = value => {
-    if (Number(value).toString() !== value) {
-      return this.props.showWarningAlert('Некорректное заначение показаний счетчика');
+    const {report} = this.state;
+    if (Number.isNaN(value) || value < 0) {
+      return this.props.showWarningAlert('Некорректное значение показания счетчика');
+    }
+    if (report.last_data && (value < Number(report.last_data.value))) {
+      return this.props.showWarningAlert('Некорректное значение показания счетчика');
     }
     const token = this.state.user.token;
     const report_id = this.state.report.id;
@@ -73,7 +77,7 @@ class InspectorReportUpdate extends Component {
             </div>
             <form>
               <div className="form-group">
-                <input className="form-control" type="text" placeholder="Показания счетчика" required ref={r => val = r} defaultValue={report.current_data.value}/>
+                <input className="form-control" type="number" placeholder="Показания счетчика" required ref={r => val = r} defaultValue={report.current_data.value}/>
               </div>
               <div className="form-group">
                 <button className="btn btn-primary btn-block" onClick={onClickSave}>Сохранить</button>

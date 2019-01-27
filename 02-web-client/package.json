@@ -4,6 +4,7 @@
   "private": true,
   "proxy": "http://localhost:5000",
   "dependencies": {
+    "b64-to-blob": "^1.2.19",
     "bootstrap": "^4.2.1",
     "dateformat": "^3.0.3",
     "file-saver": "^2.0.0",

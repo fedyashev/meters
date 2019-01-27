@@ -36,14 +36,17 @@ import PlaceUpdate from '../PlaceUpdate';
 import PlaceDelete from '../PlaceDelete';
 
 import ReportList from '../ReportList';
+import OwnerReportInfo from '../OwnerReportInfo';
+import ReportUpdate from '../ReportUpdate';
+import ReportDelete from '../ReportDelete';
 
 import InspectorAppLayout from '../InspectorAppLayout';
-import PlaceAuditList from '../PlaceAuditList';
-import PlaceAuditInfo from '../PlaceAuditInfo';
 import InspectorUserInfo from '../InspectorUserInfo';
 import InspectorReportList from '../InspectorReportList';
 import InspectorReportInfo from '../InspectorReportInfo';
-import InspectorReportUpdate from '../InspectorReportUpdate';
+import InspectorPlaceList from '../InspectorPlaceList';
+import InspectorPlaceInfo from '../InspectorPlaceInfo';
+import InspectorPlaceAddData from '../InspectorPlaceAddData';
 
 import Consumer from '../Consumer';
 
@@ -57,6 +60,7 @@ class App extends Component {
       user: null,
       alert: null
     }
+
   }
 
   handlerLogout = () => {
@@ -151,7 +155,16 @@ class App extends Component {
             render={
               props =>
                 <InspectorAppLayout {...props} user={user} handlerLogout={this.handlerLogout}>
-                  <PlaceAuditList {...props} user={user} />
+                  <InspectorPlaceList {...props} user={user} />
+                </InspectorAppLayout>
+            }
+          />
+
+          <Route exact path='/inspector/places/create'
+            render={
+              props =>
+                <InspectorAppLayout {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <PlaceCreate {...props} user={user} />
                 </InspectorAppLayout>
             }
           />
@@ -160,7 +173,25 @@ class App extends Component {
             render={
               props =>
                 <InspectorAppLayout {...props} user={user} handlerLogout={this.handlerLogout}>
-                  <PlaceAuditInfo {...props} user={user} />
+                  <InspectorPlaceInfo {...props} user={user} />
+                </InspectorAppLayout>
+            }
+          />
+
+          <Route exact path='/inspector/places/:place_id/update'
+            render={
+              props =>
+                <InspectorAppLayout {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <PlaceUpdate {...props} user={user} />
+                </InspectorAppLayout>
+            }
+          />
+
+          <Route exact path='/inspector/places/:place_id/addData'
+            render={
+              props =>
+                <InspectorAppLayout {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <InspectorPlaceAddData {...props} user={user} />
                 </InspectorAppLayout>
             }
           />
@@ -187,23 +218,12 @@ class App extends Component {
             render={
               props =>
                 <InspectorAppLayout {...props} user={user} handlerLogout={this.handlerLogout}>
-                  <InspectorReportUpdate {...props} user={user} />
+                  <ReportUpdate {...props} user={user} />
                 </InspectorAppLayout>
             }
           />
 
           {/* =================================================================================== */}
-
-          {/*
-          <Route exact path='/owner/users'
-            render={
-              props =>
-                <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
-                  <UserList {...props} user={user}/>
-                </Owner>
-            }
-          />
-          */}
 
           <Route exact path='/owner/user'
             render={
@@ -380,6 +400,33 @@ class App extends Component {
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
                   <ReportList {...props} user={user} />
+                </Owner>
+            }
+          />
+
+          <Route exact path='/owner/reports/:report_id'
+            render={
+              props =>
+                <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <OwnerReportInfo {...props} user={user} />
+                </Owner>
+            }
+          />
+
+          <Route exact path='/owner/reports/:report_id/update'
+            render={
+              props =>
+                <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <ReportUpdate {...props} user={user} />
+                </Owner>
+            }
+          />
+
+          <Route exact path='/owner/reports/:report_id/delete'
+            render={
+              props =>
+                <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <ReportDelete {...props} user={user} />
                 </Owner>
             }
           />

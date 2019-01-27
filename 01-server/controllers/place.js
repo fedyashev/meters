@@ -6,29 +6,77 @@ const Op = Sequelize.Op;
 const pattern = '[a-zA-Zа-яА-Я0-9.]';
 
 module.exports.getAll = async (req, res, next) => {
+    // try {
+    //     const rawPlaces = await Place.findAll({
+    //         include: [
+    //             {model: Consumer},
+    //             {model: Meter}
+    //         ]
+    //     });
+    //     const places = rawPlaces.map(place => {
+    //         const c = place.Consumer;
+    //         const m = place.Meter;
+    //         const consumer = c && {id: c.id, name: c.name, email: c.email} || null;
+    //         const meter = m && {id: m.id, number: m.number} || null;
+    //         return {
+    //             id: place.id,
+    //             name: place.name,
+    //             isSignNeed: place.isSignNeed,
+    //             consumer,
+    //             meter
+    //         };
+    //     });
+    //     return res.json(places);
+    // }
+    // catch (err) {
+    //     return next(createError(500, err.message));
+    // }
+
     try {
         const rawPlaces = await Place.findAll({
             include: [
-                {model: Consumer},
-                {model: Meter}
+                {model: Meter},
+                {model: Consumer}
             ]
         });
-        const places = rawPlaces.map(place => {
-            const c = place.Consumer;
-            const m = place.Meter;
-            const consumer = c && {id: c.id, name: c.name, email: c.email} || null;
-            const meter = m && {id: m.id, number: m.number} || null;
+        const places = await rawPlaces.map(async (place) => {
+            let lastData = null;
+            if (place.Meter) {
+                const data = await Data.findAll({
+                    where: {MeterId: place.Meter.id},
+                    order: [['date', 'desc']],
+                    limit: 1,
+                });
+                if (data.length > 0) {
+                    lastData = {
+                        id: data[0].id,
+                        date: data[0].date,
+                        value: data[0].value
+                    };
+                }
+            }
             return {
                 id: place.id,
                 name: place.name,
                 isSignNeed: place.isSignNeed,
-                consumer,
-                meter
+                consumer: place.Consumer ?
+                {
+                    id: place.Consumer.id,
+                    name: place.Consumer.name,
+                    email: place.Consumer.email
+                } : null,
+                meter: place.Meter ? 
+                {
+                    id: place.Meter.id,
+                    number: place.Meter.number,
+                    lastData: lastData
+                } : null
             };
         });
-        return res.json(places);
-    }
-    catch (err) {
+        Promise.all(places)
+            .then(results => res.json(results))
+            .catch(err => next(createError(500, err.message)));
+    } catch (err) {
         return next(createError(500, err.message));
     }
 };
