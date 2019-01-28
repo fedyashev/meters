@@ -2,6 +2,7 @@ const createError = require('http-errors');
 const { Report, Inspector, Consumer, Place, Meter, Data, Sign, sequelize } = require('../models');
 const PdfDocument = require('pdfkit');
 const fs = require('fs');
+const {prettyDate} = require('../lib/helpers');
 
 const reportMapper = report => ({
     id: report.id,
@@ -195,18 +196,19 @@ module.exports.getByIdPdf = async (req, res, next) => {
         const doc = new PdfDocument({});
         doc.registerFont('Roboto', 'fonts/Roboto/Roboto-Regular.ttf');
         doc.font('Roboto');
-        doc.text(`Дата: ${report.date.toLocaleString()}`);
+        doc.text(`Отчет № ${report.id}`);
+        doc.text(`Дата: ${prettyDate(report.date)}`);
         doc.text(`Инспектор: ${report.Inspector.name}`);
         doc.text(`Потребитель: ${report.Consumer.name}`);
         doc.text(`Место: ${report.Place.name}`);
         doc.text(`Счетчик: ${report.Meter.number}`);
         doc.text(` `);
         doc.text(`Предыдущие показания:`);
-        doc.text(`   дата: ${report.LastData ? report.LastData.date.toLocaleString() : '---'}`);
+        doc.text(`   дата: ${report.LastData ? prettyDate(report.LastData.date) : '---'}`);
         doc.text(`   показания: ${report.LastData ? report.LastData.value : '---'}`);
         doc.text(` `);
         doc.text(`Текущие показания:`);
-        doc.text(`   дата: ${report.CurrentData ? report.CurrentData.date.toLocaleString() : '---'}`);
+        doc.text(`   дата: ${report.CurrentData ? prettyDate(report.CurrentData.date) : '---'}`);
         doc.text(`   показания: ${report.CurrentData ? report.CurrentData.value : '---'}`);
         doc.text(` `);
         const w = report.LastData ? report.CurrentData.value - report.LastData.value : report.CurrentData.value;
@@ -221,13 +223,11 @@ module.exports.getByIdPdf = async (req, res, next) => {
             }
 
             const fileContent = Buffer.from(sign.data, 'base64');
-            // const readStream = new stream.PassThrough();
-            // readStream.end(fileContent);
 
             doc.text(`Подпись потребителя:`);
-            doc.image(fileContent, 75, 320, { width: 100 });
-            doc.moveTo(75, 420)
-                .lineTo(275, 420)
+            doc.image(fileContent, 75, 330, { width: 100 });
+            doc.moveTo(75, 430)
+                .lineTo(275, 430)
                 .stroke();
         }
 
