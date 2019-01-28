@@ -42,19 +42,31 @@ class ConsumerInfo extends Component {
             <div className="container">
                 <NavBar {...this.props} consumer={this.state.consumer} />
                 <h3 className="text-center mb-2">Потребитель</h3>
-                <div className="border-top border-bottom">
-                    <div>
-                        <span className="font-weight-bold">Id</span> : <span>{consumer.id}</span>
-                    </div>
-                    <div>
-                        <span className="font-weight-bold">Логин</span> : <span>{consumer.login}</span>
-                    </div>
-                    <div>
-                        <span className="font-weight-bold">Имя</span> : <span>{consumer.name}</span>
-                    </div>
-                    <div>
-                        <span className="font-weight-bold">Email</span> : <span>{consumer.email}</span>
-                    </div>
+                <div className="table-responsive">
+                    <table className="table table-hover table-sm border-bottom">
+                        <tbody>
+                            <tr>
+                                <td><span className="font-weight-bold">Id</span></td>
+                                <td><span className="font-weight-bold">{consumer.id}</span></td>
+                            </tr>
+                            <tr>
+                                <td><span className="font-weight-bold">Логин</span></td>
+                                <td><span className="font-weight-bold">{consumer.login}</span></td>
+                            </tr>
+                            <tr>
+                                <td><span className="font-weight-bold">Потребитель</span></td>
+                                <td><span className="font-weight-bold">{consumer.name}</span></td>
+                            </tr>
+                            <tr>
+                                <td><span className="font-weight-bold">Email</span></td>
+                                <td><span className="font-weight-bold">{consumer.email}</span></td>
+                            </tr>
+                            <tr>
+                                <td><span className="font-weight-bold">Телефон</span></td>
+                                <td><span className="font-weight-bold">{consumer.phone}</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         );

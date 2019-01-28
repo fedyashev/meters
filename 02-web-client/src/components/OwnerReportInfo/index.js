@@ -36,6 +36,15 @@ class OwnerReportInfo extends Component {
             });
     }
 
+    downloadPdf = report_id => e => {
+        e.preventDefault();
+        const token = this.state.user.token;
+        api.getReportByIdPdf(token, report_id)
+            .catch(({ error }) => {
+                this.props.setAlert('warning', error.message);
+            });
+    };
+
     render() {
         if (!this.state.isLoaded) return null;
         const {user, report} = this.state;
@@ -44,6 +53,7 @@ class OwnerReportInfo extends Component {
                     <NavBar {...this.props} user={user}>
                         <Link className="nav-link" to={`/owner/reports/${report.id}/update`}>Изменить</Link>
                         <Link className="nav-link" to={`/owner/reports/${report.id}/delete`}>Удалить</Link>
+                        <Link className="nav-link" to="" onClick={this.downloadPdf(report.id)}>Скачать</Link>
                     </NavBar>
                     <h3 className="text-center mb-2">{`Отчет № ${report.id}`}</h3>
                     <div className="table-responsive">

@@ -48,9 +48,10 @@ const Table = props => {
         <thead className="thead-dark">
           <tr>
             <th scope="col" className="text-center">Id</th>
-            <th scope="col" className="text-center">Login</th>
-            <th scope="col" className="text-center">Name</th>
+            <th scope="col" className="text-center">Логин</th>
+            <th scope="col" className="text-center">Потребитель</th>
             <th scope="col" className="text-center">Email</th>
+            <th scope="col" className="text-center">Телефон</th>
           </tr>
         </thead>
         <tbody style={{fontSize: '0.85rem'}}>
@@ -67,12 +68,11 @@ const TableRow = props => {
   const {consumer} = props;
   return (
     <tr>
-      <td className="text-center">
-        <Link to={`/owner/consumers/${consumer.id}`}>{consumer.id}</Link>
-      </td>
+      <td className="text-center"><Link to={`/owner/consumers/${consumer.id}`}>{consumer.id}</Link></td>
       <td className="text-center">{consumer.login}</td>
       <td className="text-center">{consumer.name}</td>
       <td className="text-center">{consumer.email}</td>
+      <td className="text-center">{consumer.phone}</td>
     </tr>
   );
 }

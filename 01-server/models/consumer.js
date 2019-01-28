@@ -9,6 +9,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true
+    },
+    phone: {
+      type: DataTypes.STRING,
+      alloNull: true
     }
   }, {});
   Consumer.associate = function(models) {

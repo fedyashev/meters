@@ -172,8 +172,8 @@ const api = {
             });
     },
 
-    createConsumer: (token, login, password, name, email) => {
-        const data = {login, password, name, email};
+    createConsumer: (token, login, password, name, email, phone) => {
+        const data = {login, password, name, email, phone};
         const opt = {
             method: 'POST',
             headers: {
@@ -206,8 +206,8 @@ const api = {
             });
     },
 
-    updateConsumerById: (token, id, name, email) => {
-        const data = {name, email};
+    updateConsumerById: (token, id, name, email, phone) => {
+        const data = {name, email, phone};
         const opt = {
             method: 'PUT',
             headers: {

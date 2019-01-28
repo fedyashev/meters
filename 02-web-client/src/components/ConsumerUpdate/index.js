@@ -33,13 +33,13 @@ class ConsumerUpdate extends Component {
             });
     }
 
-    handleUpdateConsumer = (name, email) => {
+    handleUpdateConsumer = (name, email, phone) => {
         if (!name || !email) {
             return this.props.showWarningAlert('Некорректные данные в форме');
         }
         const token = this.state.user.token;
         const consumer_id = this.state.consumer.id;
-        api.updateConsumerById(token, consumer_id, name, email)
+        api.updateConsumerById(token, consumer_id, name, email, phone)
             .then(consumer => {
                 if (consumer) {
                     this.props.showSuccessAlert('Потребитель успешно изменен');
@@ -57,10 +57,10 @@ class ConsumerUpdate extends Component {
 
     render() {
         const { consumer } = this.state;
-        let name, email;
+        let name, email, phone;
         const onClickUpdateConsumer = e => {
             e.preventDefault();
-            this.handleUpdateConsumer(name.value, email.value);
+            this.handleUpdateConsumer(name.value, email.value, phone.value);
         }
         return (
             <div className="container">
@@ -76,6 +76,9 @@ class ConsumerUpdate extends Component {
                             </div>
                             <div className="form-group">
                                 <input className="form-control" type="email" placeholder="Email" required defaultValue={consumer.email} ref={r => email = r} />
+                            </div>
+                            <div className="form-group">
+                                <input className="form-control" type="text" placeholder="Email" required defaultValue={consumer.phone} ref={r => phone = r} />
                             </div>
                             <div className="form-group">
                                 <button className="btn btn-primary btn-block" onClick={onClickUpdateConsumer}>Сохранить</button>

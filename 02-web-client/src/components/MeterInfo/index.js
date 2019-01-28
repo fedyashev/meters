@@ -60,13 +60,19 @@ class MeterInfo extends Component {
             <Link className="nav-link" to={`/owner/meters/${meter.id}/addData`}>Добавить показания</Link>
         </NavBar>
         <h3 className="text-center mb-2">Счетчик</h3>
-        <div className="border-top border-bottom mb-5">
-          <div>
-            <span className="font-weight-bold">Id</span> : <span>{meter.id}</span>
-          </div>
-          <div>
-            <span className="font-weight-bold">Номер</span> : <span>{meter.number}</span>
-          </div>
+        <div className="table-responsive">
+          <table className="table table-hover table-sm border-bottom">
+            <tbody>
+              <tr>
+                <td><span className="font-weight-bold">Id</span></td>
+                <td><span className="font-weight-bold">{meter.id}</span></td>
+              </tr>
+              <tr>
+                <td><span className="font-weight-bold">Номер</span></td>
+                <td><span className="font-weight-bold">{meter.number}</span></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
         <h3 className="text-center mb-2">Показания</h3>
         <Table datas={this.state.datas}/>

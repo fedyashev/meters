@@ -14,7 +14,7 @@ module.exports.getAll = async (req, res, next) => {
           {model: User}
         ]
       })
-      .map(({id, name, email, User: {login}}) => ({id, name, email, login}));
+      .map(({id, name, email, phone, User: {login}}) => ({id, name, email, phone, login}));
     return res.json(consumers);    
   } catch (err) {
     return next(createError(500, err.message));
@@ -23,7 +23,7 @@ module.exports.getAll = async (req, res, next) => {
 
 module.exports.create = async (req, res, next) => {
   try {
-    const {email, name, login, password} = req.body;
+    const {email, name, phone, login, password} = req.body;
 
     if (!email || !name || !login || !password) {
       return next(createError(400, 'Incorrect input parameters'));
@@ -50,7 +50,7 @@ module.exports.create = async (req, res, next) => {
       let result = await sequelize.transaction(async (t) => {
         const passwordHash = await crypt.getPasswordHash(password);
         user = await User.create({login, passwordHash, UserRoleId: role.id}, {transaction: t});
-        consumer = await Consumer.create({name, email, UserId: user.id}, {transaction: t});
+        consumer = await Consumer.create({name, email, phone, UserId: user.id}, {transaction: t});
       });
     } catch (err) {
       return next(createError(500, err.message));
@@ -60,6 +60,7 @@ module.exports.create = async (req, res, next) => {
       id: consumer.id,
       name: consumer.name,
       email: consumer.email,
+      phone: consumer.phone,
       user: {
         id: user.id,
         login: user.login,
@@ -94,6 +95,7 @@ module.exports.getById = async (req, res, next) => {
       id: consumer.id,
       name: consumer.name,
       email: consumer.email,
+      phone: consumer.phone,
       login: consumer.User.login
     });
 
@@ -105,7 +107,7 @@ module.exports.getById = async (req, res, next) => {
 module.exports.updateById = async (req, res, next) => {
   try {
     const {consumer_id} = req.params;
-    const {name, email} = req.body;
+    const {name, email, phone} = req.body;
 
     if (!consumer_id || !name || !email) {
       return next(createError(400, 'Incorrect input parameters'));
@@ -119,7 +121,7 @@ module.exports.updateById = async (req, res, next) => {
       return next(createError(400, 'Incorrect input parameters'));
     }
 
-    const [count, ...rest] = await Consumer.update({name, email}, {where: {id: consumer_id}});
+    const [count, ...rest] = await Consumer.update({name, email, phone: phone}, {where: {id: consumer_id}});
 
     if (!count) {
       return next(createError(400, 'Updating failed'));  
@@ -128,7 +130,8 @@ module.exports.updateById = async (req, res, next) => {
     return res.json({
       id: consumer_id,
       name,
-      email
+      email,
+      phone: phone
     });    
    }
   catch(err) {

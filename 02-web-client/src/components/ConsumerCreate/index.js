@@ -11,9 +11,9 @@ class ConsumerCreate extends Component {
         }
     }
 
-    handleCreateConsumer = (login, password, name, email) => {
+    handleCreateConsumer = (login, password, name, email, phone) => {
         const token = this.state.user.token;
-        api.createConsumer(token, login, password, name, email)
+        api.createConsumer(token, login, password, name, email, phone)
             .then(consumer => {
                 if (consumer) {
                     this.props.showSuccessAlert('Потребитель добавлен');
@@ -29,7 +29,7 @@ class ConsumerCreate extends Component {
     }
 
     render() {
-        let login, password, confirmPassword, name, email;
+        let login, password, confirmPassword, name, email, phone;
 
         const onClickCreateConsumer = e => {
             e.preventDefault();
@@ -37,7 +37,7 @@ class ConsumerCreate extends Component {
                 return this.showWarningAlert('Некорректрые данные в форме');
             }
             if (password.value === confirmPassword.value) {
-                this.handleCreateConsumer(login.value, password.value, name.value, email.value);
+                this.handleCreateConsumer(login.value, password.value, name.value, email.value, phone.value);
             }
             else {
                 this.props.showWarningAlert('Пароли не совпадают');
@@ -67,6 +67,9 @@ class ConsumerCreate extends Component {
                             </div>
                             <div className="form-group">
                                 <input className="form-control" type="email" placeholder="Email" required ref={r => email = r} />
+                            </div>
+                            <div className="form-group">
+                                <input className="form-control" type="email" placeholder="Номер телефона" required ref={r => phone = r} />
                             </div>
                             <div className="form-group">
                                 <button className="btn btn-primary btn-block" onClick={onClickCreateConsumer}>Создать</button>
