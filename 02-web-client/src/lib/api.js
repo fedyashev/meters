@@ -622,6 +622,22 @@ const api = {
                 const promise = res.json();
                 return res.ok ? promise : promise.then(err => {throw err});
             });
+    },
+
+    sendReport: (token, id) => {
+        const opt = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            }
+        };
+        const url = `/api/v1/reports/${id}/sendEmail`;
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
     }
 };
 

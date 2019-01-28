@@ -1,8 +1,14 @@
 const createError = require('http-errors');
 const { Report, Inspector, Consumer, Place, Meter, Data, Sign, sequelize } = require('../models');
-const PdfDocument = require('pdfkit');
-const fs = require('fs');
-const {prettyDate} = require('../lib/helpers');
+//const PdfDocument = require('pdfkit');
+//const fs = require('fs');
+//const { prettyDate } = require('../lib/helpers');
+const pdfTemplates = require('../lib/pdf-templates');
+const email = require('../lib/email-sender');
+
+//const nodemailer = require('nodemailer');
+
+//const email = require('../config/email.json');
 
 const reportMapper = report => ({
     id: report.id,
@@ -48,6 +54,16 @@ const queryIncludes = [
     { model: Sign, attributes: ['id', 'filename'] }
 ];
 
+const queryIncludesWithSign = [
+    { model: Inspector },
+    { model: Consumer },
+    { model: Place },
+    { model: Meter },
+    { model: Data, as: 'LastData' },
+    { model: Data, as: 'CurrentData' },
+    { model: Sign }
+];
+
 ///////////////////////////////////////////////////////////////////////////////
 
 module.exports.getAll = async (req, res, next) => {
@@ -62,7 +78,7 @@ module.exports.getAll = async (req, res, next) => {
                     order: [
                         ['id', 'ASC']
                     ],
-                    include: queryIncludes 
+                    include: queryIncludes
                 })
                 .map(reportMapper);
         }
@@ -187,50 +203,13 @@ module.exports.getByIdPdf = async (req, res, next) => {
             return next(createError(400, 'Incorrect report id'));
         }
 
-        const report = await Report.findOne({ where: { id: report_id }, include: queryIncludes });
+        const report = await Report.findOne({ where: { id: report_id }, include: queryIncludesWithSign });
 
         if (!report) {
             return next(createError(404, 'Report not found'));
         }
 
-        const doc = new PdfDocument({});
-        doc.registerFont('Roboto', 'fonts/Roboto/Roboto-Regular.ttf');
-        doc.font('Roboto');
-        doc.text(`Отчет № ${report.id}`);
-        doc.text(`Дата: ${prettyDate(report.date)}`);
-        doc.text(`Инспектор: ${report.Inspector.name}`);
-        doc.text(`Потребитель: ${report.Consumer.name}`);
-        doc.text(`Место: ${report.Place.name}`);
-        doc.text(`Счетчик: ${report.Meter.number}`);
-        doc.text(` `);
-        doc.text(`Предыдущие показания:`);
-        doc.text(`   дата: ${report.LastData ? prettyDate(report.LastData.date) : '---'}`);
-        doc.text(`   показания: ${report.LastData ? report.LastData.value : '---'}`);
-        doc.text(` `);
-        doc.text(`Текущие показания:`);
-        doc.text(`   дата: ${report.CurrentData ? prettyDate(report.CurrentData.date) : '---'}`);
-        doc.text(`   показания: ${report.CurrentData ? report.CurrentData.value : '---'}`);
-        doc.text(` `);
-        const w = report.LastData ? report.CurrentData.value - report.LastData.value : report.CurrentData.value;
-        doc.text(`Потребление за период: ${w}`);
-        doc.text(` `);
-
-        if (report.Sign) {
-            const sign = await Sign.findOne({ where: { id: report.Sign.id } });
-
-            if (!sign) {
-                return next(createError(404, 'Sign not found'));
-            }
-
-            const fileContent = Buffer.from(sign.data, 'base64');
-
-            doc.text(`Подпись потребителя:`);
-            doc.image(fileContent, 75, 330, { width: 100 });
-            doc.moveTo(75, 430)
-                .lineTo(275, 430)
-                .stroke();
-        }
-
+        const doc = pdfTemplates.report(report);
 
         res.set('Content-disposition', `attachment; filename=report-${Date.now()}.pdf`);
         res.set('Content-Type', 'application/pdf');
@@ -240,6 +219,36 @@ module.exports.getByIdPdf = async (req, res, next) => {
 
     } catch (err) {
         return next(createError(500, err.message));
+    }
+};
+
+module.exports.sendEmailById = async (req, res, next) => {
+    try {
+        const { report_id } = req.params;
+
+        if (!report_id) {
+            return next(createError(400, 'Incorrect report id'));
+        }
+
+        const report = await Report.findOne({ where: { id: report_id }, include: queryIncludesWithSign });
+
+        if (!report) {
+            return next(createError(404, 'Report not found'));
+        }
+
+        const doc = pdfTemplates.report(report);
+        email.sendEmail(report, doc)
+            .then(result => {
+                console.log(result);
+                return res.json({ done: true });
+            })
+            .catch(err => {
+                return next(createError(500, err.message));
+            });
+            
+        doc.end();
+    } catch (err) {
+        next(createError(500, err.message));
     }
 };
 
@@ -280,7 +289,7 @@ module.exports.deleteById = async (req, res, next) => {
                     countData = await Data.destroy({ where: { id: report.CurrentDataId } }, { transaction: t });
                 }
                 if (report && report.SignId) {
-                    countSign = await Data.destroy({ where: { id: report.SignId } }, { transaction: t });
+                    countSign = await Sign.destroy({ where: { id: report.SignId } }, { transaction: t });
                 }
                 countReport = await Report.destroy({ where: { id: report.id } }, { transaction: t });
             });

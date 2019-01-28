@@ -50,7 +50,7 @@ const Table = props => {
   const { places } = props;
   return (
     <div className="table-responsive">
-      <table className="table table-bordered table-hover table-sm">
+      <table className="table table-bordered table-hover">
         <thead className="thead-dark">
           <tr>
             <th scope="col" className="text-center"><i className="fas fa-plus"></i></th>
@@ -59,7 +59,7 @@ const Table = props => {
             <th scope="col" className="text-center">Счетчик</th>
           </tr>
         </thead>
-        <tbody style={{ fontSize: '0.85rem' }}>
+        <tbody style={{ fontSize: '1rem' }}>
           {
             places && places.map(place => <TableRow key={`${place.id}-${place.name}`} place={place} />)
           }

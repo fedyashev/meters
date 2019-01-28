@@ -16,14 +16,14 @@ module.exports.getAll = async (req, res, next) => {
 
 module.exports.create = async (req, res, next) => {
     try {
-        console.log(req);
+        //console.log(req);
         const file = req.file // || (req.body.sign ? {mimetype: 'image/png', originalname: `sign-${Date.now()}.png`, buffer: new Buffer(req.body.sign, 'base64')} : null);
 
         if (!file) {
             return next(createError(400, 'Incorrect input data'));
         }
 
-        console.log("ok");
+        //console.log("ok");
 
         const sign = await Sign.create({
             mimetype: file.mimetype,
@@ -31,7 +31,7 @@ module.exports.create = async (req, res, next) => {
             data: file.buffer,
         });
 
-        console.log("ok");
+        //console.log("ok");
 
         if (!sign) {
             return next(createError(500, 'Failed to create a sign'));

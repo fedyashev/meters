@@ -80,8 +80,15 @@ class InspectorPlaceAddData extends Component {
             this.props.showWarningAlert('Неудалось создать отчет')
         }
         else {
-            this.props.showSuccessAlert('Отчет создан');
-            this.props.history.goBack();
+            api.sendReport(token, report.id)
+                .then(done => {
+                    this.props.showSuccessAlert('Отчет создан и отправлен.');
+                    this.props.history.goBack();
+                })
+                .catch(({error}) => {
+                    this.props.showWarningAlert("Отчет создан, но не отправлен. \n" + error.message);
+                    this.props.history.goBack();
+                });
         }
     };
 

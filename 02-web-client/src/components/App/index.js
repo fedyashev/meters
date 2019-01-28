@@ -104,7 +104,7 @@ class App extends Component {
           }
         });
       })
-      .catch(({ error }) => {
+      .catch(({error}) => {
         this.setState({ ...this.state, alert: { type: 'warning', message: error.message } })
       });
   }
