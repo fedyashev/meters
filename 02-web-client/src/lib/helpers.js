@@ -27,3 +27,13 @@ export const prettyDate = date => {
     const datePattern = 'dd.mm.yyyy HH:MM:ss';
     return dateformat(new Date(date), datePattern);
 }
+
+export const strBase64ToBin = strBase64 => {
+    const blobBin = atob(strBase64.split(',')[1]);
+    let array = [];
+    for (let i = 0; i < blobBin.length; i++) {
+        array.push(blobBin.charCodeAt(i));
+    }
+    const file = new Blob([new Uint8Array(array)], { type: 'image/png' });
+    return file;
+}

@@ -1,6 +1,5 @@
 import fetch from 'isomorphic-fetch';
 import {saveAs} from 'file-saver';
-import { prettyDate } from './helpers';
 
 const api = {
     login: (login, password) => {

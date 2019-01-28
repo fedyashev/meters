@@ -2,10 +2,8 @@ import React, { Component } from 'react';
 import api from '../../lib/api';
 import { Link } from 'react-router-dom';
 import NavBar from '../NavBar';
-import { prettyDate, formatDate } from '../../lib/helpers';
+import { prettyDate, formatDate, strBase64ToBin } from '../../lib/helpers';
 import CanvasSign from '../CanvasSign';
-import { timingSafeEqual } from 'crypto';
-//import b64ToBlob from 'b64-to-blob';
 
 class InspectorPlaceAddData extends Component {
     constructor(props) {
@@ -17,6 +15,7 @@ class InspectorPlaceAddData extends Component {
             place: {
                 id: props.match.params.place_id
             },
+            consumption: null,
             isLoaded: false
         }
     }
@@ -87,7 +86,7 @@ class InspectorPlaceAddData extends Component {
     };
 
     render() {
-        let val, cons, canvas;
+        let val, canvas;
         if (!this.state.isLoaded) return null;
         const { place } = this.state;
 
@@ -103,28 +102,26 @@ class InspectorPlaceAddData extends Component {
             if (signData.length <= emptyDataSize) {
                 return this.props.showWarningAlert('Необходима подпись');
             }
-
-            const blobBin = atob(signData.split(',')[1]);
-            let array = [];
-            for (let i = 0; i < blobBin.length; i++) {
-                array.push(blobBin.charCodeAt(i));
-            }
-            const file = new Blob([new Uint8Array(array)], { type: 'image/png' });
-
+            
+            const file = strBase64ToBin(signData);
             this.handleCreateReport(val.value, file);
         };
 
         const onChangeValue = e => {
+            let consumption = null; 
             if (val.value <= 0) {
-                cons.innerText = null
-                return;
-            };
-            if (!this.state.place.meter || !this.state.place.meter.lastData) {
-                cons.innerText = null;
-                return;
-            };
-            const consumption = val.value - Number(this.state.place.meter.lastData.value);
-            cons.innerText = consumption;
+                consumption = null;
+            }
+            else if (!this.state.place.meter) {
+                consumption = null;
+            }
+            else if (this.state.place.meter && !this.state.place.meter.lastData) {
+                consumption = val.value;
+            }
+            else {
+                consumption = val.value - Number(this.state.place.meter.lastData.value);    
+            }
+            this.setState({...this.state, consumption: consumption});
         }
 
         return (
@@ -174,15 +171,15 @@ class InspectorPlaceAddData extends Component {
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr className={this.state.consumption === 0 ? 'table-warning' : (this.state.consumption > 0 ? 'table-success' : 'table-danger') }>
                                 <td><span className="font-weight-bold">Потребление: </span></td>
-                                <td><span className="font-weight-bold text-right" ref={r => cons = r}></span></td>
+                                <td><span className="font-weight-bold text-right">{this.state.consumption}</span></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
                 <div className="input-group mb-3">
-                    <div class="custom-file">
+                    <div className="custom-file">
                         <input type="file" className="custom-file-input" />
                         <label className="custom-file-label">Фотография показаний</label>
                     </div>

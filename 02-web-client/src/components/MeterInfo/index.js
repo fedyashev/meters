@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import NavBar from '../NavBar';
 import api from '../../lib/api';
-import {parseDate} from '../../lib/helpers';
+import {prettyDate} from '../../lib/helpers';
 
 class MeterInfo extends Component {
   constructor(props) {
@@ -98,7 +98,7 @@ const TableRow = props => {
   const {data} = props;
   return (
     <tr>
-      <td className="text-center">{parseDate(data.date)}</td>
+      <td className="text-center">{prettyDate(data.date)}</td>
       <td className="text-center">{data.value}</td>
     </tr>
   );

@@ -1,4 +1,3 @@
-
 import React, {Component} from 'react';
 import api from '../../lib/api';
 import NavBar from '../NavBar';
@@ -76,7 +75,7 @@ class OwnerReportInfo extends Component {
                                 </tr>
                                 <tr>
                                     <td><span className="font-weight-bold">Подпись</span></td>
-                                    <td><span className="font-weight-bold">{report.isSignNeed ? 'Да' : 'Нет'}</span></td>
+                                    <td><span className="font-weight-bold">{report.sign ? 'Да' : 'Нет'}</span></td>
                                 </tr>
                                 <tr className="table-success">
                                     <td colSpan="2"><span className="font-weight-bold">Предыдущие показания:</span></td>
