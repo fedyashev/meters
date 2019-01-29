@@ -5,40 +5,39 @@ const Op = Sequelize.Op;
 
 const pattern = '[a-zA-Zа-яА-Я0-9.]';
 
-module.exports.getAll = async (req, res, next) => {
-    // try {
-    //     const rawPlaces = await Place.findAll({
-    //         include: [
-    //             {model: Consumer},
-    //             {model: Meter}
-    //         ]
-    //     });
-    //     const places = rawPlaces.map(place => {
-    //         const c = place.Consumer;
-    //         const m = place.Meter;
-    //         const consumer = c && {id: c.id, name: c.name, email: c.email} || null;
-    //         const meter = m && {id: m.id, number: m.number} || null;
-    //         return {
-    //             id: place.id,
-    //             name: place.name,
-    //             isSignNeed: place.isSignNeed,
-    //             consumer,
-    //             meter
-    //         };
-    //     });
-    //     return res.json(places);
-    // }
-    // catch (err) {
-    //     return next(createError(500, err.message));
-    // }
-
+module.exports.count = async (req, res, next) => {
     try {
-        const rawPlaces = await Place.findAll({
-            include: [
-                {model: Meter},
-                {model: Consumer}
-            ]
-        });
+        const count = await Place.count();
+        return res.json({count});
+    } catch (error) {
+        return next(createError(500, error.message));
+    }
+};
+
+module.exports.getAll = async (req, res, next) => {
+    try {
+        const {limit, offset} = req.query;
+        const lim = Number(limit);
+        const off = Number(offset);
+        let rawPlaces = null;
+        if (!isNaN(lim) && !isNaN(off) && off >= 0 && lim > 0) {
+            rawPlaces = await Place.findAll({
+                offset: off,
+                limit: lim,
+                include: [
+                    {model: Meter},
+                    {model: Consumer}
+                ]
+            });
+        }
+        else {
+            rawPlaces = await Place.findAll({
+                include: [
+                    {model: Meter},
+                    {model: Consumer}
+                ]
+            });
+        }
         const places = await rawPlaces.map(async (place) => {
             let lastData = null;
             if (place.Meter) {

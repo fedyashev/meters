@@ -37,43 +37,48 @@ router.delete('/users/:user_id', jwt, allow([Role.ADMIN, Role.OWNER]), user.dele
 
 router.get('/userroles', jwt, allow([Role.ADMIN, Role.OWNER]), userrole.getAll);
 
-router.get('/inspectors', jwt, allow([Role.ADMIN, Role.OWNER]), inspector.getAll);
-router.get('/inspectors/user/:user_id', jwt, allow([Role.ADMIN, Role.OWNER, Role.INSPECTOR]), inspector.getByUserId);
-router.post('/inspectors', jwt, allow([Role.ADMIN, Role.OWNER]), inspector.create);
+router.get('/inspectors', jwt, allow([ADMIN, OWNER]), inspector.getAll);
+router.get('/inspectors/count', jwt, allow([ADMIN, OWNER]), inspector.count);
+router.get('/inspectors/user/:user_id', jwt, allow([ADMIN, OWNER, INSPECTOR]), inspector.getByUserId);
+router.post('/inspectors', jwt, allow([ADMIN, OWNER]), inspector.create);
 
-router.get('/inspectors/:inspector_id', jwt, allow([Role.ADMIN, Role.OWNER], self.inspector), inspector.getById);
-router.put('/inspectors/:inspector_id', jwt, allow([Role.ADMIN, Role.OWNER]), inspector.updateById);  // Change name
-router.delete('/inspectors/:inspector_id', jwt, allow([Role.ADMIN, Role.OWNER]), inspector.deleteById);
+router.get('/inspectors/:inspector_id', jwt, allow([ADMIN, OWNER], self.inspector), inspector.getById);
+router.put('/inspectors/:inspector_id', jwt, allow([ADMIN, OWNER]), inspector.updateById);  // Change name
+router.delete('/inspectors/:inspector_id', jwt, allow([ADMIN, OWNER]), inspector.deleteById);
 
 router.get('/consumers', jwt, allow([ADMIN, OWNER, INSPECTOR]), consumer.getAll);
-router.post('/consumers', jwt, allow([Role.ADMIN, Role.OWNER]), consumer.create);
+router.get('/consumers/count', jwt, allow([ADMIN, OWNER]), consumer.count);
+router.post('/consumers', jwt, allow([ADMIN, OWNER]), consumer.create);
 
 router.get('/consumers/:consumer_id', jwt, allow([Role.ADMIN, Role.OWNER], self.consumer), consumer.getById);
 router.put('/consumers/:consumer_id', jwt, allow([Role.ADMIN, Role.OWNER]), consumer.updateById);  // Change name, email
 router.delete('/consumers/:consumer_id', jwt, allow([Role.ADMIN, Role.OWNER]), consumer.deleteById);
 
-router.get('/meters', jwt, allow([Role.ADMIN, Role.OWNER]), meter.getAll);
+router.get('/meters', jwt, allow([ADMIN, OWNER]), meter.getAll);
+router.get('/meters/count', jwt, allow([ADMIN, OWNER]), meter.count);
 router.get('/meters/notInPlace', jwt, allow([ADMIN, OWNER, INSPECTOR]), meter.getAllNotInPlace);
-router.post('/meters', jwt, allow([Role.ADMIN, Role.OWNER]), meter.create);
+router.post('/meters', jwt, allow([ADMIN, Role]), meter.create);
 
-router.get('/meters/:meter_id', jwt, allow([Role.ADMIN, Role.OWNER]), meter.getById);
-router.put('/meters/:meter_id', jwt, allow([Role.ADMIN, Role.OWNER]), meter.updateById);  // Change number
-router.delete('/meters/:meter_id', jwt, allow([Role.ADMIN, Role.OWNER]), meter.deleteById);
+router.get('/meters/:meter_id', jwt, allow([ADMIN, OWNER]), meter.getById);
+router.put('/meters/:meter_id', jwt, allow([ADMIN, OWNER]), meter.updateById);  // Change number
+router.delete('/meters/:meter_id', jwt, allow([ADMIN, OWNER]), meter.deleteById);
 
 router.get('/places', jwt, allow([ADMIN, OWNER, INSPECTOR]), place.getAll);
-router.get('/places/audit', jwt, allow([ADMIN, OWNER, INSPECTOR]), place.getAllForAudit);
+router.get('/places/count', jwt, allow([ADMIN, OWNER, INSPECTOR]), place.count);
+//router.get('/places/audit', jwt, allow([ADMIN, OWNER, INSPECTOR]), place.getAllForAudit);
 router.post('/places', jwt, allow([ADMIN, OWNER, INSPECTOR]), place.create);
 
 router.get('/places/:place_id', jwt, allow([ADMIN, OWNER, INSPECTOR]), place.getById);
 router.put('/places/:place_id', jwt, allow([ADMIN, OWNER, INSPECTOR]), place.updateById); // Change name, isSignNeed, Consumer, Meter
 router.delete('/places/:place_id', jwt, allow([Role.ADMIN, Role.OWNER]), place.deleteById);
 
-router.get('/data', jwt, allow([Role.ADMIN, Role.OWNER]), data.getAll);
-router.post('/data', jwt, allow([Role.ADMIN, Role.OWNER]), data.create);
+router.get('/data', jwt, allow([ADMIN, OWNER]), data.getAll);
+router.get('/data/count', jwt, allow([ADMIN, OWNER]), data.count);
+router.post('/data', jwt, allow([ADMIN, OWNER]), data.create);
 
-router.get('/data/:data_id', jwt, allow([Role.ADMIN, Role.OWNER]), data.getById);
-router.put('/data/:data_id', jwt, allow([Role.ADMIN, Role.OWNER]), data.updateById);
-router.delete('/data/:data_id', jwt, allow([Role.ADMIN, Role.OWNER]), data.deteleById);
+router.get('/data/:data_id', jwt, allow([ADMIN, OWNER]), data.getById);
+router.put('/data/:data_id', jwt, allow([ADMIN, OWNER]), data.updateById);
+router.delete('/data/:data_id', jwt, allow([ADMIN, OWNER]), data.deteleById);
 
 router.get('/signs', jwt, allow([Role.ADMIN, Role.OWNER]), sign.getAll);
 router.post('/signs', jwt, allow([ADMIN, OWNER, INSPECTOR]), uploader.single('sign'), sign.create);
@@ -83,8 +88,9 @@ router.get('/signs/:sign_id', sign.getById);
 router.put('/signs/:sign_id', jwt, allow([ADMIN, OWNER]), uploader.single('sign'), sign.updateById);
 router.delete('/signs/:sign_id', jwt, allow([ADMIN, OWNER, INSPECTOR]), sign.deleteById);
 
-router.get('/reports', jwt, allow([Role.ADMIN, Role.OWNER, Role.INSPECTOR]), report.getAll);
-router.post('/reports', jwt, allow([Role.ADMIN, Role.OWNER, Role.INSPECTOR]), report.create);
+router.get('/reports', jwt, allow([ADMIN, OWNER, INSPECTOR]), report.getAll);
+router.get('/reports/count', jwt, allow([ADMIN, OWNER, INSPECTOR]), report.count);
+router.post('/reports', jwt, allow([ADMIN, OWNER, INSPECTOR]), report.create);
 
 router.get('/reports/:report_id', jwt, allow([Role.ADMIN, Role.OWNER, Role.INSPECTOR]), report.getById);
 router.get('/reports/:report_id/pdf', jwt, allow([Role.ADMIN, Role.OWNER, Role.INSPECTOR]), report.getByIdPdf);

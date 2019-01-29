@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import api from '../../lib/api';
 import NavBar from '../NavBar';
+import Pagination from 'react-js-pagination';
 
 class InspectorList extends Component {
   constructor(props) {
@@ -10,21 +11,46 @@ class InspectorList extends Component {
     this.state = {
       user: props.user,
       inspectors: [],
+      limit: 30,
+      activePage: 1,
+      totalItemsCount: 0,
       isLoaded: false
     };
   }
 
+  loadItems = pageNumber => async () => {
+    try {
+      const { user: { token }, limit } = this.state;
+      const result = await api.getCountInspectors(token);
+      if (result && result.count > 0) {
+        const offset = (pageNumber - 1) * limit;
+        const inspectors = await api.getAllInspectors(token, limit, offset);
+        this.setState({ ...this.state, inspectors, totalItemsCount: result.count, activePage: pageNumber, isLoaded: true })
+      }
+      else {
+        this.setState({ ...this.state, isLoaded: true });
+      }
+    }
+    catch ({ error }) {
+      this.props.showWarningAlert(error.message);
+    }
+  };
+
   componentDidMount() {
-    api.getAllInspectors(this.props.user.token)
-      .then(inspectors => {
-        if (inspectors) {
-          this.setState({...this.state, inspectors, isLoaded: true});
-        }
-      })
-      .catch(({error}) => {
-        this.props.setAlert('warning', error.message);
+    Promise.resolve()
+      .then(this.loadItems(this.state.activePage))
+      .catch(({ error }) => {
+        this.props.showWarningAlert(error.message);
       });
   };
+
+  handlerChangePage = pageNumber => {
+    Promise.resolve()
+      .then(this.loadItems(pageNumber))
+      .catch(({ error }) => {
+        this.props.showWarningAlert(error.message);
+      });
+  }
 
   render() {
     if (!this.state.isLoaded) return null;
@@ -34,6 +60,19 @@ class InspectorList extends Component {
           <Link className="nav-link" to='/owner/inspectors/create'>Добавить</Link>
         </NavBar>
         <Table inspectors={this.state.inspectors}/>
+        {
+          this.state.totalItemsCount > this.state.limit ?
+            <Pagination
+              hideDisabled
+              activePage={this.state.activePage}
+              itemsCountPerPage={this.state.limit}
+              totalItemsCount={this.state.totalItemsCount}
+              innerClass="pagination justify-content-center"
+              itemClass="page-item"
+              linkClass="page-link"
+              onChange={this.handlerChangePage}
+            /> : null
+        }
       </div>
     );
   }

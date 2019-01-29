@@ -1,13 +1,47 @@
 const createError = require('http-errors');
 const {Data, Meter} = require('../models');
-const validator = require('validator');
+//const validator = require('validator');
+
+module.exports.count = async (req, res, next) => {
+    try {
+        const {meter_id} = req.query;
+        let count = null;
+        if (meter_id) {
+            count = await Data.count({where: {MeterId: meter_id}});
+        }
+        else {
+            count = await Data.count();
+        }
+        return res.json({count});
+    } catch (err) {
+        return next(createError(500, err.message));
+    }
+};
 
 module.exports.getAll = async (req, res, next) => {
     try {
-        const {meter_id} = req.query;
+        const {meter_id, limit, offset} = req.query;
+        const lim = Number(limit);
+        const off = Number(offset);
+        const withPages = !isNaN(lim) && !isNaN(off) && off >= 0 && lim > 0;
         let datas;
-        if (meter_id) {
-            datas = await Data.findAll({where: {MeterId: meter_id}, include: [{model: Meter}]});
+        if (meter_id && withPages) {
+            datas = await Data.findAll({
+                where: {MeterId: meter_id},
+                offset: off,
+                limit: lim,
+                include: [{model: Meter}]});
+        }
+        else if (meter_id && !withPages) {
+            datas = await Data.findAll({
+                where: {MeterId: meter_id},
+                include: [{model: Meter}]});
+        }
+        else if (!meter_id && withPages) {
+            datas = await Data.findAll({
+                offset: off,
+                limit: lim,
+                include: [{model: Meter}]});
         }
         else {
             datas = await Data.findAll({include: [{model: Meter}]});

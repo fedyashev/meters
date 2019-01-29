@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import api from '../../lib/api';
 import NavBar from '../NavBar';
 import { Link } from 'react-router-dom';
+import Pagination from 'react-js-pagination';
 
 class InspectorPlaceList extends Component {
   constructor(props) {
@@ -10,27 +11,45 @@ class InspectorPlaceList extends Component {
     this.state = {
       user: props.user,
       places: [],
+      pageLimit: 30,
+      activePage: 1,
+      totalItemsCount: 0,
       isLoaded: false
     };
   }
 
+  loadItems = pageNumber => async () => {
+    try {
+      const { user: { token }, pageLimit } = this.state;
+      const result = await api.getCountPlaces(token);
+      if (result && result.count > 0) {
+        const places = await api.getAllPlaces(token, pageLimit, (pageNumber - 1) * pageLimit);
+        this.setState({ ...this.state, places, totalItemsCount: result.count, activePage: pageNumber, isLoaded: true })
+      }
+      else {
+        this.setState({ ...this.state, isLoaded: true });
+      }
+    }
+    catch ({ error }) {
+      this.props.showWarningAlert(error.message);
+    }
+  };
+
   componentDidMount() {
-    const token = this.state.user.token;
-    api.getAllPlaces(token)
-      .then(
-        places => {
-          if (places) {
-            this.setState({ ...this.state, places, isLoaded: true });
-          }
-        },
-        ({ error }) => {
-          this.props.showWarningAlert(error.message);
-        }
-      )
+    Promise.resolve()
+      .then(this.loadItems(this.state.activePage))
       .catch(({ error }) => {
         this.props.showWarningAlert(error.message);
       });
   };
+
+  handlerChangePage = pageNumber => {
+    Promise.resolve()
+      .then(this.loadItems(pageNumber))
+      .catch(({ error }) => {
+        this.props.showWarningAlert(error.message);
+      });
+  }
 
   render() {
     if (!this.state.isLoaded) return null;
@@ -40,6 +59,19 @@ class InspectorPlaceList extends Component {
           <Link className="nav-link" to='/inspector/places/create'>Добавить</Link>
         </NavBar>
         <Table places={this.state.places} />
+        {
+          this.state.totalItemsCount > this.state.pageLimit ?
+            <Pagination
+              hideDisabled
+              activePage={this.state.activePage}
+              itemsCountPerPage={this.state.pageLimit}
+              totalItemsCount={this.state.totalItemsCount}
+              innerClass="pagination justify-content-center"
+              itemClass="page-item"
+              linkClass="page-link"
+              onChange={this.handlerChangePage}
+            /> : null
+        }
       </div>
     );
   }
@@ -82,14 +114,14 @@ const TableRow = props => {
 };
 
 const style = place => {
-  if (!place.meter) return {backgroundColor : '#b0bec5'};
+  if (!place.meter) return { backgroundColor: '#b0bec5' };
   if (place.meter) {
-    const {lastData} = place.meter;
+    const { lastData } = place.meter;
     if (lastData && (new Date(lastData.date)).getMonth() === (new Date(Date.now())).getMonth()) {
-      return {backgroundColor : '#ffab91'};
+      return { backgroundColor: '#ffab91' };
     }
     else {
-      return {backgroundColor : '#c5e1a5'}
+      return { backgroundColor: '#c5e1a5' }
     }
   }
   return null;

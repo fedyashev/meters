@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import api from '../../lib/api';
 import NavBar from '../NavBar';
 import { Link } from 'react-router-dom';
+import Pagination from 'react-js-pagination';
 
 class MeterList extends Component {
   constructor(props) {
@@ -10,21 +11,46 @@ class MeterList extends Component {
     this.state = {
       user: props.user,
       meters: [],
+      limit: 30,
+      activePage: 1,
+      totalItemsCount: 0,
       isLoaded: false
     };
   }
 
+  loadItems = pageNumber => async () => {
+    try {
+      const { user: { token }, limit } = this.state;
+      const result = await api.getCountMeters(token);
+      if (result && result.count > 0) {
+        const offset = (pageNumber - 1) * limit;
+        const meters = await api.getAllMeters(token, limit, offset);
+        this.setState({ ...this.state, meters, totalItemsCount: result.count, activePage: pageNumber, isLoaded: true })
+      }
+      else {
+        this.setState({ ...this.state, isLoaded: true });
+      }
+    }
+    catch ({ error }) {
+      this.props.showWarningAlert(error.message);
+    }
+  };
+
   componentDidMount() {
-    api.getAllMeters(this.props.user.token)
-      .then(meters => {
-        if (meters) {
-          this.setState({ ...this.state, meters, isLoaded: true });
-        }
-      })
+    Promise.resolve()
+      .then(this.loadItems(this.state.activePage))
       .catch(({ error }) => {
         this.props.showWarningAlert(error.message);
       });
   };
+
+  handlerChangePage = pageNumber => {
+    Promise.resolve()
+      .then(this.loadItems(pageNumber))
+      .catch(({ error }) => {
+        this.props.showWarningAlert(error.message);
+      });
+  }
 
   render() {
     if (!this.state.isLoaded) return null;
@@ -34,6 +60,19 @@ class MeterList extends Component {
           <Link className="nav-link" to="/owner/meters/create">Добавить</Link>
         </NavBar>
         <Table meters={this.state.meters} />
+        {
+          this.state.totalItemsCount > this.state.limit ?
+            <Pagination
+              hideDisabled
+              activePage={this.state.activePage}
+              itemsCountPerPage={this.state.limit}
+              totalItemsCount={this.state.totalItemsCount}
+              innerClass="pagination justify-content-center"
+              itemClass="page-item"
+              linkClass="page-link"
+              onChange={this.handlerChangePage}
+            /> : null
+        }
       </div>
     );
   }

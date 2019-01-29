@@ -53,7 +53,7 @@ const api = {
             });
     },
 
-    getAllInspectors: (token) => {
+    getAllInspectors: (token, limit, offset) => {
         const opt = {
             method: 'GET',
             headers: {
@@ -61,7 +61,23 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = '/api/v1/inspectors';
+        const url = `/api/v1/inspectors?limit=${limit}&offset=${offset}`;
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
+    },
+
+    getCountInspectors: (token) => {
+        const opt = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            }
+        };
+        const url = '/api/v1/inspectors/count';
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -156,7 +172,7 @@ const api = {
             });
     },
 
-    getAllConsumers: (token) => {
+    getAllConsumers: (token, limit, offset) => {
         const opt = {
             method: 'GET',
             headers: {
@@ -164,7 +180,26 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = '/api/v1/consumers';
+        const params = [];
+        if (limit) params.push(`limit=${limit}`);
+        if (!isNaN(offset)) params.push(`offset=${offset}`);
+        const url = `/api/v1/consumers?${params.join('&')}`;
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
+    },
+
+    getCountConsumers: (token) => {
+        const opt = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            }
+        };
+        const url = '/api/v1/consumers/count';
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -240,7 +275,7 @@ const api = {
             });  
     },
 
-    getAllMeters: (token) => {
+    getAllMeters: (token, limit, offset) => {
         const opt = {
             method: 'GET',
             headers: {
@@ -248,7 +283,23 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = '/api/v1/meters';
+        const url = `/api/v1/meters?limit=${limit}&offset=${offset}`;
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
+    },
+
+    getCountMeters: (token) => {
+        const opt = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            }
+        };
+        const url = '/api/v1/meters/count';
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -340,7 +391,7 @@ const api = {
             });
     },
 
-    getAllPlaces: (token) => {
+    getCountPlaces: (token) => {
         const opt = {
             method: 'GET',
             headers: {
@@ -348,7 +399,23 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = '/api/v1/places';
+        const url = '/api/v1/places/count';
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
+    },
+
+    getAllPlaces: (token, limit, offset) => {
+        const opt = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            }
+        };
+        const url = `/api/v1/places?limit=${limit}&offset=${offset}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -440,7 +507,7 @@ const api = {
             });
     },
 
-    getAllReports: (token) => {
+    getAllReports: (token, limit, offset) => {
         const opt = {
             method: 'GET',
             headers: {
@@ -448,7 +515,23 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = '/api/v1/reports';
+        const url = `/api/v1/reports?limit=${limit}&offset=${offset}`;
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
+    },
+
+    getCountReports: (token, inspector_id) => {
+        const opt = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            }
+        };
+        const url = `/api/v1/reports/count?inspector_id=${inspector_id || ""}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -487,7 +570,7 @@ const api = {
             .then(blob => saveAs(blob, `report-${Date.now()}.pdf`));
     },
 
-    getAllReportsByInspectorId: (token, inspector_id) => {
+    getAllReportsByInspectorId: (token, inspector_id, limit, offset) => {
         const opt = {
             method: 'GET',
             headers: {
@@ -495,7 +578,7 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = `/api/v1/reports?inspector_id=${inspector_id}`;
+        const url = `/api/v1/reports?inspector_id=${inspector_id}&limit=${limit}&offset=${offset}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -555,7 +638,7 @@ const api = {
             });
     },
 
-    getAllDataByMeterId: (token, meter_id) => {
+    getAllDataByMeterId: (token, meter_id, limit, offset) => {
         const opt = {
             method: 'GET',
             headers: {
@@ -563,7 +646,23 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = `/api/v1/data?meter_id=${meter_id}`;
+        const url = `/api/v1/data?meter_id=${meter_id || ""}&offset=${offset}&limit=${limit}`;
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
+    },
+
+    getCountDatas: (token, meter_id) => {
+        const opt = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            }
+        };
+        const url = `/api/v1/data/count?meter_id=${meter_id || ""}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();

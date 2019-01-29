@@ -1,20 +1,40 @@
 const createError = require('http-errors');
 const validator = require('validator');
-const {Inspector, User, UserRole, sequelize} = require('../models');
+const { Inspector, User, UserRole, sequelize } = require('../models');
 const crypt = require('../lib/crypt');
-const {Role} = require('../lib/roles');
+const { Role } = require('../lib/roles');
 
 const pattern = '[a-zA-Zа-яА-Я0-9.]';
 
+module.exports.count = async (req, res, next) => {
+    try {
+        const count = await Inspector.count();
+        return res.json({ count });
+    } catch (err) {
+        return next(createError(500, err.message));
+    }
+};
+
 module.exports.getAll = async (req, res, next) => {
     try {
-        const inspectors = await Inspector
-            .findAll({
-                include: [
-                    {model: User}
-                ]
-            })
-            .map(({id, name, User: {login}}) => ({id, login, name}));
+        const { limit, offset } = req.query;
+        const lim = Number(limit);
+        const off = Number(offset);
+        let inspectors = null;
+        if (!isNaN(lim) && !isNaN(off) && off >= 0 && lim > 0) {
+            inspectors = await Inspector
+                .findAll({
+                    offset: off,
+                    limit: lim,
+                    include: [{ model: User }]
+                })
+                .map(({ id, name, User: { login } }) => ({ id, login, name }));
+        }
+        else {
+            inspectors = await Inspector
+                .findAll({ include: [{ model: User }] })
+                .map(({ id, name, User: { login } }) => ({ id, login, name }));
+        }
         res.json(inspectors);
     } catch (err) {
         return next(createError(500, err.message));
@@ -23,13 +43,13 @@ module.exports.getAll = async (req, res, next) => {
 
 module.exports.getById = async (req, res, next) => {
     try {
-        const {inspector_id} = req.params;
+        const { inspector_id } = req.params;
         if (!inspector_id) {
             return next(createError(400, 'Incorrect inspector id'));
         }
         const inspector = await Inspector.findOne({
-            where: {id: inspector_id},
-            include: [{model: User}]
+            where: { id: inspector_id },
+            include: [{ model: User }]
         });
         if (!inspector) {
             return next(createError(404, 'Inspector not found'));
@@ -46,13 +66,13 @@ module.exports.getById = async (req, res, next) => {
 
 module.exports.getByUserId = async (req, res, next) => {
     try {
-        const {user_id} = req.params;
+        const { user_id } = req.params;
         if (!user_id) {
             return next(createError(400, 'Incorrect inspector id'));
         }
         const inspector = await Inspector.findOne({
-            where: {UserId: user_id},
-            include: [{model: User}]
+            where: { UserId: user_id },
+            include: [{ model: User }]
         });
         if (!inspector) {
             return next(createError(404, 'Inspector not found'));
@@ -69,23 +89,23 @@ module.exports.getByUserId = async (req, res, next) => {
 
 module.exports.create = async (req, res, next) => {
     try {
-        const {name, login, password} = req.body;
+        const { name, login, password } = req.body;
         if (!name || !login || !password) {
             return next(createError(400, 'Incorrect input parameters'));
         }
 
-        const isValid = 
-            validator.matches(name, pattern)  &&
-            validator.isAlphanumeric(login) && 
+        const isValid =
+            validator.matches(name, pattern) &&
+            validator.isAlphanumeric(login) &&
             validator.isAlphanumeric(password);
 
         if (!isValid) {
             return next(createError(400, 'Incorrect input parameters'));
         }
 
-        const role = await UserRole.findOne({where: {role: Role.INSPECTOR}});
+        const role = await UserRole.findOne({ where: { role: Role.INSPECTOR } });
         if (!role) {
-          return next(createError(404, 'User role not found'));
+            return next(createError(404, 'User role not found'));
         }
 
         // Create inspector transaction
@@ -94,8 +114,8 @@ module.exports.create = async (req, res, next) => {
         try {
             let result = await sequelize.transaction(async (t) => {
                 const passwordHash = await crypt.getPasswordHash(password);
-                user = await User.create({login, passwordHash, UserRoleId: role.id}, {transaction: t});
-                inspector = await Inspector.create({UserId: user.id, name}, {transaction: t});
+                user = await User.create({ login, passwordHash, UserRoleId: role.id }, { transaction: t });
+                inspector = await Inspector.create({ UserId: user.id, name }, { transaction: t });
             });
         } catch (err) {
             return next(createError(500, err.message));
@@ -117,9 +137,9 @@ module.exports.create = async (req, res, next) => {
 
 module.exports.updateById = async (req, res, next) => {
     try {
-        const {name} = req.body;
-        const {inspector_id} = req.params;
-    
+        const { name } = req.body;
+        const { inspector_id } = req.params;
+
         if (!name || !inspector_id) {
             return next(createError(400, 'Incorrect input parameters'));
         }
@@ -131,7 +151,7 @@ module.exports.updateById = async (req, res, next) => {
             return next(createError(400, 'Incorrect input parameters'));
         }
 
-        const [count, ...rest] = await Inspector.update({name: name}, {where: {id: inspector_id}});
+        const [count, ...rest] = await Inspector.update({ name: name }, { where: { id: inspector_id } });
 
         if (!count) {
             return next(createError(500, 'Inspector updating failed'));
@@ -148,18 +168,18 @@ module.exports.updateById = async (req, res, next) => {
 
 module.exports.deleteById = async (req, res, next) => {
     try {
-        const {inspector_id} = req.params;
+        const { inspector_id } = req.params;
 
         if (!inspector_id) {
             return next(createError(404, 'Inspector not found'));
         }
 
-        const count = await Inspector.destroy({where: {id: inspector_id}});
+        const count = await Inspector.destroy({ where: { id: inspector_id } });
 
         if (!count) {
-            return next(createError(404, 'Failed to delete an inspector'));    
+            return next(createError(404, 'Failed to delete an inspector'));
         }
-        return res.json({done: true});
+        return res.json({ done: true });
     } catch (err) {
         return next(createError(500, err.message));
     }

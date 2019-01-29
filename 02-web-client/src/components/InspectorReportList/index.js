@@ -3,6 +3,7 @@ import api from '../../lib/api';
 import { prettyDate } from '../../lib/helpers';
 import NavBar from '../NavBar';
 import {Link} from 'react-router-dom';
+import Pagination from 'react-js-pagination';
 
 class InspectorReportList extends Component {
   constructor(props) {
@@ -12,26 +13,47 @@ class InspectorReportList extends Component {
       user: props.user,
       inspector: props.inspector,
       reports: [],
+      limit: 30,
+      activePage: 1,
+      totalItemsCount: 0,
       isLoaded: false
     };
   }
 
+  loadItems = pageNumber => async () => {
+    try {
+      const { user: { token }, limit } = this.state;
+      const inspector_id = this.state.inspector.id;
+      const result = await api.getCountReports(token, inspector_id);
+      if (result && result.count > 0) {
+        const offset = (pageNumber - 1) * limit;
+        const reports = await api.getAllReportsByInspectorId(token, inspector_id, limit, offset);
+        this.setState({ ...this.state, reports, totalItemsCount: result.count, activePage: pageNumber, isLoaded: true })
+      }
+      else {
+        this.setState({ ...this.state, isLoaded: true });
+      }
+    }
+    catch ({ error }) {
+      this.props.showWarningAlert(error.message);
+    }
+  };
+
   componentDidMount() {
-    const token = this.state.user.token;
-    const inspector_id = this.state.inspector.id;
-    api.getAllReportsByInspectorId(token, inspector_id)
-      .then(reports => {
-        console.log(reports);
-        if (reports) {
-          this.setState({ ...this.state, reports, isLoaded: true });
-        }
-      })
+    Promise.resolve()
+      .then(this.loadItems(this.state.activePage))
       .catch(({ error }) => {
-        this.setState({ ...this.state, isLoaded: true }, () => {
-          this.props.setAlert('warning', error.message);
-        });
+        this.props.showWarningAlert(error.message);
       });
   };
+
+  handlerChangePage = pageNumber => {
+    Promise.resolve()
+      .then(this.loadItems(pageNumber))
+      .catch(({ error }) => {
+        this.props.showWarningAlert(error.message);
+      });
+  }
 
   downloadPdf = report_id => e => {
     e.preventDefault();
@@ -48,6 +70,19 @@ class InspectorReportList extends Component {
       <div className="container justify-content-center">
         <NavBar {...this.props} />
         <Table reports={this.state.reports} downloadPdf={this.downloadPdf}/>
+        {
+          this.state.totalItemsCount > this.state.limit ?
+            <Pagination
+              hideDisabled
+              activePage={this.state.activePage}
+              itemsCountPerPage={this.state.limit}
+              totalItemsCount={this.state.totalItemsCount}
+              innerClass="pagination justify-content-center"
+              itemClass="page-item"
+              linkClass="page-link"
+              onChange={this.handlerChangePage}
+            /> : null
+        }
       </div>
     );
   }

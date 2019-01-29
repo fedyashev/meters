@@ -69,3 +69,67 @@
 8. Добавить поле phone в ConsumerInfo
 9. Добавить поле Телефон в ConsumerList
 10. Добавить поле ввода номера телефона на форме редактирования потребителя
+
+==================================================
+
+if (!isNaN(lim) && !isNaN(off) && off >= 0 && lim > 0) {
+
++1. Добавить пагинацию в InspectorList
+  +1.1 Добавить в контроллер inspector ф-цию count
+  +1.2 В контроллере inspector изменить ф-цию getAll.
+    Добавить параметры запроса limit, offset.
+    При наличии параметров limit, offset делать выборку из базы со смещением offset и количеством лимит.
+  +1.3 Добавить в роутер маршрут /inspectors/count
+  +1.4 Добавить в api ф-цию getCountInspectors
+  +1.5 Изменить в api ф-цию getAllInspectors
+  +1.6 Изменить компонент InspectorList
+
++2. Добавить пагинацию в ConsumerList
+  +2.1 Добавить в контроллер consumer ф-цию count
+  +2.2 В контроллере consumer изменить ф-цию getAll
+  +2.3 Добавить в роутер маршрут /consumers/count
+  +2.4 Добавить в api ф-цию getCountConsumers
+  +2.5 Изменить в api ф-цию getAllConsumers
+  +2.6 Изменить компонент ConsumerList
+
+3. Добавить пагинацию в MeterList
+  +3.1 Добавить в контроллер meters ф-цию count
+  +3.2 В контроллере meters изменить ф-цию getAll
+  +3.3 Добавить в роутер маршрут /meters/count
+  +3.4 Добавить в api ф-цию getCountMeters
+  +3.5 Изменить в api ф-цию getAllMeters
+  +3.6 Изменить компонент MeterList
+
+4. Добавить пагинацию в PlaceList
+  +4.1 Добавить в контроллер place ф-цию count
+  +4.2 В контроллере place изменить ф-цию getAll
+  +4.3 Добавить в роутер маршрут /places/count
+  +4.4 Добавить в api ф-цию getCountPlaces
+  +4.5 Изменить в api ф-цию getAllPlaces
+  +4.6 Изменить компонент PlaceList
+
+5. Добавить пагинацию в ReportList
+  +5.1 Добавить в контроллер report ф-цию count
+  +5.2 В контроллере report изменить ф-цию getAll
+  +5.3 Добавить в роутер маршрут /reports/count
+  +5.4 Добавить в api ф-цию getCountReports
+  +5.5 Изменить в api ф-цию getAllReports
+  +5.6 Изменить компонент ReportList
+
++6. Добавить пагинацию в InspectorPlaceList
+
+7. Добавить пагинацию в InspectorReportList
+  +7.1 Добавить в контроллер report ф-цию count
+  +7.2 В контроллере report изменить ф-цию getAll
+  +7.3 Добавить в роутер маршрут /reports/count
+  +7.4 Добавить в api ф-цию getCountReports
+  +7.5 Изменить в api ф-цию getAllReportsByInspectorId
+  +7.6 Изменить компонент InspectorReportList
+
+8. Добавить пагинацию в MeterInfo
+  +8.1 Добавить в контроллер data ф-цию count
+  +8.2 В контроллере data изменить ф-цию getAll
+  +8.3 Добавить в роутер маршрут /data/count
+  +8.4 Добавить в api ф-цию getCountDatas
+  +8.5 Изменить в api ф-цию getAllDatasByMeterId
+  +8.6 Изменить компонент MeterInfo

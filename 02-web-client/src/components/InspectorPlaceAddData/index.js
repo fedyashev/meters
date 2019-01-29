@@ -77,7 +77,7 @@ class InspectorPlaceAddData extends Component {
         }
 
         if (!report) {
-            this.props.showWarningAlert('Неудалось создать отчет')
+            this.props.showWarningAlert('Неудалось создать отчет');
         }
         else {
             api.sendReport(token, report.id)
@@ -89,6 +89,8 @@ class InspectorPlaceAddData extends Component {
                     this.props.showWarningAlert("Отчет создан, но не отправлен. \n" + error.message);
                     this.props.history.goBack();
                 });
+            // this.props.showSuccessAlert('Отчет создан');
+            // this.props.history.goBack();
         }
     };
 
@@ -185,12 +187,13 @@ class InspectorPlaceAddData extends Component {
                         </tbody>
                     </table>
                 </div>
-                <div className="input-group mb-3">
+                {/* <div className="input-group mb-3">
                     <div className="custom-file">
                         <input type="file" className="custom-file-input" />
                         <label className="custom-file-label">Фотография показаний</label>
                     </div>
-                </div>
+                </div> */}
+                <h5 className="text-center mb-2">Подпись потребителя</h5>
                 <div className="row justify-content-center">
                     <div className="col-12 col-sm-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
                         {

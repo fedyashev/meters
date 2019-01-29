@@ -1,21 +1,41 @@
 const createError = require('http-errors');
-const {Consumer, User, UserRole, sequelize} = require('../models');
+const { Consumer, User, UserRole, sequelize } = require('../models');
 const validator = require('validator');
 const crypt = require('../lib/crypt');
-const {Role} = require('../lib/roles');
+const { Role } = require('../lib/roles');
 
 const pattern = '[a-zA-Zа-яА-Я0-9.]';
 
+module.exports.count = async (req, res, next) => {
+  try {
+    const count = await Consumer.count();
+    return res.json({ count });
+  } catch (err) {
+    return next(createError(500, err.message));
+  }
+}
+
 module.exports.getAll = async (req, res, next) => {
   try {
-    const consumers = await Consumer
-      .findAll({
-        include: [
-          {model: User}
-        ]
-      })
-      .map(({id, name, email, phone, User: {login}}) => ({id, name, email, phone, login}));
-    return res.json(consumers);    
+    const { limit, offset } = req.query;
+    const lim = Number(limit);
+    const off = Number(offset);
+    let consumers = null;
+    if (!isNaN(lim) && !isNaN(off) && off >= 0 && lim > 0) {
+      consumers = await Consumer
+        .findAll({
+          offset: off,
+          limit: lim,
+          include: [{ model: User }]
+        })
+        .map(({ id, name, email, phone, User: { login } }) => ({ id, name, email, phone, login }));      
+    }
+    else {
+      consumers = await Consumer
+        .findAll({ include: [{ model: User }] })
+        .map(({ id, name, email, phone, User: { login } }) => ({ id, name, email, phone, login }));
+    }
+    return res.json(consumers);
   } catch (err) {
     return next(createError(500, err.message));
   }
@@ -23,15 +43,15 @@ module.exports.getAll = async (req, res, next) => {
 
 module.exports.create = async (req, res, next) => {
   try {
-    const {email, name, phone, login, password} = req.body;
+    const { email, name, phone, login, password } = req.body;
 
     if (!email || !name || !login || !password) {
       return next(createError(400, 'Incorrect input parameters'));
     }
 
-    const isValid = 
+    const isValid =
       validator.isEmail(email) &&
-      validator.matches(name, pattern) && 
+      validator.matches(name, pattern) &&
       validator.isAlphanumeric(login) &&
       validator.isAlphanumeric(password);
 
@@ -39,7 +59,7 @@ module.exports.create = async (req, res, next) => {
       return next(createError(400, 'Incorrect input parameters'));
     }
 
-    const role = await UserRole.findOne({where: {role: Role.CONSUMER}});
+    const role = await UserRole.findOne({ where: { role: Role.CONSUMER } });
     if (!role) {
       return next(createError(404, 'User role not found'));
     }
@@ -49,8 +69,8 @@ module.exports.create = async (req, res, next) => {
     try {
       let result = await sequelize.transaction(async (t) => {
         const passwordHash = await crypt.getPasswordHash(password);
-        user = await User.create({login, passwordHash, UserRoleId: role.id}, {transaction: t});
-        consumer = await Consumer.create({name, email, phone, UserId: user.id}, {transaction: t});
+        user = await User.create({ login, passwordHash, UserRoleId: role.id }, { transaction: t });
+        consumer = await Consumer.create({ name, email, phone, UserId: user.id }, { transaction: t });
       });
     } catch (err) {
       return next(createError(500, err.message));
@@ -74,19 +94,19 @@ module.exports.create = async (req, res, next) => {
 
 module.exports.getById = async (req, res, next) => {
   try {
-    const {consumer_id} = req.params;
-    
+    const { consumer_id } = req.params;
+
     if (!consumer_id) {
       return next(createError(400, 'Incorrect input parameters'));
     }
 
     const consumer = await Consumer.findOne({
-      where: {id: consumer_id},
+      where: { id: consumer_id },
       include: [
-        {model: User}
+        { model: User }
       ]
     });
-    
+
     if (!consumer) {
       return next(createError(404, 'Consumer not found'));
     }
@@ -106,14 +126,14 @@ module.exports.getById = async (req, res, next) => {
 
 module.exports.updateById = async (req, res, next) => {
   try {
-    const {consumer_id} = req.params;
-    const {name, email, phone} = req.body;
+    const { consumer_id } = req.params;
+    const { name, email, phone } = req.body;
 
     if (!consumer_id || !name || !email) {
       return next(createError(400, 'Incorrect input parameters'));
     }
 
-    const isValid = 
+    const isValid =
       validator.matches(name, pattern) &&
       validator.isEmail(email);
 
@@ -121,10 +141,10 @@ module.exports.updateById = async (req, res, next) => {
       return next(createError(400, 'Incorrect input parameters'));
     }
 
-    const [count, ...rest] = await Consumer.update({name, email, phone: phone}, {where: {id: consumer_id}});
+    const [count, ...rest] = await Consumer.update({ name, email, phone: phone }, { where: { id: consumer_id } });
 
     if (!count) {
-      return next(createError(400, 'Updating failed'));  
+      return next(createError(400, 'Updating failed'));
     }
 
     return res.json({
@@ -132,28 +152,28 @@ module.exports.updateById = async (req, res, next) => {
       name,
       email,
       phone: phone
-    });    
-   }
-  catch(err) {
+    });
+  }
+  catch (err) {
     return next(createError(500, err.message));
   }
 };
 
 module.exports.deleteById = async (req, res, next) => {
   try {
-    const {consumer_id} = req.params;
-    
+    const { consumer_id } = req.params;
+
     if (!consumer_id) {
       return next(createError(400, 'Incorrect input parameters'));
     }
 
-    const count = await Consumer.destroy({where: {id: consumer_id}});
+    const count = await Consumer.destroy({ where: { id: consumer_id } });
 
     if (!count) {
-      return next(createError(500, 'Deleting failed'));  
+      return next(createError(500, 'Deleting failed'));
     }
 
-    return res.json({done: true});
+    return res.json({ done: true });
   }
   catch (err) {
     return next(createError(500, err.message));

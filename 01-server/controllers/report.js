@@ -66,29 +66,65 @@ const queryIncludesWithSign = [
 
 ///////////////////////////////////////////////////////////////////////////////
 
+module.exports.count = async (req, res, next) => {
+    try {
+        const {inspector_id} = req.query;
+        console.log(typeof inspector_id, inspector_id);
+        let count = null;
+        if (inspector_id) {
+            count = await Report.count({where: {InspectorId: inspector_id}});
+        }
+        else {
+            count = await Report.count();
+        }
+        return res.json({ count });
+    } catch (err) {
+        return next(createError(500, err.message));
+    }
+};
+
 module.exports.getAll = async (req, res, next) => {
     try {
-        const { inspector_id } = req.query;
-        let reports = null;
+        const { inspector_id, limit, offset } = req.query;
+        const lim = Number(limit);
+        const off = Number(offset);
 
-        if (inspector_id) {
+        let reports = null;
+        const withPages = !isNaN(lim) && !isNaN(off) && off >= 0 && lim > 0;
+        if (inspector_id && withPages) {
             reports = await Report
                 .findAll({
                     where: { InspectorId: inspector_id },
-                    order: [
-                        ['id', 'ASC']
-                    ],
+                    offset: off,
+                    limit: lim,
+                    order: [['id', 'DESC']],
+                    include: queryIncludes
+                })
+                .map(reportMapper);
+        }
+        else if (inspector_id && !withPages) {
+            reports = await Report
+                .findAll({
+                    where: { InspectorId: inspector_id },
+                    order: [['id', 'DESC']],
+                    include: queryIncludes
+                })
+                .map(reportMapper);
+        }
+        else if (!inspector_id && withPages) {
+            reports = await Report
+                .findAll({
+                    offset: off,
+                    limit: lim,
+                    order: [['id', 'DESC']],
                     include: queryIncludes
                 })
                 .map(reportMapper);
         }
         else {
-            // All reports
             reports = await Report
                 .findAll({
-                    order: [
-                        ['id', 'ASC']
-                    ],
+                    order: [['id', 'DESC']],
                     include: queryIncludes
                 })
                 .map(reportMapper);
@@ -245,7 +281,7 @@ module.exports.sendEmailById = async (req, res, next) => {
             .catch(err => {
                 return next(createError(500, err.message));
             });
-            
+
         doc.end();
     } catch (err) {
         next(createError(500, err.message));
