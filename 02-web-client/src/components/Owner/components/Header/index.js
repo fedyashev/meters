@@ -36,6 +36,9 @@ const Header = props => {
                                 <Link className="nav-link" to="/owner/reports">Отчеты</Link>
                             </li>
                             <li className="nav-item">
+                                <Link className="nav-link" to="/owner/registers">Регистры</Link>
+                            </li>
+                            <li className="nav-item">
                                 <Link className="nav-link text-warning" to="/logout" onClick={onClickLogout}>Выход</Link>
                             </li>
                         </ul>

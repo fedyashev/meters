@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import api from '../../lib/api';
 import NavBar from '../NavBar';
+import ProgressBar from '../ProgressBar';
 import { Link } from 'react-router-dom';
 import Pagination from 'react-js-pagination';
 
@@ -53,15 +54,14 @@ class PlaceList extends Component {
   }
 
   render() {
-    const {app} = this.state;
-    if (this.state.isLoaded) {
-      return (
-        <div className="container justify-content-center">
-          <NavBar {...this.props}>
-            <Link className="nav-link" to={`/owner/places/create`}>Добавить</Link>
-          </NavBar>
-          <Table places={this.state.places} app={app}/>
-          {
+    if (!this.state.isLoaded) return <ProgressBar />
+    return (
+      <div className="container justify-content-center">
+        <NavBar {...this.props}>
+          <Link className="nav-link" to={`/owner/places/create`}>Добавить</Link>
+        </NavBar>
+        <Table places={this.state.places} />
+        {
           this.state.totalItemsCount > this.state.limit ?
             <Pagination
               hideDisabled
@@ -74,10 +74,8 @@ class PlaceList extends Component {
               onChange={this.handlerChangePage}
             /> : null
         }
-        </div>
-      );
-    }
-    return null;
+      </div>
+    );
   }
 
 };
@@ -98,7 +96,7 @@ const Table = props => {
         </thead>
         <tbody style={{ fontSize: '0.85rem' }}>
           {
-            places && places.map(place => <TableRow key={`${place.id}-${place.name}`} place={place}/>)
+            places && places.map(place => <TableRow key={`${place.id}-${place.name}`} place={place} />)
           }
         </tbody>
       </table>
@@ -107,7 +105,7 @@ const Table = props => {
 };
 
 const TableRow = props => {
-  const { place} = props;
+  const { place } = props;
   return (
     <tr>
       <td className="text-center">

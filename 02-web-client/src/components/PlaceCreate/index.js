@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import api from '../../lib/api';
-import GoBackLink from '../GoBackLink';
+import NavBar from '../NavBar';
+import ProgressBar from '../ProgressBar';
 
 class PlaceCreate extends Component {
     constructor(props) {
@@ -45,7 +46,7 @@ class PlaceCreate extends Component {
             .then(
                 place => {
                     if (place) {
-                        this.props.showSuccessAlert('Место добавлено');
+                        //this.props.showSuccessAlert('Место добавлено');
                         this.props.history.goBack();
                     }
                     else {
@@ -62,6 +63,7 @@ class PlaceCreate extends Component {
     }
 
     render() {
+        if (!this.state.isLoaded) return <ProgressBar/>
         let name, isSignNeed, consumer_id, meter_id;
         const onClickCreate = e => {
             e.preventDefault();
@@ -113,14 +115,6 @@ class PlaceCreate extends Component {
         }
         return null;
     }
-};
-
-const NavBar = props => {
-    return (
-        <nav className="nav">
-            <GoBackLink {...props} />
-        </nav>
-    );
 };
 
 export default PlaceCreate;

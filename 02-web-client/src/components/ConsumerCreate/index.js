@@ -15,22 +15,28 @@ class ConsumerCreate extends Component {
 
     handleCreateConsumer = (login, password, name, email, phone) => {
         const token = this.state.user.token;
-        this.setState({...this.state, isLoaded: true});
+        this.setState({ ...this.state, isLoaded: false });
         api.createConsumer(token, login, password, name, email, phone)
             .then(consumer => {
                 if (consumer) {
-                    this.props.showSuccessAlert('Потребитель добавлен');
-                    this.props.history.goBack();
+                    this.setState({ ...this.state, isLoaded: true }, () => {
+                        this.props.showSuccessAlert('Потребитель добавлен');
+                        this.props.history.goBack();
+                    });
                 }
                 else {
                     this.props.showWarningAlert('Потребитель не добавлен');
-                    this.setState({...this.state, isLoaded: false});
+                    this.setState({ ...this.state, isLoaded: true });
                 }
             })
             .catch(({ error }) => {
                 this.props.showWarningAlert(error.message);
-                this.setState({...this.state, isLoaded: false});
+                this.setState({ ...this.state, isLoaded: true });
             });
+    }
+
+    componentDidMount() {
+        this.setState({ ...this.state, isLoaded: true });
     }
 
     render() {
@@ -50,36 +56,41 @@ class ConsumerCreate extends Component {
         };
 
         return (
-            <div className="container">
-                <NavBar {...this.props}/>
-                <div className="row justify-content-center mt-3">
-                    <div className="col-12 col-sm-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
-                        <div className="text-center font-weight-bold mb-5">
-                            <h3>Добавить потребителя</h3>
+            <div>
+                {
+                    !this.state.isLoaded && <ProgressBar />
+                }
+                <div className="container">
+                    <NavBar {...this.props} />
+                    <div className="row justify-content-center mt-3">
+                        <div className="col-12 col-sm-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+                            <div className="text-center font-weight-bold mb-5">
+                                <h3>Добавить потребителя</h3>
+                            </div>
+                            <form>
+                                <div className="form-group">
+                                    <input className="form-control" type="text" placeholder="Логин" required autoFocus ref={r => login = r} />
+                                </div>
+                                <div className="form-group">
+                                    <input className="form-control" type="password" placeholder="Пароль" required ref={r => password = r} />
+                                </div>
+                                <div className="form-group">
+                                    <input className="form-control" type="password" placeholder="Подтвердить пароль" required ref={r => confirmPassword = r} />
+                                </div>
+                                <div className="form-group">
+                                    <input className="form-control" type="text" placeholder="Название потребителя" required ref={r => name = r} />
+                                </div>
+                                <div className="form-group">
+                                    <input className="form-control" type="email" placeholder="Email" required ref={r => email = r} />
+                                </div>
+                                <div className="form-group">
+                                    <input className="form-control" type="email" placeholder="Номер телефона" required ref={r => phone = r} />
+                                </div>
+                                <div className="form-group">
+                                    <button className="btn btn-primary btn-block" onClick={onClickCreateConsumer}>Создать</button>
+                                </div>
+                            </form>
                         </div>
-                        <form>
-                            <div className="form-group">
-                                <input className="form-control" type="text" placeholder="Логин" required autoFocus ref={r => login = r} />
-                            </div>
-                            <div className="form-group">
-                                <input className="form-control" type="password" placeholder="Пароль" required ref={r => password = r} />
-                            </div>
-                            <div className="form-group">
-                                <input className="form-control" type="password" placeholder="Подтвердить пароль" required ref={r => confirmPassword = r} />
-                            </div>
-                            <div className="form-group">
-                                <input className="form-control" type="text" placeholder="Название потребителя" required ref={r => name = r} />
-                            </div>
-                            <div className="form-group">
-                                <input className="form-control" type="email" placeholder="Email" required ref={r => email = r} />
-                            </div>
-                            <div className="form-group">
-                                <input className="form-control" type="email" placeholder="Номер телефона" required ref={r => phone = r} />
-                            </div>
-                            <div className="form-group">
-                                <button className="btn btn-primary btn-block" onClick={onClickCreateConsumer}>Создать</button>
-                            </div>
-                        </form>
                     </div>
                 </div>
             </div>

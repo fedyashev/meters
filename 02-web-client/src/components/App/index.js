@@ -40,6 +40,9 @@ import OwnerReportInfo from '../OwnerReportInfo';
 import ReportUpdate from '../ReportUpdate';
 import ReportDelete from '../ReportDelete';
 
+import RegisterList from '../RegisterList';
+import RegisterCreate from '../RegisterCreate';
+
 import InspectorAppLayout from '../InspectorAppLayout';
 import InspectorUserInfo from '../InspectorUserInfo';
 import InspectorReportList from '../InspectorReportList';
@@ -474,6 +477,26 @@ class App extends Component {
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
                   <PlaceDelete {...props} user={user} />
+                </Owner>
+            }
+          />
+
+          {/* =================================================================================== */}
+
+          <Route exact path='/owner/registers'
+            render={
+              props =>
+                <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <RegisterList {...props} user={user} />
+                </Owner>
+            }
+          />
+
+          <Route exact path='/owner/registers/create'
+            render={
+              props =>
+                <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
+                  <RegisterCreate {...props} user={user} />
                 </Owner>
             }
           />

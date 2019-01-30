@@ -17,6 +17,7 @@ const data = require('../controllers/data');
 const sign = require('../controllers/sign');
 const report = require('../controllers/report')
 const userrole = require('../controllers/userrole');
+const register = require('../controllers/register');
 
 const {login, jwt, allow} = require('../passport/middleware');
 const self = require('../passport/self-predicate');
@@ -98,5 +99,12 @@ router.get('/reports/:report_id/sendEmail', jwt, allow([Role.ADMIN, Role.OWNER, 
 //router.get('/reports/:report_id/pdf', report.getByIdPdf);
 router.put('/reports/:report_id', jwt, allow([Role.ADMIN, Role.OWNER, Role.INSPECTOR]), report.updateById);
 router.delete('/reports/:report_id', jwt, allow([Role.ADMIN, Role.OWNER]), report.deleteById);
+
+router.get('/registers', register.getAll);
+router.post('/registers', register.create);
+router.get('/registers/:register_id', register.getById);
+router.get('/registers/:register_id/pdf', register.getPdfById);
+router.put('/registers/:register_id', register.updateById);
+router.delete('/register/:register_id', register.deleteById);
 
 module.exports = router;

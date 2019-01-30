@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import api from '../../lib/api';
 import NavBar from '../NavBar';
+import ProgressBar from '../ProgressBar';
 import Pagination from 'react-js-pagination';
 
 class ConsumerList extends Component {
@@ -32,6 +33,7 @@ class ConsumerList extends Component {
       }
     }
     catch ({ error }) {
+      this.setState({ ...this.state, isLoaded: true });
       this.props.showWarningAlert(error.message);
     }
   };
@@ -53,7 +55,7 @@ class ConsumerList extends Component {
   }
 
   render() {
-    if (!this.state.isLoaded) return null;
+    if (!this.state.isLoaded) return <ProgressBar/>;
     return (
       <div className="container justify-content-center">
         <NavBar {...this.props}>
