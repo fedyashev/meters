@@ -48,7 +48,7 @@ import InspectorPlaceList from '../InspectorPlaceList';
 import InspectorPlaceInfo from '../InspectorPlaceInfo';
 import InspectorPlaceAddData from '../InspectorPlaceAddData';
 
-import Consumer from '../Consumer';
+//import Consumer from '../Consumer';
 
 import api from '../../lib/api';
 
@@ -94,10 +94,10 @@ class App extends Component {
               this.props.history.push('/inspector');
               break;
             }
-            case 'CONSUMER': {
-              this.props.history.push('/consumer');
-              break;
-            }
+            // case 'CONSUMER': {
+            //   this.props.history.push('/consumer');
+            //   break;
+            // }
             default: {
               this.props.history.push('/login');
             }
@@ -114,7 +114,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.props.history.push('/login');
+    //this.props.history.push('/login');
   }
 
   render() {
@@ -129,7 +129,7 @@ class App extends Component {
           <Route exact path='/login' render={props => <Login {...props} alert={this.state.alert} handlerLogin={this.handlerlogin} handlerCloseAlert={this.handlerCloseAlert} />} />
           <Route exact path='/owner' render={props => <Owner {...props} user={user} handlerLogout={this.handlerLogout} />} />
           <Route exact path='/inspector' render={props => <InspectorAppLayout {...props} user={user} handlerLogout={this.handlerLogout} />} />
-          <Route exact path='/consumer' render={props => <Consumer {...props} user={user} handlerLogout={this.handlerLogout} />} />
+          {/*<Route exact path='/consumer' render={props => <Consumer {...props} user={user} handlerLogout={this.handlerLogout} />} />*/}
 
           {/* =================================================================================== */}
 
@@ -480,6 +480,7 @@ class App extends Component {
 
           {/* =================================================================================== */}
 
+          <Route render={props => <Login {...props} alert={this.state.alert} handlerLogin={this.handlerlogin} handlerCloseAlert={this.handlerCloseAlert} />} />
 
         </Switch>
       </div>

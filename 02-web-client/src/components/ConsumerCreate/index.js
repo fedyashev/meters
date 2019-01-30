@@ -1,18 +1,21 @@
 import React, { Component } from 'react';
 import api from '../../lib/api';
 import GoBackLink from '../GoBackLink';
+import ProgressBar from '../ProgressBar';
 
 class ConsumerCreate extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            user: props.user
+            user: props.user,
+            isLoaded: false
         }
     }
 
     handleCreateConsumer = (login, password, name, email, phone) => {
         const token = this.state.user.token;
+        this.setState({...this.state, isLoaded: true});
         api.createConsumer(token, login, password, name, email, phone)
             .then(consumer => {
                 if (consumer) {
@@ -21,10 +24,12 @@ class ConsumerCreate extends Component {
                 }
                 else {
                     this.props.showWarningAlert('Потребитель не добавлен');
+                    this.setState({...this.state, isLoaded: false});
                 }
             })
             .catch(({ error }) => {
                 this.props.showWarningAlert(error.message);
+                this.setState({...this.state, isLoaded: false});
             });
     }
 

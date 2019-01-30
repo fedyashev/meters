@@ -167,10 +167,19 @@ module.exports.deleteById = async (req, res, next) => {
       return next(createError(400, 'Incorrect input parameters'));
     }
 
-    const count = await Consumer.destroy({ where: { id: consumer_id } });
+    let count = null;
+    try {
+        let result = await sequelize.transaction(async (t) => {
+            const consumer = await Consumer.findOne({where: {id: consumer_id}});
+            count = await Consumer.destroy({where: {id: consumer_id}}, {transaction: t});
+            const userCount = await User.destroy({where: {id: consumer.UserId}}, {transaction: t});
+        });
+    } catch (err) {
+        return next(createError(500, err.message));
+    }
 
     if (!count) {
-      return next(createError(500, 'Deleting failed'));
+        return next(createError(404, 'Failed to delete an inspector'));
     }
 
     return res.json({ done: true });

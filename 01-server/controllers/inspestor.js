@@ -174,7 +174,16 @@ module.exports.deleteById = async (req, res, next) => {
             return next(createError(404, 'Inspector not found'));
         }
 
-        const count = await Inspector.destroy({ where: { id: inspector_id } });
+        let count = null;
+        try {
+            let result = await sequelize.transaction(async (t) => {
+                const inspector = await Inspector.findOne({where: {id: inspector_id}});
+                count = await Inspector.destroy({where: {id: inspector_id}}, {transaction: t});
+                const userCount = await User.destroy({where: {id: inspector.UserId}}, {transaction: t});
+            });
+        } catch (err) {
+            return next(createError(500, err.message));
+        }
 
         if (!count) {
             return next(createError(404, 'Failed to delete an inspector'));

@@ -4,6 +4,7 @@ import NavBar from '../NavBar';
 import api from '../../lib/api';
 import { prettyDate } from '../../lib/helpers';
 import Pagination from 'react-js-pagination';
+import ProgressBar from '../ProgressBar';
 
 class MeterInfo extends Component {
   constructor(props) {
@@ -32,7 +33,7 @@ class MeterInfo extends Component {
         this.setState({ ...this.state, meter, datas, totalItemsCount: result.count, activePage: pageNumber, isLoaded: true })
       }
       else {
-        this.setState({ ...this.state, isLoaded: true });
+        this.setState({ ...this.state, meter, isLoaded: true });
       }
     }
     catch ({ error }) {
@@ -85,7 +86,7 @@ class MeterInfo extends Component {
   }
 
   render() {
-    if (!this.state.isLoaded) return null;
+    if (!this.state.isLoaded) return <ProgressBar/>;
     const { meter } = this.state;
     return (
       <div className="container">
