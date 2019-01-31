@@ -12,7 +12,8 @@ class RegisterCreate extends Component {
             places: [],
             group_abonent_id: null,
             sub_abonentes: [],
-            isLoaded: false
+            isLoaded: false,
+            processing: false
         };
     }
 
@@ -36,6 +37,30 @@ class RegisterCreate extends Component {
             });
     }
 
+    handleCreateRegister = (name, group_abonent_id, sub_abonentes) => {
+        const token = this.state.user.token;
+        this.setState({...this.state, processing: true});
+        api.createRegister(token, name, group_abonent_id, sub_abonentes)
+            .then(report => {
+                if (report) {
+                    this.setState({...this.state, processing: false}, () => {
+                        this.props.showSuccessAlert('Регистор создан');
+                        this.props.history.goBack();
+                    });
+                }
+                else {
+                    this.setState({...this.state, processing: false}, () => {
+                        this.props.showWarningAlert('Регистор не создан');
+                    });
+                }
+            })
+            .catch(({error}) => {
+                this.setState({...this.state, processing: false}, () => {
+                    this.props.showWarningAlert(error.message);
+                });
+            });
+    }
+
     render() {
         if (!this.state.isLoaded) return <ProgressBar />;
 
@@ -43,7 +68,8 @@ class RegisterCreate extends Component {
 
         const onClickRegisterCreate = e => {
             e.preventDefault();
-            console.log(name.value, group_abonent_id.value);
+            //console.log(name.value, group_abonent_id.value);
+            this.handleCreateRegister(name.value, this.state.group_abonent_id, this.state.sub_abonentes);
         };
 
         const onChangeGroupAbonent = e => {
@@ -137,6 +163,9 @@ class RegisterCreate extends Component {
                                 </select>
                                 <button className="btn btn-danger btn-block" onClick={handlerClickBtnRemove}>Убрать</button>
                             </div>
+                            {
+                                this.state.processing && <ProgressBar/>
+                            }
                             <div className="form-group">
                                 <button className="btn btn-primary btn-block" onClick={onClickRegisterCreate}>Создать</button>
                             </div>

@@ -1,8 +1,10 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const Register = sequelize.define('Register', {
-    name: DataTypes.STRING,
-    allowNull: false
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
   }, {});
   Register.associate = function(models) {
     // associations can be defined here

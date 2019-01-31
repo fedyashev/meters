@@ -737,6 +737,57 @@ const api = {
                 const promise = res.json();
                 return res.ok ? promise : promise.then(err => {throw err});
             });
+    },
+
+    getAllRegisters: (token) => {
+        const opt = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            }
+        };
+        const url = `/api/v1/registers`;
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
+    },
+
+    createRegister: (token, name, group_abonent_id, sub_abonentes) => {
+        console.log(name, group_abonent_id, sub_abonentes);
+        const data = {name, group_abonent_id, sub_abonentes: sub_abonentes};
+        const opt = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            },
+            body: JSON.stringify(data)
+        };
+        const url = '/api/v1/registers';
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
+    },
+
+    getRegisterById: (token, id) => {
+        const opt = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            }
+        };
+        const url = `/api/v1/registers/${id}`;
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
     }
 };
 

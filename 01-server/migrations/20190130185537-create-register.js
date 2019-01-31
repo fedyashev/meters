@@ -12,12 +12,12 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
-      GroupPlaceId: {
+      GroupAbonentId: {
         type: Sequelize.INTEGER,
         reference: {
           model: 'Place',
           key: 'id',
-          as: 'GroupPlace'
+          as: 'GroupAbonent'
         }
       },
       createdAt: {
