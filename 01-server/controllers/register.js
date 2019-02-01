@@ -1,5 +1,5 @@
 const createError = require('http-errors');
-const { Register, Place, SubAbonent, Consumer, Meter, Data, sequelize } = require('../models');
+const { Register, Place, SubAbonentSchema, Consumer, Meter, Data, sequelize } = require('../models');
 
 module.exports.getAll = async (req, res, next) => {
     try {
@@ -38,7 +38,7 @@ module.exports.create = async (req, res, next) => {
             let result = await sequelize.transaction(async (t) => {
                 register = await Register.create({name, GroupAbonentId: group_abonent_id}, {transaction: t});
                 if (register && sub_abonentes.length > 0) {
-                    subabonents = await SubAbonent
+                    subabonents = await SubAbonentSchema
                         .bulkCreate(
                             sub_abonentes.map(id => ({RegisterId: register.id, SubAbonentId: id})),
                             {transaction: t}
@@ -92,40 +92,127 @@ module.exports.getById = async (req, res, next) => {
             consumer = register.GroupAbonent.Consumer || null;
             meter = register.GroupAbonent.Meter || null;
             if (meter) {
-                const data = await Data
+                let data = await Data
                     .findAll({
                         where: {MeterId: meter.id},
                         order: [['date', 'desc']],
-                        limit: 1,
+                        limit: 2,
+                    })
+                    .map(d => {
+                        return {
+                            id: d.id,
+                            date: d.date,
+                            value: d.value
+                        };
                     });
-                if (data.length > 0) {
-                    last_data = {
-                        id: data[0].id,
-                        date: data[0].date,
-                        value: data[0].value
-                    };
-                    console.log(last_data);
+                // if (data.length > 0) {
+                //     last_data = {
+                //         id: data[0].id,
+                //         date: data[0].date,
+                //         value: data[0].value
+                //     };
+                // }
+                let lastData = data[1];
+                let currData = data[0];
+                let month = (new Date(Date.now())).getMonth();
+                if (lastData && currData) {
+                    const currMonth = (new Date(currData.date)).getMonth()
+                    if (month !== currMonth) {
+                        data = [null, currData];
+                    }
+                }
+                meter = {
+                    id: register.GroupAbonent.Meter.id,
+                    number: register.GroupAbonent.Meter.number,
+                    data: data
                 }
             }
-            //console.log(meter);
             group_abonent = {
                 id: register.GroupAbonent.id,
                 name: register.GroupAbonent.name,
                 consumer: consumer,
-                meter: {
-                    id: meter.id,
-                    number: meter.number,
-                    last_data: last_data
-                }
+                meter: meter
             }
         }
-        
-        return res.json({
-            id: register.id,
-            name: register.name,
-            group_abonent: group_abonent
-        });
+
+        const raw_sub_abonents = await SubAbonentSchema
+            .findAll({
+                where: {RegisterId: register_id},
+                include: [
+                    {
+                        model: Place,
+                        as: 'SubAbonent',
+                        include: [
+                            {model: Consumer},
+                            {model: Meter}
+                        ]
+                    }
+                ]
+            });
+
+        const subabonentesPromise = await raw_sub_abonents
+            .map(async (record) => {
+                const place = record.SubAbonent;
+                let data = [];
+                if (place.Meter) {
+                    data = await Data
+                        .findAll({
+                            where: {MeterId: place.Meter.id},
+                            order: [['date', 'desc']],
+                            limit: 2,
+                        })
+                        .map(d => {
+                            return {
+                                id: d.id,
+                                date: d.date,
+                                value: d.value
+                            };
+                        });                        
+                }
+                let lastData = data[1];
+                let currData = data[0];
+                let month = (new Date(Date.now())).getMonth();
+                if (lastData && currData) {
+                    const currMonth = (new Date(currData.date)).getMonth()
+                    if (month !== currMonth) {
+                        data = [null, currData];
+                    }
+                }
+                //console.log(place.id, place.name);
+                return {
+                    id: place.id,
+                    name: place.name,
+                    isSignNeed: place.isSignNeed,
+                    consumer: place.Consumer ?
+                    {
+                        id: place.Consumer.id,
+                        name: place.Consumer.name,
+                        email: place.Consumer.email
+                    } : null,
+                    meter: place.Meter ? 
+                    {
+                        id: place.Meter.id,
+                        number: place.Meter.number,
+                        data: data
+                    } : null
+                };
+            });
+
+        Promise
+            .all(subabonentesPromise)
+            .then(subabonents => {
+                //console.log(subabonents);
+                return res.json({
+                    id: register.id,
+                    name: register.name,
+                    group_abonent: group_abonent,
+                    sub_abonents: subabonents
+                });
+            })
+            .catch(err => {throw err});
+
     } catch (err) {
+        console.log(err);
         return next(createError(500, err.message));
     }
 };

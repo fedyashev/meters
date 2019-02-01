@@ -38,40 +38,41 @@ module.exports.getAll = async (req, res, next) => {
                 ]
             });
         }
-        const places = await rawPlaces.map(async (place) => {
-            let lastData = null;
-            if (place.Meter) {
-                const data = await Data.findAll({
-                    where: {MeterId: place.Meter.id},
-                    order: [['date', 'desc']],
-                    limit: 1,
-                });
-                if (data.length > 0) {
-                    lastData = {
-                        id: data[0].id,
-                        date: data[0].date,
-                        value: data[0].value
-                    };
+        const places = await rawPlaces
+            .map(async (place) => {
+                let lastData = null;
+                if (place.Meter) {
+                    const data = await Data.findAll({
+                        where: {MeterId: place.Meter.id},
+                        order: [['date', 'desc']],
+                        limit: 1,
+                    });
+                    if (data.length > 0) {
+                        lastData = {
+                            id: data[0].id,
+                            date: data[0].date,
+                            value: data[0].value
+                        };
+                    }
                 }
-            }
-            return {
-                id: place.id,
-                name: place.name,
-                isSignNeed: place.isSignNeed,
-                consumer: place.Consumer ?
-                {
-                    id: place.Consumer.id,
-                    name: place.Consumer.name,
-                    email: place.Consumer.email
-                } : null,
-                meter: place.Meter ? 
-                {
-                    id: place.Meter.id,
-                    number: place.Meter.number,
-                    lastData: lastData
-                } : null
-            };
-        });
+                return {
+                    id: place.id,
+                    name: place.name,
+                    isSignNeed: place.isSignNeed,
+                    consumer: place.Consumer ?
+                    {
+                        id: place.Consumer.id,
+                        name: place.Consumer.name,
+                        email: place.Consumer.email
+                    } : null,
+                    meter: place.Meter ? 
+                    {
+                        id: place.Meter.id,
+                        number: place.Meter.number,
+                        lastData: lastData
+                    } : null
+                };
+            });
         Promise.all(places)
             .then(results => res.json(results))
             .catch(err => next(createError(500, err.message)));

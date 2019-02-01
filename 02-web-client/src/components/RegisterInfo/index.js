@@ -34,14 +34,18 @@ class RegisterInfo extends Component {
                 }
             })
             .catch(({error}) => {
-                this.setState({...this.state, isLoaded: true}, () => {
-                    this.props.showWarningAlert(error.message);
-                });
+                this.props.showWarningAlert(error.message);
+                this.props.history.goBack();
+                // this.setState({...this.state, isLoaded: true}, () => {
+                //     this.props.showWarningAlert(error.message);
+                // });
             });
     }
 
     render() {
-        if (!this.state.isLoaded) return <ProgressBar/>
+        if (!this.state.isLoaded) return <ProgressBar/>;
+        //let items = [];
+        //items.push(this.state.register.group_abonent);
         return (
             <div className="container justify-content-center">
                 <NavBar {...this.props}>
@@ -50,6 +54,8 @@ class RegisterInfo extends Component {
                 </NavBar>
                 <h3 className="text-center">Групповой абонент</h3>
                 <Table items={[this.state.register.group_abonent]}/>
+                <h3 className="text-center">Субабоненты</h3>
+                <Table items={this.state.register.sub_abonents || []}/>
             </div>
         );
     }
@@ -62,12 +68,12 @@ const Table = props => {
             <table className="table table-bordered table-hover table-sm">
                 <thead className="thead-dark">
                     <tr>
-                        <th scope="col" className="text-center">Id</th>
-                        <th scope="col" className="text-center">Место</th>
-                        <th scope="col" className="text-center">Потребитель</th>
-                        <th scope="col" className="text-center">Счетчик</th>
-                        <th scope="col" className="text-center">Дата</th>
-                        <th scope="col" className="text-center">Показания</th>
+                        <th scope="col" className="text-center align-middle">Id</th>
+                        <th scope="col" className="text-center align-middle">Место</th>
+                        <th scope="col" className="text-center align-middle">Потребитель</th>
+                        <th scope="col" className="text-center align-middle">Счетчик</th>
+                        <th scope="col" className="text-center align-middle">Предыдущие показания</th>
+                        <th scope="col" className="text-center align-middle">Текущие показания</th>
                     </tr>
                 </thead>
                 <tbody style={{ fontSize: '0.85rem' }}>
@@ -84,22 +90,28 @@ const TableRow = props => {
     const { item } = props;
     if (!item) return null;
     return (
+        <>
         <tr>
-            <td className="text-center">{item.id}</td>
-            <td className="text-center"><Link to={`/owner/places/${item.id}`}>{item.name}</Link></td>
-            <td className="text-center">
+            <td rowSpan="2" className="text-center align-middle">{item.id}</td>
+            <td rowSpan="2" className="text-center align-middle"><Link to={`/owner/places/${item.id}`}>{item.name}</Link></td>
+            <td rowSpan="2"  className="text-center align-middle">
                 {
                     item.consumer && <Link to={`/owner/consumers/${item.consumer.id}`}>{item.consumer.name}</Link>
                 }
             </td>
-            <td className="text-center">
+            <td rowSpan="2"  className="text-center align-middle">
                 {
                     item.meter && <Link to={`/owner/meters/${item.meter.id}`}>{item.meter.number}</Link>
                 }
             </td>
-            <td className="text-center">{item.meter && item.meter.last_data ? prettyDate(item.meter.last_data.date) : null}</td>
-            <td className="text-center">{item.meter && item.meter.last_data ? item.meter.last_data.value : null}</td>
+            <td className="text-center align-middle">{item.meter && item.meter.data[1] ? prettyDate(item.meter.data[1].date) : null}</td>
+            <td className="text-center align-middle">{item.meter && item.meter.data[0] ? prettyDate(item.meter.data[0].date) : null}</td>
         </tr>
+        <tr>
+            <td className="text-center align-middle">{item.meter && item.meter.data[1] ? item.meter.data[1].value : null}</td>
+            <td className="text-center align-middle">{item.meter && item.meter.data[0] ? item.meter.data[0].value : null}</td>
+        </tr>
+        </>
     );
 };
 
