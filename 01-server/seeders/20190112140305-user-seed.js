@@ -11,12 +11,26 @@ module.exports = {
           updatedAt: '0000-00-00'
         },
         {
-          login: 'o1',  // cat
+          login: 'c1',  // cat
           passwordHash: '$2a$10$Of7OQc.8oLdRYAGkcH6O8O69C0d6Boup7jySovoiJbkCAVsk6HBKC',
-          UserRoleId: 3,
+          UserRoleId: 5,
           createdAt: '0000-00-00',
           updatedAt: '0000-00-00'
-        }
+        },
+        {
+          login: 'c2',  // cat
+          passwordHash: '$2a$10$Of7OQc.8oLdRYAGkcH6O8O69C0d6Boup7jySovoiJbkCAVsk6HBKC',
+          UserRoleId: 5,
+          createdAt: '0000-00-00',
+          updatedAt: '0000-00-00'
+        },
+        {
+          login: 'c3',  // cat
+          passwordHash: '$2a$10$Of7OQc.8oLdRYAGkcH6O8O69C0d6Boup7jySovoiJbkCAVsk6HBKC',
+          UserRoleId: 5,
+          createdAt: '0000-00-00',
+          updatedAt: '0000-00-00'
+        },
       ]);
   },
 

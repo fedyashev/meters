@@ -5,7 +5,9 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 //const passport = require('passport');
 
-const models = require('./models');
+require('./models');
+require('./models/hooks');
+
 
 require('./passport');
 

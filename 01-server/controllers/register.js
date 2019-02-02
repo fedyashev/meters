@@ -87,7 +87,6 @@ module.exports.getById = async (req, res, next) => {
         let consumer = null;
         let meter = null;
         let group_abonent = null;
-        let last_data = null;
         if (register.GroupAbonent) {
             consumer = register.GroupAbonent.Consumer || null;
             meter = register.GroupAbonent.Meter || null;
@@ -105,17 +104,9 @@ module.exports.getById = async (req, res, next) => {
                             value: d.value
                         };
                     });
-                // if (data.length > 0) {
-                //     last_data = {
-                //         id: data[0].id,
-                //         date: data[0].date,
-                //         value: data[0].value
-                //     };
-                // }
-                let lastData = data[1];
                 let currData = data[0];
                 let month = (new Date(Date.now())).getMonth();
-                if (lastData && currData) {
+                if (currData) {
                     const currMonth = (new Date(currData.date)).getMonth()
                     if (month !== currMonth) {
                         data = [null, currData];
@@ -152,6 +143,7 @@ module.exports.getById = async (req, res, next) => {
 
         const subabonentesPromise = await raw_sub_abonents
             .map(async (record) => {
+                if (!record.SubAbonent) return null;
                 const place = record.SubAbonent;
                 let data = [];
                 if (place.Meter) {
@@ -169,16 +161,16 @@ module.exports.getById = async (req, res, next) => {
                             };
                         });                        
                 }
-                let lastData = data[1];
+
                 let currData = data[0];
                 let month = (new Date(Date.now())).getMonth();
-                if (lastData && currData) {
+                if (currData) {
                     const currMonth = (new Date(currData.date)).getMonth()
                     if (month !== currMonth) {
                         data = [null, currData];
                     }
                 }
-                //console.log(place.id, place.name);
+
                 return {
                     id: place.id,
                     name: place.name,

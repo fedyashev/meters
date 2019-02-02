@@ -126,7 +126,7 @@ module.exports.getAllNotInPlace = async (req, res, next) => {
                     { model: Meter },
                 ]
             })
-            .map(place => place.Meter.id)
+            .map(place => place.MeterId)
         const metersNotInPlace = await Meter
             .findAll({
                 where: {
@@ -136,6 +136,7 @@ module.exports.getAllNotInPlace = async (req, res, next) => {
             .map(({ id, number }) => ({ id, number }));
         return res.json(metersNotInPlace);
     } catch (err) {
+        console.log(err);
         return next(createError(500, err.message));
     }
 }
