@@ -77,7 +77,7 @@ const TableRow = props => {
     return (
         <tr>
             <td className="text-center"><Link to={`/owner/registers/${register.id}`}>{register.id}</Link></td>
-            <td className="text-center">{register.name}</td>
+            <td className="text-center"><Link to={`/owner/registers/${register.id}`}>{register.name}</Link></td>
             <td className="text-center">
                 {
                     register.group_abonent && <Link to={`/owner/places/${register.group_abonent.id}`}>{register.group_abonent.name}</Link>

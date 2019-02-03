@@ -7,6 +7,7 @@ var logger = require('morgan');
 
 require('./models');
 require('./models/hooks');
+require('./models/methods');
 
 
 require('./passport');

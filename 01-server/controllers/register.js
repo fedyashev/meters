@@ -6,7 +6,7 @@ module.exports.getAll = async (req, res, next) => {
         const registers = await Register
             .findAll({
                 include: [
-                    {model: Place, as: 'GroupAbonent'}
+                    { model: Place, as: 'GroupAbonent' }
                 ]
             })
             .map(p => {
@@ -27,7 +27,7 @@ module.exports.getAll = async (req, res, next) => {
 module.exports.create = async (req, res, next) => {
     try {
         const { name, group_abonent_id, sub_abonentes } = req.body;
-        console.log(req.body);
+        //console.log(req.body);
         if (!name || !Array.isArray(sub_abonentes)) {
             return next(createError(500, 'Incorrect register name'));
         }
@@ -36,19 +36,19 @@ module.exports.create = async (req, res, next) => {
         let subabonents = null;
         try {
             let result = await sequelize.transaction(async (t) => {
-                register = await Register.create({name, GroupAbonentId: group_abonent_id}, {transaction: t});
+                register = await Register.create({ name, GroupAbonentId: group_abonent_id }, { transaction: t });
                 if (register && sub_abonentes.length > 0) {
                     subabonents = await SubAbonentSchema
                         .bulkCreate(
-                            sub_abonentes.map(id => ({RegisterId: register.id, SubAbonentId: id})),
-                            {transaction: t}
+                            sub_abonentes.map(id => ({ RegisterId: register.id, SubAbonentId: id })),
+                            { transaction: t }
                         )
                 }
             });
         } catch (err) {
             return next(createError(500, err));
         }
-        
+
         if (!register) {
             return next(createError(500, 'Failed to create a register'));
         }
@@ -60,149 +60,18 @@ module.exports.create = async (req, res, next) => {
 
 module.exports.getById = async (req, res, next) => {
     try {
-        const {register_id} = req.params;
+        const { register_id } = req.params;
         if (!register_id) {
             return next(createError(400, 'Incorrect register id'));
         }
 
-        const register = await Register
-            .findOne({
-                where: {id: register_id},
-                include: [
-                    {
-                        model: Place,
-                        as: 'GroupAbonent',
-                        include: [
-                            {model: Consumer},
-                            {model: Meter}
-                        ]
-                    }
-                ]
-            });
+        const register = await Register.getRegisterById(register_id);
 
         if (!register) {
             return next(createError(404, 'Register not found'));
         }
 
-        let consumer = null;
-        let meter = null;
-        let group_abonent = null;
-        if (register.GroupAbonent) {
-            consumer = register.GroupAbonent.Consumer || null;
-            meter = register.GroupAbonent.Meter || null;
-            if (meter) {
-                let data = await Data
-                    .findAll({
-                        where: {MeterId: meter.id},
-                        order: [['date', 'desc']],
-                        limit: 2,
-                    })
-                    .map(d => {
-                        return {
-                            id: d.id,
-                            date: d.date,
-                            value: d.value
-                        };
-                    });
-                let currData = data[0];
-                let month = (new Date(Date.now())).getMonth();
-                if (currData) {
-                    const currMonth = (new Date(currData.date)).getMonth()
-                    if (month !== currMonth) {
-                        data = [null, currData];
-                    }
-                }
-                meter = {
-                    id: register.GroupAbonent.Meter.id,
-                    number: register.GroupAbonent.Meter.number,
-                    data: data
-                }
-            }
-            group_abonent = {
-                id: register.GroupAbonent.id,
-                name: register.GroupAbonent.name,
-                consumer: consumer,
-                meter: meter
-            }
-        }
-
-        const raw_sub_abonents = await SubAbonentSchema
-            .findAll({
-                where: {RegisterId: register_id},
-                include: [
-                    {
-                        model: Place,
-                        as: 'SubAbonent',
-                        include: [
-                            {model: Consumer},
-                            {model: Meter}
-                        ]
-                    }
-                ]
-            });
-
-        const subabonentesPromise = await raw_sub_abonents
-            .map(async (record) => {
-                if (!record.SubAbonent) return null;
-                const place = record.SubAbonent;
-                let data = [];
-                if (place.Meter) {
-                    data = await Data
-                        .findAll({
-                            where: {MeterId: place.Meter.id},
-                            order: [['date', 'desc']],
-                            limit: 2,
-                        })
-                        .map(d => {
-                            return {
-                                id: d.id,
-                                date: d.date,
-                                value: d.value
-                            };
-                        });                        
-                }
-
-                let currData = data[0];
-                let month = (new Date(Date.now())).getMonth();
-                if (currData) {
-                    const currMonth = (new Date(currData.date)).getMonth()
-                    if (month !== currMonth) {
-                        data = [null, currData];
-                    }
-                }
-
-                return {
-                    id: place.id,
-                    name: place.name,
-                    isSignNeed: place.isSignNeed,
-                    consumer: place.Consumer ?
-                    {
-                        id: place.Consumer.id,
-                        name: place.Consumer.name,
-                        email: place.Consumer.email
-                    } : null,
-                    meter: place.Meter ? 
-                    {
-                        id: place.Meter.id,
-                        number: place.Meter.number,
-                        data: data
-                    } : null
-                };
-            });
-
-        Promise
-            .all(subabonentesPromise)
-            .then(subabonents => {
-                //console.log(subabonents);
-                return res.json({
-                    id: register.id,
-                    name: register.name,
-                    group_abonent: group_abonent,
-                    sub_abonents: subabonents
-                });
-            })
-            .catch(err => {throw err});
-
+        return res.json(register);
     } catch (err) {
         console.log(err);
         return next(createError(500, err.message));
@@ -219,7 +88,71 @@ module.exports.getPdfById = async (req, res, next) => {
 
 module.exports.updateById = async (req, res, next) => {
     try {
-        return next(createError(503, 'Not implemented'));
+        const { name, group_abonent_id, sub_abonentes } = req.body;
+        const { register_id } = req.params;
+
+        if (!register_id) {
+            return next(createError(400, 'Incorrect register id'));
+        }
+
+        if (!name) {
+            return next(createError(400, 'Incorrect register name'));
+        }
+
+        const register = await Register.findOne({ where: { id: register_id } });
+        if (!register) {
+            return next(createError(404, 'Register not found'));
+        }
+
+        let groupAbonent = null;
+        if (group_abonent_id) {
+            groupAbonent = await Place.findOne({ where: { id: group_abonent_id } });
+            if (!groupAbonent) {
+                return next(createError(404, 'Group abonent not found'));
+            }
+        }
+
+        const subAbonentsPromise = await sub_abonentes.map(async (p) => {
+            return await Place.findOne({ where: { id: p } })
+        });
+
+        const subabonents = await Promise.all(subAbonentsPromise);
+        if (!subabonents) {
+            return next(createError(404, 'Subabonents not found'));
+        }
+
+        try {
+            const result = sequelize.transaction(async (t) => {
+                const [count, ...rows] = await Register
+                    .update(
+                        {
+                            name: name,
+                            GroupAbonentId: group_abonent_id
+                        },
+                        {
+                            where: { id: register_id },
+                            transaction: t
+                        }
+                    );
+
+                const countSubabonents = await SubAbonentSchema
+                    .destroy({
+                        where: { RegisterId: register_id },
+                        transaction: t
+                    });
+
+                const subs = await SubAbonentSchema
+                    .bulkCreate(
+                        sub_abonentes.map(id => ({ RegisterId: register_id, SubAbonentId: id })),
+                        { transaction: t }
+                    );
+
+                return res.json({ done: true });
+            });
+        } catch (err) {
+            throw err;
+        }
+
     } catch (err) {
         return next(createError(500, err.message));
     }
@@ -227,7 +160,19 @@ module.exports.updateById = async (req, res, next) => {
 
 module.exports.deleteById = async (req, res, next) => {
     try {
-        return next(createError(503, 'Not implemented'));
+        const { register_id } = req.params;
+        if (!register_id) {
+            return next(createError(500, 'Incorrect input parameters'));
+        }
+        try {
+            const result = await sequelize.transaction(async (t) => {
+                const countRegister = await Register.destroy({ where: { id: register_id }, transaction: t });
+                const countSubabonents = await SubAbonentSchema.destroy({ where: { RegisterId: register_id }, transaction: t });
+                return res.json({ done: true });
+            });
+        } catch (err) {
+            return next(createError(500, err.message));
+        }
     } catch (err) {
         return next(createError(500, err.message));
     }

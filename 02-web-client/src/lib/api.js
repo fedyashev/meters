@@ -788,6 +788,41 @@ const api = {
                 const promise = res.json();
                 return res.ok ? promise : promise.then(err => {throw err});
             });
+    },
+
+    updateRegisterById: (token, id, name, group_abonent_id, sub_abonentes) => {
+        console.log(name, group_abonent_id, sub_abonentes);
+        const data = {name, group_abonent_id, sub_abonentes: sub_abonentes};
+        const opt = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            },
+            body: JSON.stringify(data)
+        };
+        const url = `/api/v1/registers/${id}`;
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
+    },
+
+    deleteRegisterById: (token, id) => {
+        const opt = {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `BEARER ${token}`
+            }
+        };
+        const url = `/api/v1/registers/${id}`;
+        return fetch(url, opt)
+            .then(res => {
+                const promise = res.json();
+                return res.ok ? promise : promise.then(err => {throw err});
+            });
     }
 };
 

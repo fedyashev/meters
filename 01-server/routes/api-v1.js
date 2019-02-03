@@ -105,6 +105,6 @@ router.post('/registers', register.create);
 router.get('/registers/:register_id', register.getById);
 router.get('/registers/:register_id/pdf', register.getPdfById);
 router.put('/registers/:register_id', register.updateById);
-router.delete('/register/:register_id', register.deleteById);
+router.delete('/registers/:register_id', register.deleteById);
 
 module.exports = router;
