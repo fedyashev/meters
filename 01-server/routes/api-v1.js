@@ -104,6 +104,7 @@ router.get('/registers', register.getAll);
 router.post('/registers', register.create);
 router.get('/registers/:register_id', register.getById);
 router.get('/registers/:register_id/pdf', register.getPdfById);
+router.get('/registers/:register_id/xlsx', register.downloadXlsxById);
 router.put('/registers/:register_id', register.updateById);
 router.delete('/registers/:register_id', register.deleteById);
 

@@ -36,6 +36,15 @@ class RegisterList extends Component {
             });
     }
 
+    downloadXlsx = register_id => e => {
+        e.preventDefault();
+        const token = this.state.user.token;
+        api.downloadXlsxRegisterById(token, register_id)
+        .catch(({error}) => {
+            this.props.setAlert('warning', error.message);
+        });
+    };
+
     render() {
         if (!this.state.isLoaded) return <ProgressBar />
         return (
@@ -43,7 +52,7 @@ class RegisterList extends Component {
                 <NavBar {...this.props}>
                     <Link className="nav-link" to='/owner/registers/create'>Добавить</Link>
                 </NavBar>
-                <Table registers={this.state.registers} />
+                <Table registers={this.state.registers} downloadXlsx={this.downloadXlsx}/>
             </div>
         );
     }
@@ -64,7 +73,7 @@ const Table = props => {
                 </thead>
                 <tbody style={{ fontSize: '0.85rem' }}>
                     {
-                        registers && registers.map(register => <TableRow key={`${register.id}`} register={register} />)
+                        registers && registers.map(register => <TableRow key={`${register.id}`} register={register} downloadXlsx={props.downloadXlsx}/>)
                     }
                 </tbody>
             </table>
@@ -83,7 +92,7 @@ const TableRow = props => {
                     register.group_abonent && <Link to={`/owner/places/${register.group_abonent.id}`}>{register.group_abonent.name}</Link>
                 }
             </td>
-            <td className="text-center text-secondary"><i className="fas fa-file-excel"></i></td>
+            <td className="text-center"><a className="text-secondary" onClick={props.downloadXlsx(register.id)} href={`api/v1/registers/${register.id}/xlsx`} download={`register-${register.id}-${Date.now()}.xlsx`}><i className="fas fa-file-excel"></i></a></td>
         </tr>
     );
 };

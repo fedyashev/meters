@@ -1,6 +1,8 @@
 const createError = require('http-errors');
 const { Register, Place, SubAbonentSchema, Consumer, Meter, Data, sequelize } = require('../models');
 
+const {registerToXlsx} = require('../lib/xlsx-templates');
+
 module.exports.getAll = async (req, res, next) => {
     try {
         const registers = await Register
@@ -174,6 +176,30 @@ module.exports.deleteById = async (req, res, next) => {
             return next(createError(500, err.message));
         }
     } catch (err) {
+        return next(createError(500, err.message));
+    }
+};
+
+module.exports.downloadXlsxById = async (req, res, next) => {
+    try {
+        const {register_id} = req.params;
+        if (!register_id) {
+            return next(createError(400, 'Incorrect register id'));
+        }
+        
+        const register = await Register.getRegisterById(register_id);
+        if (!register) {
+            return next(createError(404, 'Register not found'));
+        }
+
+        const xlsx = await registerToXlsx(register);
+
+        res.set('Content-disposition', `attachment; filename=register-${register.id}-${Date.now()}.xlsx`);
+        res.set('Content-Type', 'application/xlsx');
+
+        res.end(xlsx, 'binary');
+    } catch (err) {
+        console.log(err);
         return next(createError(500, err.message));
     }
 };
