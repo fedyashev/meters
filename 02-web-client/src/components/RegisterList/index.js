@@ -45,6 +45,15 @@ class RegisterList extends Component {
         });
     };
 
+    downloadXlsxAllRegisters = e => {
+        e.preventDefault();
+        const token = this.state.user.token;
+        api.downloadXlsxAllRegisters(token)
+            .catch(({error}) => {
+                this.props.setAlert('warning', error.message);
+            });
+    }
+
     render() {
         if (!this.state.isLoaded) return <ProgressBar />
         return (
@@ -52,7 +61,7 @@ class RegisterList extends Component {
                 <NavBar {...this.props}>
                     <Link className="nav-link" to='/owner/registers/create'>Добавить</Link>
                 </NavBar>
-                <Table registers={this.state.registers} downloadXlsx={this.downloadXlsx}/>
+                <Table registers={this.state.registers} downloadXlsx={this.downloadXlsx} downloadXlsxAllRegisters={this.downloadXlsxAllRegisters}/>
             </div>
         );
     }
@@ -68,7 +77,7 @@ const Table = props => {
                         <th scope="col" className="text-center">Id</th>
                         <th scope="col" className="text-center">Название</th>
                         <th scope="col" className="text-center">Групповой абонент</th>
-                        <th scope="col" className="text-center"><i className="fas fa-file-excel"></i></th>
+                        <th className="text-center"><a className="text-light" onClick={props.downloadXlsxAllRegisters} href={`api/v1/registers/xlsx`} download={`register-all-${Date.now()}.xlsx`}><i className="fas fa-file-excel"></i></a></th>
                     </tr>
                 </thead>
                 <tbody style={{ fontSize: '0.85rem' }}>

@@ -101,6 +101,7 @@ router.put('/reports/:report_id', jwt, allow([Role.ADMIN, Role.OWNER, Role.INSPE
 router.delete('/reports/:report_id', jwt, allow([Role.ADMIN, Role.OWNER]), report.deleteById);
 
 router.get('/registers', register.getAll);
+router.get('/registers/xlsx', register.downloadXlsxAll);
 router.post('/registers', register.create);
 router.get('/registers/:register_id', register.getById);
 router.get('/registers/:register_id/pdf', register.getPdfById);

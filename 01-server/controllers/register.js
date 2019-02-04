@@ -1,7 +1,7 @@
 const createError = require('http-errors');
 const { Register, Place, SubAbonentSchema, Consumer, Meter, Data, sequelize } = require('../models');
 
-const {registerToXlsx} = require('../lib/xlsx-templates');
+const {registerToXlsx, registersAllToXlsx} = require('../lib/xlsx-templates');
 
 module.exports.getAll = async (req, res, next) => {
     try {
@@ -198,6 +198,36 @@ module.exports.downloadXlsxById = async (req, res, next) => {
         res.set('Content-Type', 'application/xlsx');
 
         res.end(xlsx, 'binary');
+    } catch (err) {
+        console.log(err);
+        return next(createError(500, err.message));
+    }
+};
+
+module.exports.downloadXlsxAll = async (req, res, next) => {
+    try {
+        const regs = await Register
+            .findAll()
+            .map(async (register) => {
+                return await Register.getRegisterById(register.id);
+            });
+
+        const registers = await Promise.all(regs);
+
+        if (!registers) {
+            return next(createError(404, 'Registers not found'));
+        }
+
+        const xlsx = await registersAllToXlsx(registers);
+
+        // res.set('Content-disposition', `attachment; filename=register-all-${Date.now()}.xlsx`);
+        // res.set('Content-Type', 'application/xlsx');
+
+        // res.end(xlsx, 'binary');
+
+        res.attachment(`registers-all-${Date.now()}.xlsx`);
+        res.send(xlsx);
+
     } catch (err) {
         console.log(err);
         return next(createError(500, err.message));

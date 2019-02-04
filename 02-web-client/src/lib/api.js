@@ -839,6 +839,21 @@ const api = {
             .then(response => response.blob())
             .then(blob => saveAs(blob, `register-${Date.now()}.xlsx`));
     },
+
+    downloadXlsxAllRegisters: (token) => {
+        const opt = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/xlsx',
+                'Authorization': `BEARER ${token}`
+            },
+            responseType: 'blob'
+        };
+        const url = `/api/v1/registers/xlsx`;
+        return fetch(url, opt)
+            .then(response => response.blob())
+            .then(blob => saveAs(blob, `register-${Date.now()}.xlsx`));
+    },
 };
 
 export default api;
