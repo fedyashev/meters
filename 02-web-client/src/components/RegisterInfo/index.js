@@ -37,11 +37,21 @@ class RegisterInfo extends Component {
                     });
                 }
             })
-            .catch(({ error }) => {
-                this.props.showWarningAlert(error.message);
+            .catch(err => {
+                console.log(err);
+                this.props.showWarningAlert(err.error && err.error.message ? err.error.message : err);
                 this.props.history.goBack();
             });
     }
+
+    downloadXlsx = register_id => e => {
+        e.preventDefault();
+        const token = this.state.user.token;
+        api.downloadXlsxRegisterById(token, register_id)
+        .catch(({error}) => {
+            this.props.setAlert('warning', error.message);
+        });
+    };
 
     render() {
         if (!this.state.isLoaded) return <ProgressBar />;
@@ -51,6 +61,7 @@ class RegisterInfo extends Component {
                 <NavBar {...this.props}>
                     <Link className="nav-link" to={`/owner/registers/${this.state.register.id}/update`}>Изменить</Link>
                     <Link className="nav-link" to={`/owner/registers/${this.state.register.id}/delete`}>Удалить</Link>
+                    <Link className="nav-link" to={`/api/v1/registers/${register.id}/xlsx`} onClick={this.downloadXlsx(register.id)}>Скачать</Link>
                 </NavBar>
                 <h3 className="text-center mb-2">Реестр</h3>
                 <div className="table-responsive">
@@ -165,6 +176,7 @@ const calculateConsumption = (last, curr) => {
 };
 
 const calculateConsumptionGroup = (group_abonent) => {
+    if (!group_abonent) return null;
     const { meter } = group_abonent;
     const last = meter && meter.data[1] ? meter.data[1].value : null;
     const curr = meter && meter.data[0] ? meter.data[0].value : null;
@@ -172,6 +184,7 @@ const calculateConsumptionGroup = (group_abonent) => {
 };
 
 const calculateConsumptionSub = (sub_abonents) => {
+    if (!sub_abonents) return null;
     let consumption = 0;
     sub_abonents.forEach(p => {
         const { meter } = p;
