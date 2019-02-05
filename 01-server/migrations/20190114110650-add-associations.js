@@ -1,5 +1,7 @@
 'use strict';
 
+const { db: { table_prefix } } = require('../config/config.json');
+
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return Promise.resolve()
@@ -26,7 +28,7 @@ module.exports = {
         });
       })
       .then(() => {
-        return queryInterface.addColumn('Consumers', 'UserId', {
+        return queryInterface.addColumn(table_prefix + 'Consumers', 'UserId', {
           type: Sequelize.INTEGER,
           allowNull: false,
           unique: true,
