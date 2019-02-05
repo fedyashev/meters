@@ -13,12 +13,14 @@ module.exports.registersAllToXlsx = registers => {
   if (!registers || !Array.isArray(registers)) return null;
   return XlsxPopulate.fromBlankAsync()
     .then(workbook => {
-      registers.forEach(register => {
-        workbook.cloneSheet(workbook.activeSheet(), `${register.id}`);
-        const sheet = workbook.sheet(`${register.id}`);
-        registerSheet(sheet, register);
-      });
-      workbook.deleteSheet('Sheet1');
+      if (registers.length > 0) {
+        registers.forEach(register => {
+          workbook.cloneSheet(workbook.activeSheet(), `${register.id}`);
+          const sheet = workbook.sheet(`${register.id}`);
+          registerSheet(sheet, register);
+        });
+        workbook.deleteSheet('Sheet1');
+      }
       return workbook.outputAsync();
     })
 }
