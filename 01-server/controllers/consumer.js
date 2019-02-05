@@ -4,7 +4,7 @@ const validator = require('validator');
 const crypt = require('../lib/crypt');
 const { Role } = require('../lib/roles');
 
-const pattern = '[a-zA-Zа-яА-Я0-9.]';
+const pattern = '[a-zA-Zа-яА-Я0-9.\"\']';
 
 module.exports.count = async (req, res, next) => {
   try {
@@ -28,7 +28,7 @@ module.exports.getAll = async (req, res, next) => {
           limit: lim,
           include: [{ model: User }]
         })
-        .map(({ id, name, email, phone, User: { login } }) => ({ id, name, email, phone, login }));      
+        .map(({ id, name, email, phone, User: { login } }) => ({ id, name, email, phone, login }));
     }
     else {
       consumers = await Consumer
@@ -45,19 +45,16 @@ module.exports.create = async (req, res, next) => {
   try {
     const { email, name, phone, login, password } = req.body;
 
-    if (!email || !name || !login || !password) {
-      return next(createError(400, 'Incorrect input parameters'));
-    }
+    if (!login) return next(createError(400, 'Login is required'));
+    if (!password) return next(createError(400, 'Password is required'));
+    if (!name) return next(createError(400, 'Name is required'));
+    if (!email) return next(createError(400, 'Email is required'));
 
-    const isValid =
-      validator.isEmail(email) &&
-      validator.matches(name, pattern) &&
-      validator.isAlphanumeric(login) &&
-      validator.isAlphanumeric(password);
-
-    if (!isValid) {
-      return next(createError(400, 'Incorrect input parameters'));
-    }
+    if (!(validator.isAlphanumeric(login) && login.length >= 2)) return next(createError(400, 'Login must contain letters, numbers and length min 2 chars'));
+    if (!(validator.isAlphanumeric(password) && password.length >= 2)) return next(createError(400, 'Password must contain letters, numbers and length min 2 chars'));
+    if (!(validator.matches(name, pattern) && name.length >= 2)) return next(createError(400, 'Name must contain letters, numbers and length min 2 chars'));
+    if (!validator.isEmail(email)) return next(createError(400, 'Invalid email'));
+    if (phone && !validator.isNumeric(phone)) return next(createError(400, 'Phone must contain from numbers'));
 
     const role = await UserRole.findOne({ where: { role: Role.CONSUMER } });
     if (!role) {
@@ -129,22 +126,20 @@ module.exports.updateById = async (req, res, next) => {
     const { consumer_id } = req.params;
     const { name, email, phone } = req.body;
 
-    if (!consumer_id || !name || !email) {
-      return next(createError(400, 'Incorrect input parameters'));
-    }
+    if (!consumer_id) return next(createError(400, 'Consumer id is required'));
+    if (!login) return next(createError(400, 'Login is required'));
+    if (!name) return next(createError(400, 'Name is required'));
+    if (!email) return next(createError(400, 'Email is required'));
 
-    const isValid =
-      validator.matches(name, pattern) &&
-      validator.isEmail(email);
-
-    if (!isValid) {
-      return next(createError(400, 'Incorrect input parameters'));
-    }
+    if (!(validator.isAlphanumeric(login) && login.length >= 2)) return next(createError(400, 'Login must contain letters, numbers and length min 2 chars'));
+    if (!(validator.matches(name, pattern) && name.length >= 2)) return next(createError(400, 'Name must contain letters, numbers and length min 2 chars'));
+    if (!validator.isEmail(email)) return next(createError(400, 'Invalid email'));
+    if (phone && !validator.isNumeric(phone)) return next(createError(400, 'Phone must contain from numbers'));
 
     const [count, ...rest] = await Consumer.update({ name, email, phone: phone }, { where: { id: consumer_id } });
 
     if (!count) {
-      return next(createError(400, 'Updating failed'));
+      return next(createError(500, 'Failed to update a consumer'));
     }
 
     return res.json({
@@ -169,17 +164,17 @@ module.exports.deleteById = async (req, res, next) => {
 
     let count = null;
     try {
-        let result = await sequelize.transaction(async (t) => {
-            const consumer = await Consumer.findOne({where: {id: consumer_id}});
-            count = await Consumer.destroy({where: {id: consumer_id}}, {transaction: t});
-            const userCount = await User.destroy({where: {id: consumer.UserId}}, {transaction: t});
-        });
+      let result = await sequelize.transaction(async (t) => {
+        const consumer = await Consumer.findOne({ where: { id: consumer_id } });
+        count = await Consumer.destroy({ where: { id: consumer_id } }, { transaction: t });
+        const userCount = await User.destroy({ where: { id: consumer.UserId } }, { transaction: t });
+      });
     } catch (err) {
-        return next(createError(500, err.message));
+      return next(createError(500, err.message));
     }
 
     if (!count) {
-        return next(createError(404, 'Failed to delete an inspector'));
+      return next(createError(500, 'Failed to delete an inspector'));
     }
 
     return res.json({ done: true });
