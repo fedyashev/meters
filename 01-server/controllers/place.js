@@ -144,16 +144,15 @@ module.exports.create = async (req, res, next) => {
         const meter_id = req.body.meter_id || null;
         const isSignNeed = req.body.isSignNeed || false;
 
-        if (!name) {
-            return next(createError(400, 'Incorrect place name'));
-        }
+        if (!name) return next(createError(400, 'Name is required'));
+        if (!validator.matches(name, pattern)) return next(createError(400, 'Name is not valid'));
 
-        const isValid =
-            validator.matches(name, pattern);
+        // const isValid =
+        //     validator.matches(name, pattern);
 
-        if (!isValid) {
-            return next(createError(400, 'Incorrect place name'));
-        }
+        // if (!isValid) {
+        //     return next(createError(400, 'Incorrect place name'));
+        // }
 
         if (meter_id) {
             const existsMeter = await Meter.findOne({where: {id: meter_id}});
@@ -255,16 +254,20 @@ module.exports.updateById = async (req, res, next) => {
         const consumer_id = req.body.consumer_id || null;
         const meter_id = req.body.meter_id || null;
 
-        if (!place_id || !name) {
-            return next(createError(400, 'Incorrect input parameters'));
-        }
+        // if (!place_id || !name) {
+        //     return next(createError(400, 'Incorrect input parameters'));
+        // }
 
-        const isValid = 
-            validator.matches(name, pattern);
+        // const isValid = 
+        //     validator.matches(name, pattern);
 
-        if (!isValid) {
-            return next(createError(400, 'Incorrect place name'));
-        }
+        // if (!isValid) {
+        //     return next(createError(400, 'Incorrect place name'));
+        // }
+
+        if (!place_id) return next(createError(400, 'Place id is required'));
+        if (!name) return next(createError(400, 'Name is required'));
+        if (!validator.matches(name, pattern)) return next(createError(400, 'Name is not valid'));
 
         if (meter_id) {
             const existsMeter = await Meter.findOne({where: {id: meter_id}});

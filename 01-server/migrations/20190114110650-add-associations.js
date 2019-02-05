@@ -52,7 +52,7 @@ module.exports = {
         return queryInterface.addColumn(table_prefix + 'Places', 'MeterId', {
           type: Sequelize.INTEGER,
           //allowNull: true,
-          //unique: true,
+          unique: true,
           reference: {
             model: 'Meter',
             key: 'id'
