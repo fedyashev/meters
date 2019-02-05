@@ -1,14 +1,9 @@
 const createError = require('http-errors');
 const { Report, Inspector, Consumer, Place, Meter, Data, Sign, sequelize } = require('../models');
-//const PdfDocument = require('pdfkit');
-//const fs = require('fs');
-//const { prettyDate } = require('../lib/helpers');
 const pdfTemplates = require('../lib/pdf-templates');
 const email = require('../lib/email-sender');
 
-//const nodemailer = require('nodemailer');
-
-//const email = require('../config/email.json');
+const validator = require('validator');
 
 const reportMapper = report => ({
     id: report.id,
@@ -69,7 +64,6 @@ const queryIncludesWithSign = [
 module.exports.count = async (req, res, next) => {
     try {
         const {inspector_id} = req.query;
-        console.log(typeof inspector_id, inspector_id);
         let count = null;
         if (inspector_id) {
             count = await Report.count({where: {InspectorId: inspector_id}});
@@ -141,6 +135,12 @@ module.exports.create = async (req, res, next) => {
         if (!inspector_id || !place_id || !date || !value) {
             return next(createError(400, 'Incorrect input parameters'));
         }
+
+        if (!inspector_id) return next(createError(400, 'Inspector id is required'));
+        if (!place_id) return next(createError(400, 'Place id is required'));
+        if (!date) return next(createError(400, 'Date is required'));
+        if (!value) return next(createError(400, 'Value is required'));
+        if (!((validator.isDecimal(value) || validator.isNumeric(value)) && (Number(value) >= 0))) return next(createError(400, 'Value is not valid'));
 
         const inspector = await Inspector.findOne({ where: { id: inspector_id } });
         if (!inspector) {
@@ -293,9 +293,17 @@ module.exports.updateById = async (req, res, next) => {
         //return next(createError(501, 'Report update not implemented'));
         const { value } = req.body;
         const { report_id } = req.params;
-        if (!value || !report_id) {
-            return next(createError(400, 'Incorrect input parameters'));
-        }
+
+        if (!report_id) return next(createError(400, 'Report id is required'));
+//        if (!inspector_id) return next(createError(400, 'Inspector id is required'));
+//        if (!place_id) return next(createError(400, 'Place id is required'));
+//        if (!date) return next(createError(400, 'Date is required'));
+        if (!value) return next(createError(400, 'Value is required'));
+        if (!((validator.isDecimal(value) || validator.isNumeric(value)) && (Number(value) >= 0))) return next(createError(400, 'Value is not valid'));
+
+        // if (!value || !report_id) {
+        //     return next(createError(400, 'Incorrect input parameters'));
+        // }
         const report = await Report.findOne({ where: { id: report_id }, include: [{ model: Data, as: 'CurrentData' }] });
         const [count, ...rest] = await Data.update({ value }, { where: { id: report.CurrentData.id } });
         if (!count) {
