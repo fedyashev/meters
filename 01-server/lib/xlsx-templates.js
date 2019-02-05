@@ -45,7 +45,7 @@ const registerSheet = (sheet, register) => {
 
   let itemsfirstRow = null;
   let subsConsumptionRow = null;
-  if (register.sub_abonents) {
+  if (register.sub_abonents && register.sub_abonents.length > 0) {
     const { sub_abonents } = register;
 
     sheet
@@ -83,10 +83,10 @@ const registerSheet = (sheet, register) => {
     sheet
       .range(`A${row}:G${row}`)
       .style({ border: 'medium' });
-
-    row++;
   }
+
   if (register.group_abonent) {
+    row++;
 
     sheet
       .range(`A${row}:G${row}`)
@@ -96,11 +96,21 @@ const registerSheet = (sheet, register) => {
 
     row++;
 
+    if (register.sub_abonents || register.sub_abonents.length === 0) {
+      tableHeader(sheet, row);
+      row++;
+      row++;
+    }
+
     tableItem(sheet, row, register.group_abonent);
+
+    sheet
+      .cell(`F${row}`)
+      .style({ bold: true });
 
     row++;
 
-    if (subsConsumptionRow !== null) {
+    if (subsConsumptionRow) {
       sheet
         .range(`A${row}:E${row}`)
         .merged(true)
@@ -124,6 +134,12 @@ const registerSheet = (sheet, register) => {
   sheet.column('E').width(12);
   sheet.column('F').width(12);
   sheet.column('G').width(20);
+
+  if (register.sub_abonents && register.sub_abonents > 0 || register.group_abonent) {
+    sheet
+      .range(`A3:G${subsConsumptionRow ? row : row - 1}`)
+      .style({ border: 'medium' });
+  }
 }
 
 const tableHeader = (sheet, row) => {
