@@ -45,14 +45,22 @@ class ReportUpdate extends Component {
         const token = this.state.user.token;
         const report_id = this.state.report.id;
         api.updateReportById(token, report_id, value)
-            .then(done => {
-                if (done) {
-                    this.props.showSuccessAlert('Показания счетчика изменены');
-                    this.props.history.goBack();
-                }
-                else {
-                    this.props.showWarningAlert('Показания не изменены');
-                }
+            .then(result => {
+
+                if (!result || !result.done) {
+                    this.props.showWarningAlert('Неудалось изменить отчет');
+                  }
+                  else {
+                    api.sendReport(token, report_id)
+                      .then(done => {
+                        this.props.showSuccessAlert('Отчет изменен и отправлен.');
+                        this.props.history.goBack();
+                      })
+                      .catch(({ error }) => {
+                        this.props.showWarningAlert("Отчет изменен, но не отправлен. \n" + error.message);
+                        this.props.history.goBack();
+                      });
+                  }
             })
             .catch(({ error }) => {
                 this.props.showWarningAlert('Показания не изменены');

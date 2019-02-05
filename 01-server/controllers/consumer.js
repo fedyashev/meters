@@ -127,11 +127,9 @@ module.exports.updateById = async (req, res, next) => {
     const { name, email, phone } = req.body;
 
     if (!consumer_id) return next(createError(400, 'Consumer id is required'));
-    if (!login) return next(createError(400, 'Login is required'));
     if (!name) return next(createError(400, 'Name is required'));
     if (!email) return next(createError(400, 'Email is required'));
 
-    if (!(validator.isAlphanumeric(login) && login.length >= 2)) return next(createError(400, 'Login must contain letters, numbers and length min 2 chars'));
     if (!(validator.matches(name, pattern) && name.length >= 2)) return next(createError(400, 'Name must contain letters, numbers and length min 2 chars'));
     if (!validator.isEmail(email)) return next(createError(400, 'Invalid email'));
     if (phone && !validator.isNumeric(phone)) return next(createError(400, 'Phone must contain from numbers'));

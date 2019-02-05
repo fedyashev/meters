@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import api from '../../lib/api';
 import NavBar from '../NavBar';
 
@@ -9,33 +9,33 @@ class InspectorReportUpdate extends Component {
     this.state = {
       user: props.user,
       report: {
-          id: props.match.params.report_id
+        id: props.match.params.report_id
       },
       isLoaded: false
     }
   }
 
   componentDidMount() {
-      const token = this.state.user.token;
-      const report_id = this.state.report.id;
+    const token = this.state.user.token;
+    const report_id = this.state.report.id;
     api.getReportById(token, report_id)
       .then(report => {
         if (report) {
-          this.setState({...this.state, report, isLoaded: true});
+          this.setState({ ...this.state, report, isLoaded: true });
         }
         else {
-            this.props.showWarningAlert('Отчет не найден');
-            this.props.history.goBack();
+          this.props.showWarningAlert('Отчет не найден');
+          this.props.history.goBack();
         }
       })
-      .catch(({error}) => {
+      .catch(({ error }) => {
         this.props.showWarningAlert(error.message);
         this.props.history.goBack();
       });
   }
 
   handleUpdateReport = value => {
-    const {report} = this.state;
+    const { report } = this.state;
     if (Number.isNaN(value) || value < 0) {
       return this.props.showWarningAlert('Некорректное значение показания счетчика');
     }
@@ -45,23 +45,39 @@ class InspectorReportUpdate extends Component {
     const token = this.state.user.token;
     const report_id = this.state.report.id;
     api.updateReportById(token, report_id, value)
-      .then(done => {
-        if (done) {
-          this.props.showSuccessAlert('Показания счетчика изменены');
-          this.props.history.goBack();
+      .then(result => {
+
+        if (!result || !result.done) {
+          this.props.showWarningAlert('Неудалось изменить отчет');
         }
         else {
-          this.props.showWarningAlert('Показания не изменены');
+          api.sendReport(token, report_id)
+            .then(done => {
+              this.props.showSuccessAlert('Отчет изменен и отправлен.');
+              this.props.history.goBack();
+            })
+            .catch(({ error }) => {
+              this.props.showWarningAlert("Отчет изменен, но не отправлен. \n" + error.message);
+              this.props.history.goBack();
+            });
         }
+
+        // if (result && result.done) {
+        //   this.props.showSuccessAlert('Показания счетчика изменены');
+        //   this.props.history.goBack();
+        // }
+        // else {
+        //   this.props.showWarningAlert('Показания не изменены');
+        // }
       })
-      .catch(({error}) => {
+      .catch(({ error }) => {
         this.props.showWarningAlert('Показания не изменены');
       });
   }
 
   render() {
     if (!this.state.isLoaded) return null;
-    const {report} = this.state;
+    const { report } = this.state;
     let val;
     const onClickSave = e => {
       e.preventDefault();
@@ -69,7 +85,7 @@ class InspectorReportUpdate extends Component {
     };
     return (
       <div className="container">
-        <NavBar {...this.props}/>
+        <NavBar {...this.props} />
         <div className="row justify-content-center">
           <div className="col-12 col-sm-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
             <div className="text-center font-weight-bold mb-5">
@@ -77,7 +93,7 @@ class InspectorReportUpdate extends Component {
             </div>
             <form>
               <div className="form-group">
-                <input className="form-control" type="number" placeholder="Показания счетчика" required ref={r => val = r} defaultValue={report.current_data.value}/>
+                <input className="form-control" type="number" placeholder="Показания счетчика" required ref={r => val = r} defaultValue={report.current_data.value} />
               </div>
               <div className="form-group">
                 <button className="btn btn-primary btn-block" onClick={onClickSave}>Сохранить</button>
