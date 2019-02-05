@@ -1,10 +1,10 @@
 {
     "noreply": {
-        "url": "noreply.test.meters@gmail.com",
-        "username": "noreply.test.meters@gmail.com",
+        "url": "noreply.meters@instaservice.by",
+        "username": "noreply.meters@instaservice.by",
         "password": "Noreply2019"
     },
     "reports": {
-        "url": "reports.test.meters@yandex.by"
+        "url": "reports.meters@instaservice.by"
     }
 }

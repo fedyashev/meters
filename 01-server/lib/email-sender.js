@@ -3,7 +3,7 @@ const email = require('../config/email.json');
 
 module.exports.sendEmail = (report, pdfDocumentStream) => {
     const transport = nodemailer.createTransport({
-        service: 'Gmail',
+        service: 'Yandex',
         auth: {
             user: email.noreply.username,
             pass: email.noreply.password
