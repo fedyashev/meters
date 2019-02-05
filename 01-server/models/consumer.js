@@ -1,7 +1,6 @@
 'use strict';
 
-const {db: {table_prefix}, db: {table_names}} = require('../config/config.json');
-//const {table_prefix} = require('../config/db-names');
+const { db: { table_prefix } } = require('../config/config.json');
 
 module.exports = (sequelize, DataTypes) => {
   const Consumer = sequelize.define('Consumer', {
@@ -19,10 +18,10 @@ module.exports = (sequelize, DataTypes) => {
       alloNull: true
     }
   }, {
-    freezeTableName: true,
-    tableName: table_prefix + 'Consumers'
-  });
-  Consumer.associate = function(models) {
+      freezeTableName: true,
+      tableName: table_prefix + 'Consumers'
+    });
+  Consumer.associate = function (models) {
     // associations can be defined here
     Consumer.belongsTo(models.User);  // Consumer.UserId
     Consumer.hasMany(models.Report);

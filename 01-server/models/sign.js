@@ -1,4 +1,7 @@
 'use strict';
+
+const { db: { table_prefix } } = require('../config/config.json');
+
 module.exports = (sequelize, DataTypes) => {
   const Sign = sequelize.define('Sign', {
     date: {
@@ -8,8 +11,11 @@ module.exports = (sequelize, DataTypes) => {
     mimetype: DataTypes.STRING,
     filename: DataTypes.STRING,
     data: DataTypes.BLOB('long')
-  }, {});
-  Sign.associate = function(models) {
+  }, {
+      freezeTableName: true,
+      tableName: table_prefix + 'Signs'
+    });
+  Sign.associate = function (models) {
     // associations can be defined here
     Sign.hasOne(models.Report);
   };

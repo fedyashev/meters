@@ -6,7 +6,7 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return Promise.resolve()
       .then(() => {
-        return queryInterface.addColumn('Users', 'UserRoleId', {
+        return queryInterface.addColumn(table_prefix + 'Users', 'UserRoleId', {
           type: Sequelize.INTEGER,
           allowNull: false,
           defaultValue: 1,
@@ -17,7 +17,7 @@ module.exports = {
         });
       })
       .then(() => {
-        return queryInterface.addColumn('Inspectors', 'UserId', {
+        return queryInterface.addColumn(table_prefix + 'Inspectors', 'UserId', {
           type: Sequelize.INTEGER,
           allowNull: false,
           unique: true,
@@ -39,7 +39,7 @@ module.exports = {
         });
       })
       .then(() => {
-        return queryInterface.addColumn('Places', 'ConsumerId', {
+        return queryInterface.addColumn(table_prefix + 'Places', 'ConsumerId', {
           type: Sequelize.INTEGER,
           //allowNull: true,
           reference: {
@@ -49,7 +49,7 @@ module.exports = {
         });
       })
       .then(() => {
-        return queryInterface.addColumn('Places', 'MeterId', {
+        return queryInterface.addColumn(table_prefix + 'Places', 'MeterId', {
           type: Sequelize.INTEGER,
           //allowNull: true,
           //unique: true,
@@ -60,7 +60,7 @@ module.exports = {
         });
       })
       .then(() => {
-        return queryInterface.addColumn('Reports', 'ConsumerId', {
+        return queryInterface.addColumn(table_prefix + 'Reports', 'ConsumerId', {
           type: Sequelize.INTEGER,
           reference: {
             model: 'Consumer',
@@ -69,7 +69,7 @@ module.exports = {
         });
       })
       .then(() => {
-        return queryInterface.addColumn('Reports', 'InspectorId', {
+        return queryInterface.addColumn(table_prefix + 'Reports', 'InspectorId', {
           type: Sequelize.INTEGER,
           reference: {
             model: 'Inspector',
@@ -78,7 +78,7 @@ module.exports = {
         });
       })
       .then(() => {
-        return queryInterface.addColumn('Reports', 'PlaceId', {
+        return queryInterface.addColumn(table_prefix + 'Reports', 'PlaceId', {
           type: Sequelize.INTEGER,
           reference: {
             model: 'Place',
@@ -87,7 +87,7 @@ module.exports = {
         });
       })
       .then(() => {
-        return queryInterface.addColumn('Reports', 'MeterId', {
+        return queryInterface.addColumn(table_prefix + 'Reports', 'MeterId', {
           type: Sequelize.INTEGER,
           reference: {
             model: 'Meter',
@@ -96,7 +96,7 @@ module.exports = {
         });
       })
       .then(() => {
-        return queryInterface.addColumn('Reports', 'LastDataId', {
+        return queryInterface.addColumn(table_prefix + 'Reports', 'LastDataId', {
           type: Sequelize.INTEGER,
           reference: {
             model: 'Data',
@@ -106,7 +106,7 @@ module.exports = {
         });
       })
       .then(() => {
-        return queryInterface.addColumn('Reports', 'CurrentDataId', {
+        return queryInterface.addColumn(table_prefix + 'Reports', 'CurrentDataId', {
           type: Sequelize.INTEGER,
           reference: {
             model: 'Data',
@@ -116,7 +116,7 @@ module.exports = {
         });
       })
       .then(() => {
-        return queryInterface.addColumn('Reports', 'SignId', {
+        return queryInterface.addColumn(table_prefix + 'Reports', 'SignId', {
           type: Sequelize.INTEGER,
           reference: {
             model: 'Sign',
@@ -125,7 +125,7 @@ module.exports = {
         });
       })
       .then(() => {
-        return queryInterface.addColumn('Data', 'MeterId', {
+        return queryInterface.addColumn(table_prefix + 'Data', 'MeterId', {
           type: Sequelize.INTEGER,
           reference: {
             model: 'Meter',
@@ -140,19 +140,19 @@ module.exports = {
 
   down: (queryInterface, Sequelize) => {
     return Promise.resolve()
-      .then(() => queryInterface.removeColumn('Users', 'UserRoleId'))
-      .then(() => queryInterface.removeColumn('Inspectors', 'UserId'))
-      .then(() => queryInterface.removeColumn('Consumers', 'UserId'))
-      .then(() => queryInterface.removeColumn('Places', 'ConsumerId'))
-      .then(() => queryInterface.removeColumn('Places', 'MeterId'))
-      .then(() => queryInterface.removeColumn('Reports', 'ConsumerId'))
-      .then(() => queryInterface.removeColumn('Reports', 'InspectorId'))
-      .then(() => queryInterface.removeColumn('Reports', 'PlaceId'))
-      .then(() => queryInterface.removeColumn('Reports', 'MeterId'))
-      .then(() => queryInterface.removeColumn('Reports', 'LastDataId'))
-      .then(() => queryInterface.removeColumn('Reports', 'CurrentDataId'))
-      .then(() => queryInterface.removeColumn('Reports', 'SignId'))
-      .then(() => queryInterface.removeColumn('Data', 'MeterId'))
+      .then(() => queryInterface.removeColumn(table_prefix + 'Users', 'UserRoleId'))
+      .then(() => queryInterface.removeColumn(table_prefix + 'Inspectors', 'UserId'))
+      .then(() => queryInterface.removeColumn(table_prefix +'Consumers', 'UserId'))
+      .then(() => queryInterface.removeColumn(table_prefix + 'Places', 'ConsumerId'))
+      .then(() => queryInterface.removeColumn(table_prefix + 'Places', 'MeterId'))
+      .then(() => queryInterface.removeColumn(table_prefix + 'Reports', 'ConsumerId'))
+      .then(() => queryInterface.removeColumn(table_prefix + 'Reports', 'InspectorId'))
+      .then(() => queryInterface.removeColumn(table_prefix + 'Reports', 'PlaceId'))
+      .then(() => queryInterface.removeColumn(table_prefix + 'Reports', 'MeterId'))
+      .then(() => queryInterface.removeColumn(table_prefix + 'Reports', 'LastDataId'))
+      .then(() => queryInterface.removeColumn(table_prefix + 'Reports', 'CurrentDataId'))
+      .then(() => queryInterface.removeColumn(table_prefix + 'Reports', 'SignId'))
+      .then(() => queryInterface.removeColumn(table_prefix + 'Data', 'MeterId'))
       .catch(err => console.log(err.message));
   }
 };

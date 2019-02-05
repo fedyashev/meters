@@ -1,5 +1,7 @@
 'use strict';
-const {SubAbonentSchema} = require('./index');
+
+const { db: { table_prefix } } = require('../config/config.json');
+
 module.exports = (sequelize, DataTypes) => {
   const Place = sequelize.define('Place', {
     name: {
@@ -11,7 +13,10 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: false
     }
-  }, {});
+  }, {
+      freezeTableName: true,
+      tableName: table_prefix + 'Places'
+    });
   Place.associate = function (models) {
     // associations can be defined here
     Place.belongsTo(models.Consumer);  // Place.ConsumerId

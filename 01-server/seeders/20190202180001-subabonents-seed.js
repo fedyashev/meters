@@ -1,18 +1,10 @@
 'use strict';
 
+const { db: { table_prefix } } = require('../config/config.json');
+
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    /*
-      Add altering commands here.
-      Return a promise to correctly handle asynchronicity.
-
-      Example:
-      return queryInterface.bulkInsert('People', [{
-        name: 'John Doe',
-        isBetaMember: false
-      }], {});
-    */
-    return queryInterface.bulkInsert('SubAbonentSchemas', [
+    return queryInterface.bulkInsert(table_prefix + 'SubAbonentSchemas', [
       {
         RegisterId: '1',
         SubAbonentId: '1',
@@ -35,13 +27,6 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    /*
-      Add reverting commands here.
-      Return a promise to correctly handle asynchronicity.
-
-      Example:
-      return queryInterface.bulkDelete('People', null, {});
-    */
-    return queryInterface.bulkDelete('SubAbonentSchemas', null, {});
+    return queryInterface.bulkDelete(table_prefix + 'SubAbonentSchemas', null, {});
   }
 };

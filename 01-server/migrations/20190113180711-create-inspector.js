@@ -1,7 +1,10 @@
 'use strict';
+
+const { db: { table_prefix } } = require('../config/config.json');
+
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Inspectors', {
+    return queryInterface.createTable(table_prefix + 'Inspectors', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -25,6 +28,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Inspectors');
+    return queryInterface.dropTable(table_prefix + 'Inspectors');
   }
 };
