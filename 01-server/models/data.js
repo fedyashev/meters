@@ -4,8 +4,14 @@ const { db: { table_prefix } } = require('../config/config.json');
 
 module.exports = (sequelize, DataTypes) => {
   const Data = sequelize.define('Data', {
-    date: DataTypes.DATE,
-    value: DataTypes.FLOAT
+    date: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    value: {
+      type: DataTypes.FLOAT,
+      allowNull: false
+    }
   }, {
       freezeTableName: true,
       tableName: table_prefix + 'Data'
