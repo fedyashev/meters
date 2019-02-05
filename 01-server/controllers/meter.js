@@ -36,17 +36,15 @@ module.exports.getAll = async (req, res, next) => {
 module.exports.create = async (req, res, next) => {
     try {
         const { number } = req.body;
-        if (!number) {
-            return next(createError(400, 'Incorrect number'));
-        }
-        // const isValid = validator.isAlphanumeric(number);
-        // if (!isValid) {
-        //     return next(createError(400, 'Incorrect number'));
-        // }
+
+        if (!number) return next(createError(400, 'Number is required'));
+        if (!validator.isAlphanumeric(number)) return next(createError(400, 'Number is not valid. Only letters and digits.'));
+
         const meter = await Meter.create({ number });
         if (!meter) {
-            return next(createError(500, 'Creation faild'));
+            return next(createError(500, 'Failed to create a meter'));
         }
+
         return res.json({
             id: meter.id,
             number
@@ -62,10 +60,12 @@ module.exports.getById = async (req, res, next) => {
         if (!meter_id) {
             return next(createError(400, 'Incorrect meter id'));
         }
+
         const meter = await Meter.findOne({ where: { id: meter_id } });
         if (!meter) {
             return next(createError(404, 'Meter not found'));
         }
+
         return res.json({
             id: meter.id,
             number: meter.number
@@ -79,17 +79,16 @@ module.exports.updateById = async (req, res, next) => {
     try {
         const { number } = req.body;
         const { meter_id } = req.params;
-        if (!number || !meter_id) {
-            return next(createError(400, 'Incorrect number id'))
-        }
-        // const isValid = validator.isAlphanumeric(number);
-        // if (!isValid) {
-        //     return next(createError(400, 'Incorrect number id'));
-        // }
+
+        if (!meter_id) return next(createError(400, 'Meter id is required'));
+        if (!number) return next(createError(400, 'Number is required'));
+        if (!validator.isAlphanumeric(number)) return next(createError(400, 'Number is not valid. Only letters and digits.'));
+
         const [count, ...rest] = await Meter.update({ number }, { where: { id: meter_id } });
         if (!count) {
             return next(createError(500, 'Updating failed'));
         }
+        
         return res.json({
             id: meter_id,
             number
