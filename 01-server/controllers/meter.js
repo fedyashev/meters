@@ -1,5 +1,5 @@
 const createError = require('http-errors');
-const { Meter, Place, Sequelize } = require('../models');
+const { Meter, Place, Data, Sequelize, sequelize } = require('../models');
 const validator = require('validator');
 const Op = Sequelize.Op;
 
@@ -104,11 +104,13 @@ module.exports.deleteById = async (req, res, next) => {
         const { meter_id } = req.params;
         if (!meter_id) {
             return next(createError(400, 'Incorrect meter id'));
+        } 
+
+        const countMeter = await Meter.destroy({ where: { id: meter_id } });
+        if (!countMeter) {
+            return next(createError(500, 'Failed to delete a meter'));
         }
-        const count = await Meter.destroy({ where: { id: meter_id } });
-        if (!count) {
-            return next(createError(500, 'Deleting failed'));
-        }
+
         return res.json({ done: true });
     } catch (err) {
         return next(createError(500, err.message));
