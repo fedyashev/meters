@@ -68,7 +68,7 @@ module.exports.getByUserId = async (req, res, next) => {
     try {
         const { user_id } = req.params;
         if (!user_id) {
-            return next(createError(400, 'Incorrect inspector id'));
+            return next(createError(400, 'Incorrect user id'));
         }
         const inspector = await Inspector.findOne({
             where: { UserId: user_id },
@@ -90,18 +90,26 @@ module.exports.getByUserId = async (req, res, next) => {
 module.exports.create = async (req, res, next) => {
     try {
         const { name, login, password } = req.body;
-        if (!name || !login || !password) {
-            return next(createError(400, 'Incorrect input parameters'));
-        }
+        // if (!name || !login || !password) {
+        //     return next(createError(400, 'Incorrect input parameters'));
+        // }
 
-        const isValid =
-            validator.matches(name, pattern) &&
-            validator.isAlphanumeric(login) &&
-            validator.isAlphanumeric(password);
+        // const isValid =
+        //     validator.matches(name, pattern) &&
+        //     validator.isAlphanumeric(login) &&
+        //     validator.isAlphanumeric(password);
 
-        if (!isValid) {
-            return next(createError(400, 'Incorrect input parameters'));
-        }
+        // if (!isValid) {
+        //     return next(createError(400, 'Incorrect input parameters'));
+        // }
+
+        if (!login) return next(createError(400, 'Login is required'));
+        if (!password) return next(createError(400, 'Password is required'));
+        if (!name) return next(createError(400, 'Name is required'));
+    
+        if (!(validator.isAlphanumeric(login) && login.length >= 2)) return next(createError(400, 'Login must contain letters, numbers and length min 2 chars'));
+        if (!(validator.isAlphanumeric(password) && password.length >= 2)) return next(createError(400, 'Password must contain letters, numbers and length min 2 chars'));
+        if (!(validator.matches(name, pattern) && name.length >= 2)) return next(createError(400, 'Name must contain letters, numbers and length min 2 chars'));
 
         const role = await UserRole.findOne({ where: { role: Role.INSPECTOR } });
         if (!role) {
@@ -140,21 +148,26 @@ module.exports.updateById = async (req, res, next) => {
         const { name } = req.body;
         const { inspector_id } = req.params;
 
-        if (!name || !inspector_id) {
-            return next(createError(400, 'Incorrect input parameters'));
-        }
+        // if (!name || !inspector_id) {
+        //     return next(createError(400, 'Incorrect input parameters'));
+        // }
 
-        const isValid =
-            validator.matches(name, pattern);
+        // const isValid =
+        //     validator.matches(name, pattern);
 
-        if (!isValid) {
-            return next(createError(400, 'Incorrect input parameters'));
-        }
+        // if (!isValid) {
+        //     return next(createError(400, 'Incorrect input parameters'));
+        // }
+
+        if (!inspector_id) return next(createError(400, 'Inspector id is required'));
+        if (!name) return next(createError(400, 'Name is required'));
+    
+        if (!(validator.matches(name, pattern) && name.length >= 2)) return next(createError(400, 'Name must contain letters, numbers and length min 2 chars'));
 
         const [count, ...rest] = await Inspector.update({ name: name }, { where: { id: inspector_id } });
 
         if (!count) {
-            return next(createError(500, 'Inspector updating failed'));
+            return next(createError(500, 'Failed to update inspector'));
         }
 
         return res.json({
