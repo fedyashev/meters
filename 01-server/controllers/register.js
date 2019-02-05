@@ -1,7 +1,9 @@
 const createError = require('http-errors');
-const { Register, Place, SubAbonentSchema, Consumer, Meter, Data, sequelize } = require('../models');
+const validator = require('validator');
 
+const { Register, Place, SubAbonentSchema, Consumer, Meter, Data, sequelize } = require('../models');
 const {registerToXlsx, registersAllToXlsx} = require('../lib/xlsx-templates');
+const pattern = '[a-zA-Zа-яА-Я0-9.]';
 
 module.exports.getAll = async (req, res, next) => {
     try {
@@ -30,9 +32,13 @@ module.exports.create = async (req, res, next) => {
     try {
         const { name, group_abonent_id, sub_abonentes } = req.body;
         //console.log(req.body);
-        if (!name || !Array.isArray(sub_abonentes)) {
-            return next(createError(500, 'Incorrect register name'));
-        }
+        // if (!name || !Array.isArray(sub_abonentes)) {
+        //     return next(createError(500, 'Incorrect register name'));
+        // }
+
+        if (!name) return next(createError(400, 'Name is required'));
+        if (!Array.isArray(sub_abonentes)) return next(createError(400, 'Subabonents must be an array'));
+        if (!validator.matches(name, pattern)) return next(createError(400, 'Name is not valid'));
 
         let register = null;
         let subabonents = null;
@@ -93,13 +99,10 @@ module.exports.updateById = async (req, res, next) => {
         const { name, group_abonent_id, sub_abonentes } = req.body;
         const { register_id } = req.params;
 
-        if (!register_id) {
-            return next(createError(400, 'Incorrect register id'));
-        }
-
-        if (!name) {
-            return next(createError(400, 'Incorrect register name'));
-        }
+        if (!register_id) return next(createError(400, 'Regidster id is required'));
+        if (!name) return next(createError(400, 'Name is required'));
+        if (!Array.isArray(sub_abonentes)) return next(createError(400, 'Subabonents must be an array'));
+        if (!validator.matches(name, pattern)) return next(createError(400, 'Name is not valid'));
 
         const register = await Register.findOne({ where: { id: register_id } });
         if (!register) {
@@ -164,7 +167,7 @@ module.exports.deleteById = async (req, res, next) => {
     try {
         const { register_id } = req.params;
         if (!register_id) {
-            return next(createError(500, 'Incorrect input parameters'));
+            return next(createError(400, 'Register id is required'));
         }
         try {
             const result = await sequelize.transaction(async (t) => {
@@ -184,7 +187,7 @@ module.exports.downloadXlsxById = async (req, res, next) => {
     try {
         const {register_id} = req.params;
         if (!register_id) {
-            return next(createError(400, 'Incorrect register id'));
+            return next(createError(400, 'Register id is required'));
         }
         
         const register = await Register.getRegisterById(register_id);
@@ -194,10 +197,14 @@ module.exports.downloadXlsxById = async (req, res, next) => {
 
         const xlsx = await registerToXlsx(register);
 
-        res.set('Content-disposition', `attachment; filename=register-${register.id}-${Date.now()}.xlsx`);
-        res.set('Content-Type', 'application/xlsx');
+        // res.set('Content-disposition', `attachment; filename=register-${register.id}-${Date.now()}.xlsx`);
+        // res.set('Content-Type', 'application/xlsx');
 
-        res.end(xlsx, 'binary');
+        // res.end(xlsx, 'binary');
+
+        res.attachment(`register-${register.id}-${Date.now()}.xlsx`);
+        res.send(xlsx);
+
     } catch (err) {
         console.log(err);
         return next(createError(500, err.message));
