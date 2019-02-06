@@ -35,7 +35,7 @@ router.put('/users/:user_id/changePassword', jwt, allow([ADMIN, OWNER], self.use
 router.put('/users/:user_id/changeRole', jwt, allow([ADMIN, OWNER]), user.changeRole);
 router.delete('/users/:user_id', jwt, allow([ADMIN, OWNER]), user.deleteById);
 
-router.get('/userroles', jwt, allow([Role.ADMIN, Role.OWNER]), userrole.getAll);
+router.get('/userroles', jwt, allow([ADMIN, OWNER]), userrole.getAll);
 
 router.get('/inspectors', jwt, allow([ADMIN, OWNER]), inspector.getAll);
 router.get('/inspectors/count', jwt, allow([ADMIN, OWNER]), inspector.count);
@@ -66,7 +66,7 @@ router.get('/places/count', jwt, allow([ADMIN, OWNER, INSPECTOR]), place.count);
 router.post('/places', jwt, allow([ADMIN, OWNER, INSPECTOR]), place.create);
 router.get('/places/:place_id', jwt, allow([ADMIN, OWNER, INSPECTOR]), place.getById);
 router.put('/places/:place_id', jwt, allow([ADMIN, OWNER, INSPECTOR]), place.updateById); // Change name, isSignNeed, Consumer, Meter
-router.delete('/places/:place_id', jwt, allow([Role.ADMIN, Role.OWNER]), place.deleteById);
+router.delete('/places/:place_id', jwt, allow([ADMIN, OWNER]), place.deleteById);
 
 router.get('/data', jwt, allow([ADMIN, OWNER]), data.getAll);
 router.get('/data/count', jwt, allow([ADMIN, OWNER]), data.count);
