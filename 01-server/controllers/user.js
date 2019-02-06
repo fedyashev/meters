@@ -20,13 +20,11 @@ module.exports.create = async (req, res, next) => {
     const password = req.body.password && validator.trim(req.body.password) || "";
     const role = req.body.role;
 
-    const isBodyValid = 
-        validator.isAlphanumeric(login) &&
-        validator.isAlphanumeric(password);
-
-    if (!isBodyValid) {
-        return next(createError(400, "Incorrect user parameters"));
-    }
+    if (!login) return next(createError(400, 'Login is required'));
+    if (!password) return next(createError(400, 'Password is required'));
+    if (!(validator.isAlphanumeric(login) && login.length >= 2)) return next(createError(400, 'Login must contain letters, numbers and length min 2 chars'));
+    if (!(validator.isAlphanumeric(password) && password.length >= 2)) return next(createError(400, 'Password must contain letters, numbers and length min 2 chars'));
+    if (role && !(validator.isAlpha(role) && password.length >= 2)) return next(createError(400, 'Role must contain letters, numbers and length min 2 chars'));
 
     try {
         const noneRole = await UserRole.findOne({where: {role: Role.NONE}});
@@ -72,16 +70,10 @@ module.exports.updateById = async (req, res, next) => {
     const {user_id} = req.params;
     const {password, role} = req.body;
 
-    if (!user_id || !password) {
-        return next(createError(400, 'Incorrect user parameters'));
-    }
-
-    const isValid = 
-        validator.isAlphanumeric(password);
-
-    if (!isValid) {
-        return next(createError(400, 'Password is not valid'));
-    }
+    if (!user_id) return next(createError(400, 'User id is required'));
+    if (!password) return next(createError(400, 'Password is required'));
+    if (!(validator.isAlphanumeric(password) && password.length >= 2)) return next(createError(400, 'Password must contain letters, numbers and length min 2 chars'));
+    if (role && !(validator.isAlpha(role) && password.length >= 2)) return next(createError(400, 'Role must contain letters, numbers and length min 2 chars'));
 
     try {
         const user = await User.findOne({where: {id: user_id}});
@@ -127,16 +119,9 @@ module.exports.changePassword = async (req, res, next) => {
     const {password} = req.body;
     const {user_id} = req.params;
 
-    if (!user_id || !password) {
-        return next(createError(400, 'Incorrect input parameters'));
-    }
-
-    const isValid = 
-        validator.isAlphanumeric(password);
-
-    if (!isValid) {
-        return next(createError(400, 'Password is not valid'));
-    }
+    if (!user_id) return next(createError(400, 'User id is required'));
+    if (!password) return next(createError(400, 'Password is required'));
+    if (!(validator.isAlphanumeric(password) && password.length >= 2)) return next(createError(400, 'Password must contain letters, numbers and length min 2 chars'));
 
     try {
         const user = await User.findOne({where: {id: user_id}});
@@ -158,9 +143,8 @@ module.exports.changeRole = async (req, res, next) => {
     const {role} = req.body;
     const {user_id} = req.params;
 
-    if (!user_id || !role) {
-        return next(createError(400, 'Incorrect input parameters'));
-    }
+    if (!user_id) return next(createError(400, 'User id is required'));
+    if (role && !(validator.isAlpha(role) && password.length >= 2)) return next(createError(400, 'Role must contain letters, numbers and length min 2 chars'));
 
     try {
         const userRole = await UserRole.findOne({where: {role: role}});
