@@ -42,7 +42,7 @@ class InspectorInfo extends Component {
     return (
       <div className="container pt-2">
         <NavBar {...this.props}>
-          <Link className="nav-link" to={`/owner/inspectors/${inspector.id}/update`}>Изменить имя</Link>
+          <Link className="nav-link" to={`/owner/inspectors/${inspector.id}/update`}>Изменить</Link>
           <Link className="nav-link" to={`/owner/inspectors/${inspector.id}/delete`}>Удалить</Link>
         </NavBar>
         <h3 className="text-center mb-2">Инспектор</h3>
