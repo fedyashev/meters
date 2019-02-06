@@ -4,7 +4,7 @@ const validator = require('validator');
 const crypt = require('../lib/crypt');
 const { Role } = require('../lib/roles');
 
-const pattern = '[a-zA-Zа-яА-Я0-9.\"\']';
+const pattern = /^[a-zA-Zа-яА-Я0-9\s\.\"\'-]{2,}$/;
 
 module.exports.count = async (req, res, next) => {
   try {
