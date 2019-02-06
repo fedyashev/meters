@@ -63,7 +63,8 @@ module.exports.getAll = async (req, res, next) => {
                     {
                         id: place.Consumer.id,
                         name: place.Consumer.name,
-                        email: place.Consumer.email
+                        email: place.Consumer.email,
+                        phone: place.Consumer.phone
                     } : null,
                     meter: place.Meter ? 
                     {
@@ -118,7 +119,8 @@ module.exports.getAllForAudit = async (req, res, next) => {
                 consumer: {
                     id: place.Consumer.id,
                     name: place.Consumer.name,
-                    email: place.Consumer.email
+                    email: place.Consumer.email,
+                    phone: place.Consumer.phone
                 },
                 meter: {
                     id: place.Meter.id,
@@ -182,7 +184,7 @@ module.exports.create = async (req, res, next) => {
         const c = await place.getConsumer();
         const m = await place.getMeter();
 
-        const consumer = c && {id: c.id, name: c.name, email: c.email} || null;
+        const consumer = c && {id: c.id, name: c.name, email: c.email, phone: c.phone} || null;
         const meter = m && {id: m.id, number: m.number} || null;
         
         return res.json({id: place.id, name: place.name, isSignNeed: place.isSignNeed, consumer: consumer, meter: meter});
@@ -230,7 +232,7 @@ module.exports.getById = async (req, res, next) => {
 
         const c = place.Consumer;
         const m = place.Meter;
-        const consumer = c && {id: c.id, name: c.name, email: c.email} || null;
+        const consumer = c && {id: c.id, name: c.name, email: c.email, phone: c.phone} || null;
         const meter = m && {id: m.id, number: m.number, lastData} || null;
 
         return res.json({
@@ -310,7 +312,7 @@ module.exports.updateById = async (req, res, next) => {
         const c = place.Consumer;
         const m = place.Meter;
 
-        const consumer = c && {id: c.id, name: c.name, email: c.email} || null;
+        const consumer = c && {id: c.id, name: c.name, email: c.email, phone: c.phone} || null;
         const meter = m && {id: m.id, number: m.number};
 
         return res.json({

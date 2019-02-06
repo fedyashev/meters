@@ -113,7 +113,7 @@ const TableRow = props => {
       <td className="text-center">{consumer.login}</td>
       <td className="text-center">{consumer.name}</td>
       <td className="text-center">{consumer.email}</td>
-      <td className="text-center">{consumer.phone}</td>
+      <td className="text-center"><a className="font-weight-bold" href={`tel:${consumer.phone}`}>{consumer.phone}</a></td>
     </tr>
   );
 }

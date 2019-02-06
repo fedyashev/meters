@@ -1,10 +1,9 @@
 +   Добавить isLoaded во все компоненты
 -   Рефакторинг InspectorAppLayout
 +   Валидация данных
--   Добавить таблицу Company с информацией о компании
--   Добавить ссылку на скачивание из InspectorReportInfo и OwnerReportInfo
--   В контроллер inspector и consumer добавить более подробные описания ошибок
--   Добавить тег tel в ConsumerInfo
++   Добавить ссылку на скачивание из InspectorReportInfo и OwnerReportInfo
++   В контроллер inspector и consumer добавить более подробные описания ошибок
++  Добавить тег tel в ConsumerInfo
 
 ================================================
 

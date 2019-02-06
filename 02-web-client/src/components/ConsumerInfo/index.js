@@ -73,7 +73,7 @@ class ConsumerInfo extends Component {
                             </tr>
                             <tr>
                                 <td><span className="font-weight-bold">Телефон</span></td>
-                                <td><span className="font-weight-bold">{consumer.phone}</span></td>
+                                <td><a className="font-weight-bold" href={`tel:${consumer.phone}`}>{consumer.phone}</a></td>
                             </tr>
                         </tbody>
                     </table>

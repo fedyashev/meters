@@ -155,6 +155,10 @@ class InspectorPlaceAddData extends Component {
                                 <td><span className="font-weight-bold">{place.consumer ? place.consumer.name : '---'}</span></td>
                             </tr>
                             <tr>
+                                <td><span className="font-weight-bold">Телефон</span></td>
+                                <td><span className="font-weight-bold">{place.consumer && place.consumer.phone ? <a href={`tel:${place.consumer.phone}`}>{place.consumer.phone}</a> : '---'}</span></td>
+                            </tr>
+                            <tr>
                                 <td><span className="font-weight-bold">Счетчик</span></td>
                                 <td><span className="font-weight-bold">{place.meter ? place.meter.number : '---'}</span></td>
                             </tr>
