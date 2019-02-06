@@ -13,16 +13,20 @@ module.exports = {
       },
       date: {
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.NOW,
+        allowNull: false
       },
       mimetype: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       filename: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
       },
       data: {
-        type: Sequelize.BLOB('long')
+        type: Sequelize.BLOB('long'),
+        allowNull: false
       },
       createdAt: {
         allowNull: false,

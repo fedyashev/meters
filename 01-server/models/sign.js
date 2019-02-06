@@ -6,11 +6,21 @@ module.exports = (sequelize, DataTypes) => {
   const Sign = sequelize.define('Sign', {
     date: {
       type: DataTypes.DATE,
+      allowNull: false,
       defaultValue: DataTypes.NOW
     },
-    mimetype: DataTypes.STRING,
-    filename: DataTypes.STRING,
-    data: DataTypes.BLOB('long')
+    mimetype: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    filename: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    data: {
+      type: DataTypes.BLOB('long'),
+      allowNull: false
+    }
   }, {
       freezeTableName: true,
       tableName: table_prefix + 'Signs'
