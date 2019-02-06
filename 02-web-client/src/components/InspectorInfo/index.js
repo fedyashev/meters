@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../lib/api';
-//import GoBackLink from '../GoBackLink';
+import ProgressBar from '../ProgressBar';
 import NavBar from '../NavBar';
 
 class InspectorInfo extends Component {
@@ -12,7 +12,8 @@ class InspectorInfo extends Component {
       inspector: {
         id: props.match.params.inspector_id
       },
-      user: props.user
+      user: props.user,
+      isLoaded: false
     }
   }
 
@@ -20,18 +21,23 @@ class InspectorInfo extends Component {
     api.getInspectorById(this.state.user.token, this.state.inspector.id)
       .then(inspector => {
         if (inspector) {
-          this.setState({ ...this.state, inspector: inspector });
+          this.setState({ ...this.state, inspector, isLoaded: true });
         }
         else {
-          this.props.setAlert('warning', 'Inspector not found');
+          this.setState({...this.state, isLoaded: true}, () => {
+            this.props.showWarningAlert('Инспектор не найден');
+          });
         }
       })
       .catch(({ error }) => {
-        this.props.setAlert('warning', error.message);
+          this.setState({...this.state, isLoaded: true}, () => {
+            this.props.showWarningAlert(error.message);
+          });
       });
   }
 
   render() {
+    if (!this.state.isLoaded) return <ProgressBar/>;
     const { inspector } = this.state;
     return (
       <div className="container pt-2">
