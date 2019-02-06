@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import api from '../../lib/api';
+import ProgressBar from '../ProgressBar';
 
 class InspectorDelete extends Component {
   constructor(props) {
@@ -9,7 +10,8 @@ class InspectorDelete extends Component {
       user: props.user,
       inspector: {
         id: props.match.params.inspector_id
-      }
+      },
+      isLoaded: false
     }
   }
 
@@ -18,16 +20,14 @@ class InspectorDelete extends Component {
     const inspector_id = this.state.inspector.id;
     api.getInspectorById(token, inspector_id)
       .then(inspector => {
-        if (inspector) {
-          this.setState({...this.state, inspector: inspector});
-        }
-        else {
-          this.setAlert('warning', 'Inspector not found');
-          this.props.history.goBack();
-        }
+        if (!inspector) throw new Error({error: {message: 'Inspector not found'}});
+        this.setState({...this.state, inspector, isLoaded: true});
       })
       .catch(({error}) => {
-        this.props.setAlert('warning', error.message);
+        this.setState({...this.state, isLoaded: true}, () => {
+          this.props.showWarningAlert(error.message);
+          this.props.history.goBack();
+        });
       });
   }
 
@@ -53,6 +53,7 @@ class InspectorDelete extends Component {
   }
 
   render() {
+    if (!this.state.isLoaded) return <ProgressBar/>;
     const {inspector} = this.state;
     return (
       <div className="container pt-2">
