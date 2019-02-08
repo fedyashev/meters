@@ -7,7 +7,12 @@ module.exports = (sequelize, DataTypes) => {
     login: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true
+      unique: true,
+      validate: {
+        is: /^[a-zA-Z][a-zA-Z0-9]+$/,
+        notEmpty: true,
+        len: [2, 16],
+      }
     },
     passwordHash: {
       type: DataTypes.STRING,
