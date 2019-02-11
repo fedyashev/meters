@@ -1,14 +1,14 @@
 {
   "development": {
     "username": "root",
-    "password": "fire",
+    "password": null,
     "database": "ElectricityMetering",
     "host": "localhost",
     "dialect": "mysql"
   },
   "test": {
     "username": "root",
-    "password": "fire",
+    "password": null,
     "database": "ElectricityMetering_test",
     "host": "localhost",
     "dialect": "mysql",

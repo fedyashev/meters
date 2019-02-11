@@ -6,7 +6,16 @@ module.exports = (sequelize, DataTypes) => {
   const Inspector = sequelize.define('Inspector', {
     name: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+        len: [2, 256],
+        isString(value) {
+          if (typeof value !== 'string') {
+            throw new Error('Name must be a string');
+          }
+        }
+      }
     }
   }, {
       freezeTableName: true,

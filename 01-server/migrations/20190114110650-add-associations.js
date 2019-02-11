@@ -13,7 +13,7 @@ module.exports = {
           reference: {
             model: 'UserRole',
             key: 'id'
-          },
+          }
         });
       })
       .then(() => {

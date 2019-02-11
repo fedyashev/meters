@@ -16,15 +16,33 @@ module.exports = (sequelize, DataTypes) => {
     },
     passwordHash: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        is: /^\S*$/,
+        notEmpty: true,
+        len: [2, 256],
+        isString(value) {
+          if (typeof value !== 'string') {
+            throw new Error('Hash must be a string');
+          }
+        },
+      }
     }
   }, {
-    freezeTableName: true,
-    tableName: table_prefix + 'Users'
-  });
-  User.associate = function(models) {
+      freezeTableName: true,
+      tableName: table_prefix + 'Users'
+    });
+  User.associate = function (models) {
     // associations can be defined here
-    User.belongsTo(models.UserRole);  // User.UserRoleId
+    User.belongsTo(models.UserRole, {foreignKey: {
+      attribute: 'UserRoleId',
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        isInt: true,
+        min: 1
+      }
+    }});  // User.UserRoleId
     User.hasOne(models.Consumer);
     User.hasOne(models.Inspector);
   };
