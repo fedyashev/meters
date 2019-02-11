@@ -6,7 +6,17 @@ module.exports = (sequelize, DataTypes) => {
   const Consumer = sequelize.define('Consumer', {
     name: {
       type: DataTypes.STRING,
-      alloNull: false
+      alloNull: false,
+      validate: {
+        isString(value) {
+          if (typeof value !== 'string') {
+            throw new Error('Name must be a string');
+          }
+        },
+        is: /^[a-zA-Zа-яА-Я][a-zA-Zа-яА-Я0-9. '"]*([a-zA-Zа-яА-Я0-9"']+|\.)$/,
+        notEmpty: true,
+        len: [2, 256]
+      }
     },
     email: {
       type: DataTypes.STRING,
