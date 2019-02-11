@@ -6,26 +6,40 @@ module.exports = (sequelize, DataTypes) => {
   const Consumer = sequelize.define('Consumer', {
     name: {
       type: DataTypes.STRING,
-      alloNull: false,
+      allowNull: false,
       validate: {
+        notEmpty: true,
+        is: /^[a-zA-Zа-яА-Я][a-zA-Zа-яА-Я0-9. '"]*([a-zA-Zа-яА-Я0-9"']+|\.)$/,
+        len: [2, 256],
         isString(value) {
           if (typeof value !== 'string') {
             throw new Error('Name must be a string');
           }
-        },
-        is: /^[a-zA-Zа-яА-Я][a-zA-Zа-яА-Я0-9. '"]*([a-zA-Zа-яА-Я0-9"']+|\.)$/,
-        notEmpty: true,
-        len: [2, 256]
+        }
       }
     },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true
+      unique: true,
+      validate: {
+        isEmail: true,
+        len: [8, 256]
+      }
     },
     phone: {
       type: DataTypes.STRING,
-      alloNull: true
+      alloNull: true,
+      validate: {
+        isString(value) {
+          if (typeof value !== 'string') {
+            throw new Error('Phone must be a string');
+          }
+        },
+        notEmpty: true,
+        is: /^[0-9+\-()]+$/,
+        len: [5, 20]
+      },
     }
   }, {
       freezeTableName: true,
