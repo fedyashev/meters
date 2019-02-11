@@ -8,6 +8,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
+        is: /^[a-zA-Zа-яА-Я][a-zA-Zа-яА-Я. ]*([a-zA-Zа-яА-Я]+|\.)$/,
         notEmpty: true,
         len: [2, 256],
         isString(value) {
@@ -23,7 +24,17 @@ module.exports = (sequelize, DataTypes) => {
     });
   Inspector.associate = function (models) {
     // associations can be defined here
-    Inspector.belongsTo(models.User);  // Inspector.UserId
+    Inspector.belongsTo(models.User, {
+      foreignKey: {
+        attribute: 'UserId',
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          isInt: true,
+          min: 1
+        }
+      }
+    });  // Inspector.UserId
   };
   return Inspector;
 };
