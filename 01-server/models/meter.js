@@ -7,7 +7,17 @@ module.exports = (sequelize, DataTypes) => {
     number: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true
+      unique: true,
+      validate: {
+        isString(value) {
+          if (typeof value !== 'string') {
+            throw new Error('Number must be a string');
+          }
+        },
+        notEmpty: true,
+        is: /^[a-zA-Zа-яА-Я0-9-]+$/,
+        len: [1, 256]
+      }
     }
   }, {
       freezeTableName: true,
