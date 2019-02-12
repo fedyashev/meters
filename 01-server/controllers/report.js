@@ -245,7 +245,8 @@ module.exports.getByIdPdf = async (req, res, next) => {
             return next(createError(404, 'Report not found'));
         }
 
-        const doc = pdfTemplates.report(report);
+        //const doc = pdfTemplates.report(report);
+        const doc = pdfTemplates.reportBrand(report);
 
         res.set('Content-disposition', `attachment; filename=report-${Date.now()}.pdf`);
         res.set('Content-Type', 'application/pdf');
@@ -254,6 +255,7 @@ module.exports.getByIdPdf = async (req, res, next) => {
         doc.end();
 
     } catch (err) {
+        console.log(err);
         return next(createError(500, err.message));
     }
 };
