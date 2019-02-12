@@ -6,12 +6,29 @@ module.exports = (sequelize, DataTypes) => {
   const Place = sequelize.define('Place', {
     name: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        isString(value) {
+          if (typeof value !== 'string') {
+            throw new Error('Name must be a string');
+          }
+        },
+        notEmpty: true,
+        is: /^\S.*\S$/,
+        len: [2, 256]
+      }
     },
     isSignNeed: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: false
+      defaultValue: false,
+      validate: {
+        isBoolean(value) {
+          if (typeof value !== 'boolean') {
+            throw new Error('IsSignNeed must be a boolean');
+          }
+        }
+      }
     }
   }, {
       freezeTableName: true,
