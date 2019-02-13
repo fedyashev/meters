@@ -274,7 +274,8 @@ module.exports.sendEmailById = async (req, res, next) => {
             return next(createError(404, 'Report not found'));
         }
 
-        const doc = pdfTemplates.report(report);
+        //const doc = pdfTemplates.report(report);
+        const doc = pdfTemplates.reportBrand(report);
         email.sendEmail(report, doc)
             .then(result => {
                 console.log(result);
