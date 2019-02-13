@@ -11,7 +11,8 @@ class PlaceCreate extends Component {
             user: props.user,
             consumers: [],
             meters: [],
-            isLoaded: false
+            isLoaded: false,
+            isProcess: false
         }
     }
 
@@ -41,24 +42,26 @@ class PlaceCreate extends Component {
         if (!name) {
             return this.props.showWarningAlert('Некорректное название места');
         }
+        this.setState({...this.state, isProcess: true});
         const token = this.state.user.token;
         api.createPlace(token, name, isSignNeed, consumer_id, meter_id)
-            .then(
-                place => {
-                    if (place) {
-                        //this.props.showSuccessAlert('Место добавлено');
+            .then(place => {
+                if (place) {
+                    //this.props.showSuccessAlert('Место добавлено');
+                    this.setState({...this.state, isProcess: false}, () => {
                         this.props.history.goBack();
-                    }
-                    else {
-                        this.props.showWarningAlert('Не удалось добавить новое место');
-                    }
-                },
-                ({error}) => {
-                    this.props.showWarningAlert(error.message)
+                    });
                 }
-            )
+                else {
+                    this.setState({...this.state, isProcess: false}, () => {
+                        this.props.showWarningAlert('Не удалось добавить новое место');
+                    });
+                }
+            })
             .catch(({error}) => {
-                this.props.showWarningAlert(error.message);
+                this.setState({...this.state, isProcess: false}, () => {
+                    this.props.showWarningAlert(error.message);
+                });
             });
     }
 
@@ -105,7 +108,11 @@ class PlaceCreate extends Component {
                                     <label className="form-check-label" htmlFor="cbIsSignNeed">Подпись?</label>
                                 </div>
                                 <div className="form-group">
+                                {
+                                    this.state.isProcess ?
+                                    <ProgressBar message="Создание..." large={true}/> :
                                     <button className="btn btn-primary btn-block" onClick={onClickCreate}>Добавить</button>
+                                }
                                 </div>
                             </form>
                         </div>

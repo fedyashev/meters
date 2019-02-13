@@ -20,6 +20,7 @@ class InspectorPlaceList extends Component {
 
   loadItems = pageNumber => async () => {
     try {
+      this.setState({...this.state, isLoaded: false});
       const { user: { token }, pageLimit } = this.state;
       const result = await api.getCountPlaces(token);
       if (result && result.count > 0) {
@@ -31,7 +32,9 @@ class InspectorPlaceList extends Component {
       }
     }
     catch ({ error }) {
-      this.props.showWarningAlert(error.message);
+      this.setState({...this.state, isLoaded: true}, () => {
+        this.props.showWarningAlert(error.message);
+      });
     }
   };
 

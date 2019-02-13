@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import api from '../../lib/api';
 import NavBar from '../NavBar';
+import ProgressBar from '../ProgressBar';
 
 class PlaceUpdate extends Component {
     constructor(props) {
@@ -13,7 +14,8 @@ class PlaceUpdate extends Component {
             place: {
                 id: props.match.params.place_id
             },
-            isLoaded: false
+            isLoaded: false,
+            isProcess: false
         }
     }
 
@@ -46,25 +48,29 @@ class PlaceUpdate extends Component {
         if (!name) {
             return this.props.showWarningAlert('Некорректное название места');
         }
+
+        this.setState({...this.state, isProcess: true});
+
         const token = this.state.user.token;
         const place_id = this.state.place.id;
         api.updatePlaceById(token, place_id, name, isSignNeed, consumer_id, meter_id)
-            .then(
-                place => {
-                    if (place) {
+            .then(place => {
+                if (place) {
+                    this.setState({...this.state, isProcess: false}, () => {
                         this.props.showSuccessAlert('Место сохранено');
                         this.props.history.goBack();
-                    }
-                    else {
-                        this.props.showWarningAlert('Место не сохранено');
-                    }
-                },
-                ({ error }) => {
-                    this.props.showWarningAlert(error.message);
+                    });
                 }
-            )
+                else {
+                    this.setState({...this.state, isProcess: false}, () => {
+                        this.props.showWarningAlert('Место не сохранено');
+                    });
+                }
+            })
             .catch(({ error }) => {
-                this.props.showWarningAlert(error.message);
+                this.setState({...this.state, isProcess: false}, () => {
+                    this.props.showWarningAlert(error.message);
+                });
             });
     }
 
@@ -111,7 +117,11 @@ class PlaceUpdate extends Component {
                                     <label className="form-check-label" htmlFor="cbIsSignNeed">Подпись?</label>
                                 </div>
                                 <div className="form-group">
+                                {
+                                    this.state.isProcess ?
+                                    <ProgressBar message="Изменение..." large={true}/> :
                                     <button className="btn btn-primary btn-block" onClick={onClickUpdate}>Сохранить</button>
+                                }
                                 </div>
                             </form>
                         </div>
