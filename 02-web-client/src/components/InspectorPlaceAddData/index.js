@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import NavBar from '../NavBar';
 import { prettyDate, formatDate, strBase64ToBin } from '../../lib/helpers';
 import CanvasSign from '../CanvasSign';
+import ProgressBar from '../ProgressBar';
 
 class InspectorPlaceAddData extends Component {
     constructor(props) {
@@ -16,7 +17,8 @@ class InspectorPlaceAddData extends Component {
                 id: props.match.params.place_id
             },
             consumption: null,
-            isLoaded: false
+            isLoaded: false,
+            isProcess: false,
         }
     }
 
@@ -65,6 +67,9 @@ class InspectorPlaceAddData extends Component {
 
         let sign = null;
         let report = null;
+
+        this.setState({...this.state, isProcess: true});
+
         try {
             if (this.state.place.isSignNeed) {
                 sign = await api.createSign(token, signData);
@@ -73,24 +78,31 @@ class InspectorPlaceAddData extends Component {
             report = await api.createReport(token, inspector_id, place_id, sign_id, date, value);
         } catch ({error}) {
             if (sign) api.deleteSignById(token, sign.id).then(() => {});
-            return this.props.showWarningAlert(error.message);
+            this.setState({...this.state, isProcess: false}, () => {
+                this.props.showWarningAlert(error.message);
+            });
+            return;
         }
 
         if (!report) {
-            this.props.showWarningAlert('Неудалось создать отчет');
+            this.setState({...this.state, isProcess: false}, () => {
+                this.props.showWarningAlert('Неудалось создать отчет');
+            });
         }
         else {
             api.sendReport(token, report.id)
                 .then(done => {
-                    this.props.showSuccessAlert('Отчет создан и отправлен.');
-                    this.props.history.goBack();
+                    this.setState({...this.state, isProcess: false}, () => {
+                        this.props.showSuccessAlert('Отчет создан и отправлен.');
+                        this.props.history.goBack();
+                    });
                 })
                 .catch(({error}) => {
-                    this.props.showWarningAlert("Отчет создан, но не отправлен. \n" + error.message);
-                    this.props.history.goBack();
+                    this.setState({...this.state, isProcess: false}, () => {
+                        this.props.showWarningAlert("Отчет создан, но не отправлен. \n" + error.message);
+                        this.props.history.goBack();
+                    });
                 });
-            // this.props.showSuccessAlert('Отчет создан');
-            // this.props.history.goBack();
         }
     };
 
@@ -197,17 +209,27 @@ class InspectorPlaceAddData extends Component {
                         <label className="custom-file-label">Фотография показаний</label>
                     </div>
                 </div> */}
-                <h5 className="text-center mb-2">Подпись потребителя</h5>
+                {
+                    place.isSignNeed &&
+                    <>
+                        <h5 className="text-center mb-2">Подпись потребителя</h5>
+                        <div className="row justify-content-center">
+                            <div className="col-12 col-sm-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+                                <div className="my-2">
+                                    <CanvasSign ref={r => canvas = r} />
+                                </div>
+                            </div>
+                        </div>
+                    </>
+                }
                 <div className="row justify-content-center">
                     <div className="col-12 col-sm-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
-                        {
-                            place.isSignNeed &&
-                            <div className="my-2">
-                                <CanvasSign ref={r => canvas = r} />
-                            </div>
-                        }
                         <div className="form-group">
+                        {
+                            this.state.isProcess ?
+                            <ProgressBar message="Создание отчета..." large={true}/> :
                             <button className="btn btn-primary btn-block" onClick={onClickCreateReport}>Создать</button>
+                        }
                         </div>
                     </div>
                 </div>
