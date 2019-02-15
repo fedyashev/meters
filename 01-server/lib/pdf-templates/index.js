@@ -259,7 +259,7 @@ module.exports.reportBrand = report => {
                             //     height: 100,
                             //     border: [0,0,0,1]
                             // },
-                            (report.Sign.data ?
+                            (report.Sign && report.Sign.data ?
                                 {
                                     //image: 'data:image/png;base64,' + Buffer.from(report.Sign.data, 'base64'),
                                     image: report.Sign.data,

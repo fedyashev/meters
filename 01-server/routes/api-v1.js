@@ -18,6 +18,7 @@ const sign = require('../controllers/sign');
 const report = require('../controllers/report')
 const userrole = require('../controllers/userrole');
 const register = require('../controllers/register');
+const act_01 = require('../controllers/act_01');
 
 const {login, jwt, allow} = require('../passport/middleware');
 const self = require('../passport/self-predicate');
@@ -98,5 +99,13 @@ router.get('/registers/:register_id', jwt, allow([ADMIN, OWNER]), register.getBy
 router.get('/registers/:register_id/xlsx', jwt, allow([ADMIN, OWNER]), register.downloadXlsxById);
 router.put('/registers/:register_id', jwt, allow([ADMIN, OWNER]), register.updateById);
 router.delete('/registers/:register_id', jwt, allow([ADMIN, OWNER]), register.deleteById);
+
+router.get('/doc/act_01', act_01.getAll);
+router.post('/doc/act_01', act_01.create);
+router.get('/doc/act_01/:id', act_01.getById);
+router.put('/doc/act_01/:id', act_01.updateById);
+router.delete('/doc/act_01/:id', act_01.deleteById);
+router.get('/doc/act_01/:id/pdf', act_01.getPdfById);
+router.get('/doc/act_01/:id/sendEmail', act_01.sendEmailById);
 
 module.exports = router;
