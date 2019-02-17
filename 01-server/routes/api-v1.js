@@ -101,6 +101,7 @@ router.put('/registers/:register_id', jwt, allow([ADMIN, OWNER]), register.updat
 router.delete('/registers/:register_id', jwt, allow([ADMIN, OWNER]), register.deleteById);
 
 router.get('/doc/act_01', act_01.getAll);
+router.get('/doc/act_01/count', act_01.count);
 router.post('/doc/act_01', act_01.create);
 router.get('/doc/act_01/:id', act_01.getById);
 router.put('/doc/act_01/:id', act_01.updateById);

@@ -60,13 +60,18 @@ class InspectorPlaceAddData extends Component {
         }
 
         const token = this.state.user.token;
-        const inspector_id = this.state.inspector.id;
-        const place_id = this.state.place.id;
+        //const inspector_id = this.state.inspector.id;
+        const inspector = this.state.inspector.name;
+        //const place_id = this.state.place.id;
+        const placeName = this.state.place.name;
+        const consumer = this.state.place.consumer.name;
+        const meter = this.state.place.meter.number;
         const date = formatDate(Date.now());
         let sign_id = null;
 
         let sign = null;
-        let report = null;
+        //let report = null;
+        let act = null;
 
         this.setState({...this.state, isProcess: true});
 
@@ -75,7 +80,8 @@ class InspectorPlaceAddData extends Component {
                 sign = await api.createSign(token, signData);
                 sign_id = sign.id;
             }
-            report = await api.createReport(token, inspector_id, place_id, sign_id, date, value);
+            //report = await api.createReport(token, inspector_id, place_id, sign_id, date, value);
+            act = await api.act_01.create(token, inspector, consumer, placeName, meter, sign_id, date, value);
         } catch ({error}) {
             if (sign) api.deleteSignById(token, sign.id).then(() => {});
             this.setState({...this.state, isProcess: false}, () => {
@@ -84,13 +90,14 @@ class InspectorPlaceAddData extends Component {
             return;
         }
 
-        if (!report) {
+        if (!act) {
             this.setState({...this.state, isProcess: false}, () => {
                 this.props.showWarningAlert('Неудалось создать отчет');
             });
         }
         else {
-            api.sendReport(token, report.id)
+            //api.sendReport(token, report.id)
+            api.act_01.sendEmailById(token, act.id)
                 .then(done => {
                     this.setState({...this.state, isProcess: false}, () => {
                         this.props.showSuccessAlert('Отчет создан и отправлен.');

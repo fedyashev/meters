@@ -8,8 +8,8 @@ class InspectorReportUpdate extends Component {
 
     this.state = {
       user: props.user,
-      report: {
-        id: props.match.params.report_id
+      act: {
+        id: props.match.params.id
       },
       isLoaded: false
     }
@@ -17,11 +17,12 @@ class InspectorReportUpdate extends Component {
 
   componentDidMount() {
     const token = this.state.user.token;
-    const report_id = this.state.report.id;
-    api.getReportById(token, report_id)
-      .then(report => {
-        if (report) {
-          this.setState({ ...this.state, report, isLoaded: true });
+    const id = this.state.act.id;
+    //api.getReportById(token, report_id)
+    api.act_01.getById(token, id)
+      .then(act => {
+        if (act) {
+          this.setState({ ...this.state, act, isLoaded: true });
         }
         else {
           this.props.showWarningAlert('Отчет не найден');
@@ -35,23 +36,24 @@ class InspectorReportUpdate extends Component {
   }
 
   handleUpdateReport = value => {
-    const { report } = this.state;
+    const { act } = this.state;
     if (Number.isNaN(value) || value < 0) {
       return this.props.showWarningAlert('Некорректное значение показания счетчика');
     }
-    if (report.last_data && (value < Number(report.last_data.value))) {
+    if ((act.last_value !== null || act.last_value !== undefined) && (value < Number(act.last_value))) {
       return this.props.showWarningAlert('Некорректное значение показания счетчика');
     }
     const token = this.state.user.token;
-    const report_id = this.state.report.id;
-    api.updateReportById(token, report_id, value)
+    const id = this.state.act.id;
+    //api.updateReportById(token, report_id, value)
+    api.act_01.updateById(token, id, value)
       .then(result => {
-
         if (!result || !result.done) {
           this.props.showWarningAlert('Неудалось изменить отчет');
         }
         else {
-          api.sendReport(token, report_id)
+          //api.sendReport(token, report_id)
+          api.act_01.sendEmailById(token, id)
             .then(done => {
               this.props.showSuccessAlert('Отчет изменен и отправлен.');
               this.props.history.goBack();
@@ -77,7 +79,7 @@ class InspectorReportUpdate extends Component {
 
   render() {
     if (!this.state.isLoaded) return null;
-    const { report } = this.state;
+    const { act } = this.state;
     let val;
     const onClickSave = e => {
       e.preventDefault();
@@ -93,7 +95,7 @@ class InspectorReportUpdate extends Component {
             </div>
             <form>
               <div className="form-group">
-                <input className="form-control" type="number" placeholder="Показания счетчика" required ref={r => val = r} defaultValue={report.current_data.value} />
+                <input className="form-control" type="number" placeholder="Показания счетчика" required ref={r => val = r} defaultValue={act.current_value} />
               </div>
               <div className="form-group">
                 <button className="btn btn-primary btn-block" onClick={onClickSave}>Сохранить</button>

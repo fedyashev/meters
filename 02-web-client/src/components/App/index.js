@@ -211,7 +211,7 @@ class App extends Component {
             }
           />
 
-          <Route exact path='/inspector/reports/:report_id'
+          <Route exact path='/inspector/reports/:id'
             render={
               props =>
                 <InspectorAppLayout {...props} user={user} handlerLogout={this.handlerLogout}>
@@ -220,7 +220,7 @@ class App extends Component {
             }
           />
 
-          <Route exact path='/inspector/reports/:report_id/update'
+          <Route exact path='/inspector/reports/:id/update'
             render={
               props =>
                 <InspectorAppLayout {...props} user={user} handlerLogout={this.handlerLogout}>

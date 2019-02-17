@@ -24,3 +24,27 @@ module.exports.sendEmail = (report, pdfDocumentStream) => {
             ]
         });
 }
+
+module.exports.sendEmailAct01 = (consumerEmail, pdfDocumentStream) => {
+    const transport = nodemailer.createTransport({
+        service: 'Yandex',
+        auth: {
+            user: email.noreply.username,
+            pass: email.noreply.password
+        }
+    });
+
+    return transport
+        .sendMail({
+            from: email.noreply.url,
+            to: `${email.reports.url}, ${consumerEmail}`,
+            subject: 'Отчет о потреблении электроэнергии',
+            text: 'Отчет о потреблении электроэнергии',
+            attachments: [
+                {
+                    filename: `act-${Date.now()}.pdf`,
+                    content: pdfDocumentStream
+                },
+            ]
+        });
+}

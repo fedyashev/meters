@@ -310,3 +310,278 @@ module.exports.reportBrand = report => {
     // pdfDoc.end();
     return pdfDoc;
 };
+
+module.exports.act_01 = act => {
+    const fonts = {
+        Roboto: {
+            normal: 'fonts/Roboto/Roboto-Regular.ttf',
+            bold: 'fonts//Roboto/Roboto-Medium.ttf',
+            italics: 'fonts/Roboto/Roboto-Italic.ttf',
+            bolditalics: 'fonts/Roboto/Roboto-MediumItalic.ttf'
+        }
+    };
+    
+    const printer = new PdfPrinter(fonts);
+    
+    const dd = {
+        pageSize: 'A4',
+        pageMargins: [ 60, 10, 30, 30 ],
+        content: [
+            {
+                table: {
+                    widths: ['*', 150, '*'],
+                    body: [
+                        [
+                            {
+                                text: '',
+                                border: [0,0,0,0],
+                            },
+                            {
+                                image: 'lib/pdf-templates/image/logo.png',
+                                width: 150,
+                                height: 150,
+                                border: [0,0,0,0]
+                            },
+                            {
+                                text: '',
+                                border: [0,0,0,0]
+                            }
+                        ]
+                    ]
+                },
+                margin: [0, 0, 0, 15]
+            },
+            {
+                text: 'AKT',
+                bold: true,
+                fontSize: 14,
+                alignment: 'center'
+            },
+            {
+                text: 'приема-передачи электрической энергии',
+                bold: true,
+                fontSize: 14,
+                alignment: 'center',
+                margin: [0, 0, 0, 30]
+            },
+            {
+                table: {
+                    widths: [ '35%', '*' ],
+                    body: [
+                        [
+                            {
+                                border: [false, false, true, true],
+                                text: 'Инспектор',
+                                alignment: 'right',
+                                margin: [0, 5, 10, 5]
+                            },
+                            {
+                                border: [true, false, false, true],
+                                text: `ООО "Инстасервис"\n${act.inspector}`,
+                                alignment: 'center'
+                            },
+                        ],
+                        [
+                            {
+                                border: [false, false, true, true],
+                                text: 'Потребитель',
+                                alignment: 'right',
+                                margin: [0, 5, 10, 5]
+                            },
+                            {
+                                border: [true, false, false, true],
+                                text: `${act.consumer}`,
+                                alignment: 'center',
+                                margin: [0, 5, 0, 5]
+                            },
+                        ],
+                        [
+                            {
+                                border: [false, false, true, true],
+                                text: 'Номер счетчика',
+                                alignment: 'right',
+                                margin: [0, 5, 10, 5]
+                            },
+                            {
+                                border: [true, false, false, true],
+                                text: `№${act.meter}`,
+                                alignment: 'center',
+                                margin: [0, 5, 0, 5]
+                            },
+                        ],
+                        [
+                            {
+                                border: [false, false, true, true],
+                                text: 'Место установки счетчика',
+                                alignment: 'right',
+                                margin: [0, 5, 10, 5]
+                            },
+                            {
+                                border: [true, false, false, true],
+                                text: `Рынок "Северный" ${act.place}`,
+                                alignment: 'center',
+                                margin: [0, 5]
+                            },
+                        ],
+                    ]
+                },
+                margin: [0, 0, 0, 30]
+            },
+            {
+                table: {
+                    widths: ['35%', '35%', '*'],
+                    body: [
+                        [
+                            {
+                                text: 'Предыдущие показания',
+                                alignment: 'center',
+                                margin: [0, 5]
+                            },
+                            {
+                                text: 'Текущие показания',
+                                alignment: 'center',
+                                margin: [0, 5]
+                            },
+                            {
+                                rowSpan: 4,
+                                text: 'Потребление электроэнергии за отчетный период,\nкВтч',
+                                alignment: 'center',
+                                margin: [0, 40, 0, 0]
+                            },
+                        ],
+                        [
+                            {
+                                text: 'Дата, время',
+                                alignment: 'center'
+                            },
+                            {
+                                text: 'Дата, время',
+                                alignment: 'center'
+                            },
+                        ],
+                        [
+                            {
+                                text: `${act.last_date ? prettyDate(act.last_date) : '---'}`,
+                                fontSize: 14,
+                                bold: true,
+                                alignment: 'center',
+                                margin: [30, 5]
+                            },
+                            {
+                                text: `${act.current_date ? prettyDate(act.current_date) : '---'}`,
+                                fontSize: 14,
+                                bold: true,
+                                alignment: 'center',
+                                margin: [30, 5]
+                            },
+                        ],
+                        [
+                            {
+                                text: 'Показания счетчика',
+                                alignment: 'center',
+                                margin: [0, 5]
+                            },
+                            {
+                                text: 'Показания счетчика',
+                                alignment: 'center',
+                                margin: [0, 5]
+                            },
+                        ],
+                        [
+                            {
+                                text: `${act.last_value !== null ? act.last_value : '---'}`,
+                                fontSize: 14,
+                                bold: true,
+                                alignment: 'center',
+                                margin: [0, 5]
+                            },
+                            {
+                                text: `${act.current_value !== null ? act.current_value : '---'}`,
+                                fontSize: 14,
+                                bold: true,
+                                alignment: 'center',
+                                margin: [0, 5]
+                            },
+                            {
+                                text: `${act.last_value ? act.current_value - act.last_value : act.current_value}`,
+                                fontSize: 20,
+                                bold: true,
+                                color: 'red',
+                                alignment: 'center',
+                                margin: [0, 1]
+                                
+                            },
+                        ],
+                    ]
+                },
+                margin: [0, 0]
+            },
+            {
+                table: {
+                    widths: ['30%', 100, '*'],
+                    body: [
+                        [
+                            {
+                                text: 'Подпись потребителя',
+                                alignment: 'right',
+                                border: [0,0,0,0],
+                                margin: [0, 85, 0, 0]
+                            },
+                            // {
+                            //     //text: '123',
+                            //     image: 'sampleImage.jpg',
+                            //     width: 100,
+                            //     height: 100,
+                            //     border: [0,0,0,1]
+                            // },
+                            (act.ConsumerSign && act.ConsumerSign.data ?
+                                {
+                                    //image: 'data:image/png;base64,' + Buffer.from(report.Sign.data, 'base64'),
+                                    image: act.ConsumerSign.data,
+                                    width: 100,
+                                    height: 100,
+                                    border: [0,0,0,1]
+                                } :
+                                {
+                                    text: '',
+                                    border: [0,0,0,1]
+                                }
+                            ),
+                            {
+                                text: '',
+                                border: [0,0,0,0]
+                            }
+                        ]
+                    ]
+                },
+                margin: [0, 0, 0, 90]
+            },
+            {
+                text: 'Обслуживание электрохозяйства',
+                alignment: 'right',
+                color: 'gray'
+            },
+            {
+                text: 'ООО «Инстасервис»',
+                alignment: 'right',
+                color: 'gray'
+            },
+            {
+                text: 'instaservice.by',
+                link: 'http://instaservice.by',
+                alignment: 'right',
+                color: 'gray'
+            },
+            {
+                text: '8 (029) 530-51-15',
+                alignment: 'right',
+                color: 'gray'
+            },
+        ],
+    };
+    
+    const pdfDoc = printer.createPdfKitDocument(dd);
+    // pdfDoc.pipe(fs.createWriteStream('pdfs/basics.pdf'));
+    // pdfDoc.end();
+    return pdfDoc;
+};

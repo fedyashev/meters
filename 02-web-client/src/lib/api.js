@@ -854,6 +854,156 @@ const api = {
             .then(response => response.blob())
             .then(blob => saveAs(blob, `register-${Date.now()}.xlsx`));
     },
+
+    act_01: {
+        getAll: (token, limit, offset) => {
+            const opt = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `BEARER ${token}`
+                }
+            };
+            const url = `/api/v1/doc/act_01?limit=${limit}&offset=${offset}`;
+            return fetch(url, opt)
+                .then(res => {
+                    const promise = res.json();
+                    return res.ok ? promise : promise.then(err => {throw err});
+                });
+        },
+    
+        count: (token, inspector_id) => {
+            const opt = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `BEARER ${token}`
+                }
+            };
+            const url = `/api/v1/doc/act_01/count?inspector_id=${inspector_id || ""}`;
+            return fetch(url, opt)
+                .then(res => {
+                    const promise = res.json();
+                    return res.ok ? promise : promise.then(err => {throw err});
+                });
+        },
+    
+        getById: (token, id) => {
+            const opt = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `BEARER ${token}`
+                }
+            };
+            const url = `/api/v1/doc/act_01/${id}`;
+            return fetch(url, opt)
+                .then(res => {
+                    const promise = res.json();
+                    return res.ok ? promise : promise.then(err => {throw err});
+                });
+        },
+    
+        getPdfById: (token, id) => {
+            const opt = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/pdf',
+                    'Authorization': `BEARER ${token}`
+                },
+                responseType: 'blob'
+            };
+            const url = `/api/v1/doc/act_01/${id}/pdf`;
+            return fetch(url, opt)
+                .then(response => response.blob())
+                .then(blob => saveAs(blob, `act-${Date.now()}.pdf`));
+        },
+    
+        getAllByInspectorId: (token, inspector_id, limit, offset) => {
+            const opt = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `BEARER ${token}`
+                }
+            };
+            const url = `/api/v1/doc/act_01?inspector_id=${inspector_id}&limit=${limit}&offset=${offset}`;
+            return fetch(url, opt)
+                .then(res => {
+                    const promise = res.json();
+                    return res.ok ? promise : promise.then(err => {throw err});
+                });
+        },
+    
+        create: (token, inspector, consumer, place, meter, sign_id, date, value) => {
+            const data = {inspector, consumer, place, meter, sign_id, date, value};
+            const opt = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `BEARER ${token}`
+                },
+                body: JSON.stringify(data)
+            };
+            const url = '/api/v1/doc/act_01';
+            return fetch(url, opt)
+                .then(res => {
+                    const promise = res.json();
+                    return res.ok ? promise : promise.then(err => {throw err});
+                });
+        },
+    
+        updateById: (token, id, value) => {
+            const data = {value};
+            const opt = {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `BEARER ${token}`
+                },
+                body: JSON.stringify(data)
+            };
+            const url = `/api/v1/doc/act_01/${id}`;
+            return fetch(url, opt)
+                .then(res => {
+                    const promise = res.json();
+                    return res.ok ? promise : promise.then(err => {throw err});
+                });
+        },
+    
+        deletetById: (token, id) => {
+            const opt = {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `BEARER ${token}`
+                }
+            };
+            const url = `/api/v1/doc/act_01/${id}`;
+            return fetch(url, opt)
+                .then(res => {
+                    const promise = res.json();
+                    return res.ok ? promise : promise.then(err => {throw err});
+                });
+        },
+
+        sendEmailById: (token, id) => {
+            const opt = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `BEARER ${token}`
+                }
+            };
+            const url = `/api/v1/doc/act_01/${id}/sendEmail`;
+            return fetch(url, opt)
+                .then(res => {
+                    const promise = res.json();
+                    return res.ok ? promise : promise.then(err => {throw err});
+                });
+        },
+    },
+
 };
 
 export default api;
