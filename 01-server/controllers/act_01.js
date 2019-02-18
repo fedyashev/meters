@@ -233,7 +233,9 @@ module.exports.updateById = async (req, res, next) => {
       return next(createError(404, 'Act not found'));
     }
 
-    //console.log('=== ', formatDate(act.date) );
+    if ((act.last_value !== null || act.last_value !== undefined) && value < act.last_value) {
+      return next(createError(400, 'Value cant be less than last value'));
+    }
 
     const meter = await Meter.findOne({ where: { number: act.meter } });
     if (!meter) {

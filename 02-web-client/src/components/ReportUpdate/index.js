@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import api from '../../lib/api';
 import NavBar from '../NavBar';
+import ProgressBar from '../ProgressBar';
 
 class ReportUpdate extends Component {
   constructor(props) {
@@ -11,7 +12,8 @@ class ReportUpdate extends Component {
       act: {
         id: props.match.params.id
       },
-      isLoaded: false
+      isLoaded: false,
+      isProcess: false
     }
   }
 
@@ -46,21 +48,28 @@ class ReportUpdate extends Component {
     const token = this.state.user.token;
     const id = this.state.act.id;
     //api.updateReportById(token, report_id, value)
+    this.setState({...this.state, isProcess: true});
     api.act_01.updateById(token, id, value)
       .then(result => {
         if (!result || !result.done) {
-          this.props.showWarningAlert('Неудалось изменить отчет');
+          this.setState({...this.state, isProcess: false}, () => {
+            this.props.showWarningAlert('Неудалось изменить отчет');
+          });
         }
         else {
           //api.sendReport(token, report_id)
           api.act_01.sendEmailById(token, id)
             .then(done => {
-              this.props.showSuccessAlert('Отчет изменен и отправлен.');
-              this.props.history.goBack();
+              this.setState({...this.state, isProcess: false}, () => {
+                this.props.showSuccessAlert('Отчет изменен и отправлен.');
+                this.props.history.goBack();
+              });
             })
             .catch(({ error }) => {
-              this.props.showWarningAlert("Отчет изменен, но не отправлен. \n" + error.message);
-              this.props.history.goBack();
+              this.setState({...this.state, isProcess: false}, () => {
+                this.props.showWarningAlert("Отчет изменен, но не отправлен. \n" + error.message);
+                this.props.history.goBack();
+              });
             });
         }
 
@@ -73,7 +82,9 @@ class ReportUpdate extends Component {
         // }
       })
       .catch(({ error }) => {
-        this.props.showWarningAlert(error.message);
+        this.setState({...this.state, isProcess: false}, () => {
+          this.props.showWarningAlert(error.message);
+        });
       });
   }
 
@@ -98,7 +109,11 @@ class ReportUpdate extends Component {
                 <input className="form-control" type="number" placeholder="Показания счетчика" required ref={r => val = r} defaultValue={act.current_value} />
               </div>
               <div className="form-group">
-                <button className="btn btn-primary btn-block" onClick={onClickSave}>Сохранить</button>
+                {
+                  this.state.isProcess ?
+                    <ProgressBar message={'Изменение показаний...'} large={true}/> :
+                    <button className="btn btn-primary btn-block" onClick={onClickSave}>Сохранить</button>
+                }
               </div>
             </form>
           </div>
