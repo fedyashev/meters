@@ -97,6 +97,7 @@ class InspectorPlaceAddData extends Component {
         }
         else {
             //api.sendReport(token, report.id)
+            console.log(act);
             api.act_01.sendEmailById(token, act.id)
                 .then(done => {
                     this.setState({...this.state, isProcess: false}, () => {

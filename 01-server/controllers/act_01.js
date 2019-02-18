@@ -160,12 +160,14 @@ module.exports.create = async (req, res, next) => {
       }
     }
 
+    let new_act_01 = null;
+
     try {
       const result = await sequelize.transaction(async (t) => {
 
         const data = await Data.create({MeterId: tmp_meter.id, date, value}, {transaction: t});
 
-        const new_act_01 = await act_01.create({
+        new_act_01 = await act_01.create({
           date,
           inspector,
           consumer,
@@ -182,7 +184,7 @@ module.exports.create = async (req, res, next) => {
           return next(createError(500, 'Failed to create an act'));
         }
 
-        return res.json({ done: true });
+        return res.json(new_act_01);
       });
     } catch (err) {
       throw err;
