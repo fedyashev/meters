@@ -37,7 +37,7 @@ module.exports.sendEmailAct01 = (consumerEmail, pdfDocumentStream) => {
     return transport
         .sendMail({
             from: email.noreply.url,
-            to: `${email.reports.url}, ${consumerEmail}`,
+            to: `${email.reports.url}, ${consumerEmail}`, // [email.reports.url, consumerEmail].filter(p => typeof p === 'string').join(', '),
             subject: 'Отчет о потреблении электроэнергии',
             text: 'Отчет о потреблении электроэнергии',
             attachments: [

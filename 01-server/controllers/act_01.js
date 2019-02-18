@@ -47,12 +47,12 @@ module.exports.getAll = async (req, res, next) => {
     else if (inspector && !withPages) {
       acts = await act_01
         .findAll({
-          where: { InspectorId: inspector_id },
+          where: { inspector: inspector.name },
           order: [['id', 'DESC']],
         });
     }
     else if (!inspector && withPages) {
-      act = await act_01
+      acts = await act_01
         .findAll({
           offset: off,
           limit: lim,
@@ -60,7 +60,7 @@ module.exports.getAll = async (req, res, next) => {
         });
     }
     else {
-      act = await act_01
+      acts = await act_01
         .findAll({
           order: [['id', 'DESC']],
         });
@@ -165,7 +165,7 @@ module.exports.create = async (req, res, next) => {
     try {
       const result = await sequelize.transaction(async (t) => {
 
-        const data = await Data.create({MeterId: tmp_meter.id, date, value}, {transaction: t});
+        const data = await Data.create({ MeterId: tmp_meter.id, date, value }, { transaction: t });
 
         new_act_01 = await act_01.create({
           date,
@@ -178,8 +178,8 @@ module.exports.create = async (req, res, next) => {
           current_date: date,
           current_value: value,
           ConsumerSignId: sign_id
-        }, {transaction: t});
-    
+        }, { transaction: t });
+
         if (!new_act_01) {
           return next(createError(500, 'Failed to create an act'));
         }
@@ -271,7 +271,7 @@ module.exports.updateById = async (req, res, next) => {
 
     try {
       const result = await sequelize.transaction(async (t) => {
-        const [dataCount, ...restDataUpdate] = await Data.update({value}, {
+        const [dataCount, ...restDataUpdate] = await Data.update({ value }, {
           where: {
             MeterId: meter.id,
             date: formatDate(act.date)
@@ -279,16 +279,16 @@ module.exports.updateById = async (req, res, next) => {
           transaction: t
         });
         const [actCount, ...restActUpdate] = await act_01.update({ current_value: value }, {
-          where: {id: id},
+          where: { id: id },
           transaction: t
         });
         if (nextAct) {
           const [nextActCount, ...restNextActUpdate] = await act_01.update({ last_value: value }, {
-            where: {id: nextAct.id},
+            where: { id: nextAct.id },
             transaction: t
           });
         }
-        res.json({done: true});
+        res.json({ done: true });
       });
     } catch (err) {
       throw err;
@@ -306,11 +306,118 @@ module.exports.deleteById = async (req, res, next) => {
     if (!id) {
       return next(createError(400, 'Incorrect act id'));
     }
-    const count = await act_01.destroy({ where: { id: id } });
-    if (!count) {
-      return next(createError(500, 'Failed to delete an act'));
+
+    // CURRENT
+
+    const currentAct = await act_01.findOne({ where: { id: id } });
+    if (!currentAct) {
+      return next(createError(404, 'Act not found'));
+    };
+
+    let meter = null;
+    let currentData = null;
+
+    meter = await Meter.findOne({ where: { number: currentAct.meter } });
+    if (meter) {
+      currentData = await Data.findOne({
+        where: {
+          MeterId: meter.id,
+          date: formatDate(currentAct.date)
+        }
+      });
     }
-    return res.json({ done: true });
+
+    if (!meter || !currentData) {
+      try {
+        const result = await sequelize.transaction(async (t) => {
+          if (typeof currentAct.ConsumerSignId === 'number') {
+            const countSign = await Sign.destroy({ where: { id: currentAct.ConsumerSignId } }, { transaction: t });
+          }
+          const countCurrentAct = await act_01.destroy({ where: { id: currentAct.id } }, { transaction: t });
+        });
+        return res.json({ done: true });
+      } catch (err) {
+        throw err;
+      }
+    }
+
+    // NEXT
+
+    const [nextAct, ...restNextActs] = await act_01.findAll({
+      where: {
+        meter: meter.number,
+        date: {
+          [Op.gt]: formatDate(currentAct.date)
+        }
+      },
+      limit: 1,
+      order: [['date', 'ASC']]
+    });
+
+    let nextData = null;
+    if (nextAct) {
+      nextData = await Data.findOne({
+        where: {
+          MeterId: meter.id,
+          date: formatDate(nextAct.date)
+        }
+      });
+      if (!nextData) {
+        return next(createError(404, 'Next data not found'));
+      }
+    }
+
+    // PREVIOUS
+
+    const [prevAct, ...restPrevActs] = await act_01.findAll({
+      where: {
+        meter: meter.number,
+        date: {
+          [Op.lt]: formatDate(currentAct.date)
+        }
+      },
+      limit: 1,
+      order: [['date', 'DESC']]
+    });
+
+    let prevData = null;
+    if (prevAct) {
+      prevData = await Data.findOne({
+        where: {
+          MeterId: meter.id,
+          date: formatDate(prevAct.date)
+        }
+      });
+      if (!prevData) {
+        return next(createError(404, 'Previous data not found'));
+      }
+    }
+
+    try {
+      const result = await sequelize.transaction(async (t) => {
+        if (nextAct) {
+          const [countUpdateNextAct, ...restUpdateNextAct] = await act_01.update(
+            {
+              last_date: (prevAct ? prevData.date : null),
+              last_value: (prevAct ? prevData.value : null)
+            },
+            {
+              where: { id: nextAct.id },
+              transaction: t
+            }
+          );
+        }
+        const countCurrectData = await Data.destroy({ where: { id: currentData.id } }, { transaction: t });
+        if (typeof currentAct.ConsumerSignId === 'number') {
+          const countSign = await Sign.destroy({ where: { id: currentAct.ConsumerSignId } }, { transaction: t });
+        }
+        const countCurrentAct = await act_01.destroy({ where: { id: currentAct.id } }, { transaction: t });
+      });
+      return res.json({ done: true });
+    } catch (err) {
+      throw err;
+    }
+
   } catch (err) {
     console.log(err);
     return next(createError(500, err.message));
@@ -370,8 +477,8 @@ module.exports.sendEmailById = async (req, res, next) => {
       return next(createError(404, 'Act not found'));
     }
 
-    const { email } = await Consumer.findOne({ where: { name: act.consumer } });
-
+    const consumer = await Consumer.findOne({ where: { name: act.consumer } });
+    const email = consumer ? consumer.email : null;
     //const doc = pdfTemplates.report(report);
     const doc = pdfTemplates.act_01(act);
     emailSender.sendEmailAct01(email, doc)

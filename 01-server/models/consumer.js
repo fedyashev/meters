@@ -30,16 +30,6 @@ module.exports = (sequelize, DataTypes) => {
     phone: {
       type: DataTypes.STRING,
       alloNull: true,
-      validate: {
-        isString(value) {
-          if (typeof value !== 'string') {
-            throw new Error('Phone must be a string');
-          }
-        },
-        notEmpty: true,
-        is: /^[0-9+\-()]+$/,
-        len: [5, 20]
-      },
     }
   }, {
       freezeTableName: true,
