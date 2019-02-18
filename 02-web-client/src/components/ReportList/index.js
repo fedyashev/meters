@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import api from '../../lib/api';
-import { prettyDate } from '../../lib/helpers';
+import { prettyDate, formatDate } from '../../lib/helpers';
 import NavBar from '../NavBar';
 import {Link} from 'react-router-dom';
 import Pagination from 'react-js-pagination';
@@ -12,7 +12,7 @@ class ReportList extends Component {
 
     this.state = {
       user: props.user,
-      reports: [],
+      acts: [],
       limit: 30,
       activePage: 1,
       totalItemsCount: 0,
@@ -23,11 +23,13 @@ class ReportList extends Component {
   loadItems = pageNumber => async () => {
     try {
       const { user: { token }, limit } = this.state;
-      const result = await api.getCountReports(token);
+      //const result = await api.getCountReports(token);
+      const result = await api.act_01.count(token);
       if (result && result.count > 0) {
         const offset = (pageNumber - 1) * limit;
-        const reports = await api.getAllReports(token, limit, offset);
-        this.setState({ ...this.state, reports, totalItemsCount: result.count, activePage: pageNumber, isLoaded: true })
+        //const reports = await api.getAllReports(token, limit, offset);
+        const acts = await api.act_01.getAll(token, limit, offset);
+        this.setState({ ...this.state, acts, totalItemsCount: result.count, activePage: pageNumber, isLoaded: true })
       }
       else {
         this.setState({ ...this.state, isLoaded: true });
@@ -55,10 +57,10 @@ class ReportList extends Component {
       });
   }
 
-  downloadPdf = report_id => e => {
+  downloadPdf = id => e => {
     e.preventDefault();
     const token = this.state.user.token;
-    api.getReportByIdPdf(token, report_id)
+    api.act_01.getPdfById(token, id)
       .catch(({error}) => {
         this.props.setAlert('warning', error.message);
       });
@@ -69,7 +71,7 @@ class ReportList extends Component {
     return (
       <div className="container justify-content-center">
         <NavBar {...this.props} />
-        <Table reports={this.state.reports} downloadPdf={this.downloadPdf}/>
+        <Table items={this.state.acts} downloadPdf={this.downloadPdf}/>
         {
           this.state.totalItemsCount > this.state.limit ?
             <Pagination
@@ -89,7 +91,7 @@ class ReportList extends Component {
 };
 
 const Table = props => {
-  const { reports } = props;
+  const { items } = props;
   return (
     <div className="table-responsive">
       <table className="table table-bordered table-hover table-sm table-responsive-sm">
@@ -107,7 +109,7 @@ const Table = props => {
         </thead>
         <tbody style={{ fontSize: '0.85rem' }}>
           {
-            reports && reports.map(report => <TableRow key={`${report.id}`} report={report} downloadPdf={props.downloadPdf}/>)
+            items && items.map(item => <TableRow key={`${item.id}`} item={item} downloadPdf={props.downloadPdf}/>)
           }
         </tbody>
       </table>
@@ -116,17 +118,19 @@ const Table = props => {
 };
 
 const TableRow = props => {
-  const { report } = props;
+  const { item } = props;
   return (
     <tr>
-      <td className="text-center"><Link to={`/owner/reports/${report.id}`}>{report.id}</Link></td>
-      <td className="text-center">{prettyDate(report.date)}</td>
-      <td className="text-center">{report.inspector.name}</td>
-      <td className="text-center">{report.place.name}</td>
-      <td className="text-center">{report.consumer.name}</td>
-      <td className="text-center">{report.meter.number}</td>
-      <td className="text-center">{report.current_data.value}</td>
-      <td className="text-center"><a className="text-secondary" onClick={props.downloadPdf(report.id)} href={`api/v1/reports/${report.id}/pdf`} download={`report-${Date.now()}.pdf`}><i className="fas fa-download"></i></a></td>
+      <td className="text-center">
+        <Link to={`/owner/reports/${item.id}`}>{item.id}</Link>
+      </td>
+      <td className="text-center">{prettyDate(formatDate(item.date))}</td>
+      <td className="text-center">{item.inspector}</td>
+      <td className="text-center">{item.place}</td>
+      <td className="text-center">{item.consumer}</td>
+      <td className="text-center">{item.meter}</td>
+      <td className="text-center">{item.current_value}</td>
+      <td className="text-center"><a className="text-secondary" onClick={props.downloadPdf(item.id)} href={`api/v1/doc/act_01/${item.id}/pdf`} download={`act-${Date.now()}.pdf`}><i className="fas fa-download"></i></a></td>
     </tr>
   );
 };

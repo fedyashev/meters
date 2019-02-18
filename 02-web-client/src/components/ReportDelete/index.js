@@ -7,8 +7,8 @@ class ReportDelete extends Component {
 
         this.state = {
             user: props.user,
-            report: {
-                id: props.match.params.report_id
+            act: {
+                id: props.match.params.id
             },
             isLoaded: false
         }
@@ -16,30 +16,35 @@ class ReportDelete extends Component {
 
     componentDidMount() {
         const token = this.state.user.token;
-        const report_id = this.state.report.id;
-        api.getReportById(token, report_id)
-            .then(report => {
-                if (report) {
-                    this.setState({ ...this.state, report, isLoaded: true });
+        const id = this.state.act.id;
+        //api.getReportById(token, report_id)
+        api.act_01.getById(token, id)
+            .then(act => {
+                if (act) {
+                    this.setState({ ...this.state, act, isLoaded: true });
                 }
                 else {
-                    this.props.showWarningAlert('Отчет не найден');
-                    this.props.history.goBack();
+                    this.setState({ ...this.state, isLoaded: false }, () => {
+                        this.props.showWarningAlert('Отчет не найден');
+                        this.props.history.goBack();
+                    });
                 }
             })
             .catch(({ error }) => {
-                this.props.showWarningAlert(error.message);
-                this.props.history.goBack();
+                this.setState({ ...this.state, isLoaded: false }, () => {
+                    this.props.showWarningAlert(error.message);
+                    this.props.history.goBack();
+                });
             });
     }
 
     handleClickYes = e => {
         e.preventDefault();
         const token = this.state.user.token;
-        const report_id = this.state.report.id;
-        api.deleteReportById(token, report_id)
-            .then(done => {
-                if (done) {
+        const id = this.state.act.id;
+        api.act_01.deletetById(token, id)
+            .then(result => {
+                if (result && result.done) {
                     this.props.showSuccessAlert('Отчет удален');
                     this.props.history.go(-2);
                 }
@@ -55,7 +60,7 @@ class ReportDelete extends Component {
     }
 
     render() {
-        const { report : {id} } = this.state;
+        const { act: { id } } = this.state;
         if (this.state.isLoaded) {
             return (
                 <div className="container pt-2">

@@ -410,7 +410,7 @@ class App extends Component {
             }
           />
 
-          <Route exact path='/owner/reports/:report_id'
+          <Route exact path='/owner/reports/:id'
             render={
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
@@ -419,7 +419,7 @@ class App extends Component {
             }
           />
 
-          <Route exact path='/owner/reports/:report_id/update'
+          <Route exact path='/owner/reports/:id/update'
             render={
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
@@ -428,7 +428,7 @@ class App extends Component {
             }
           />
 
-          <Route exact path='/owner/reports/:report_id/delete'
+          <Route exact path='/owner/reports/:id/delete'
             render={
               props =>
                 <Owner {...props} user={user} handlerLogout={this.handlerLogout}>
