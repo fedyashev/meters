@@ -93,7 +93,7 @@ class MeterInfo extends Component {
         <NavBar {...this.props}>
           <Link className="nav-link" to={`/owner/meters/${meter.id}/update`}>Изменить</Link>
           <Link className="nav-link" to={`/owner/meters/${meter.id}/delete`}>Удалить</Link>
-          <Link className="nav-link" to={`/owner/meters/${meter.id}/addData`}>Добавить показания</Link>
+          {/* <Link className="nav-link" to={`/owner/meters/${meter.id}/addData`}>Добавить показания</Link> */}
         </NavBar>
         <h3 className="text-center mb-2">Счетчик</h3>
         <div className="table-responsive">
