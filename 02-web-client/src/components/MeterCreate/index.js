@@ -1,8 +1,17 @@
 import React, {Component} from 'react';
 import api from '../../lib/api';
 import GoBackLink from '../GoBackLink';
+import ProgressBar from '../ProgressBar';
 
 class MeterLink extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isProcessing: false
+    }
+  }
 
   handleCreateMeter = number => {
     if (!number) {
@@ -10,18 +19,27 @@ class MeterLink extends Component {
       return;
     }
     const token = this.props.user.token;
+
+    this.setState({...this.state, isProcessing: true});
+
     api.createMeter(token, number)
       .then(meter => {
         if (meter) {
-          this.props.showSuccessAlert('Счетчик добавлен');
-          this.props.history.goBack();
+          this.setState({...this.state, isProcessing: false}, () => {
+            this.props.showSuccessAlert('Счетчик добавлен');
+            this.props.history.goBack();
+          });
         }
         else {
-          this.props.showWarningAlert('Неудалось добавить счетчик');
+          this.setState({...this.state, isProcessing: false}, () => {
+            this.props.showWarningAlert('Неудалось добавить счетчик');
+          });
         }
       })
       .catch(({error}) => {
-        this.props.showWarningAlert(error.message);
+        this.setState({...this.state, isProcessing: false}, () => {
+          this.props.showWarningAlert(error.message);
+        });
       });
   }
 
@@ -44,7 +62,11 @@ class MeterLink extends Component {
                 <input className="form-control" type="text" placeholder="Номер счетчика" required ref={r => number = r}/>
               </div>
               <div className="form-group">
-                <button className="btn btn-primary btn-block" onClick={onClickCreate}>Добавить</button>
+                {
+                  this.state.isProcessing ? 
+                    <ProgressBar message={'Создание счетчика...'} large={true}/> :
+                    <button className="btn btn-primary btn-block" onClick={onClickCreate}>Добавить</button>
+                }
               </div>
             </form>
           </div>
