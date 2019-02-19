@@ -35,15 +35,20 @@ class InspectorDelete extends Component {
     e.preventDefault();
     const token = this.state.user.token;
     const inspector_id = this.state.inspector.id;
+    this.setState({...this.state, isLoaded: false});
     api.deleteInspectorById(token, inspector_id)
-      .then(done => {
-        if (done) {
-          this.props.setAlert('success', 'Инспектор удален');
-          this.props.history.go(-2);
+      .then(result => {
+        if (result && result.done) {
+          this.setState({...this.state, isLoaded: true}, () => {
+            this.props.showSuccessAlert('Инспектор удален');
+            this.props.history.go(-2);
+          });
         }
       })
       .catch(({error}) => {
-        this.props.setAlert('warning', error.message)
+        this.setState({...this.state, isLoaded: true}, () => {
+          this.props.showWarningAlert(error.message)
+        });
       });
   }
 
