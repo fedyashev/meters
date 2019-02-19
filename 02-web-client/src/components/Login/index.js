@@ -1,6 +1,5 @@
 import React from 'react';
 import Alert from '../Alert';
-import logo from '../../img/logo.png';
 
 const Login = props => {
     const { handlerLogin, handlerCloseAlert } = props;
@@ -11,18 +10,7 @@ const Login = props => {
     };
     return (
         <div style={{ minHeight: '480px' }}>
-            {props.alert && <Alert type={props.alert.type} message={props.alert.message} handlerCloseAlert={handlerCloseAlert} />}
-            <div className="fixed-top mb-3" style={{ position: 'absolute', top: '0' }}>
-                <div className="container">
-                    <div className="row justify-content-center">
-                        <div className="col-12 text-center">
-                            <a href="http://instaservice.by">
-                                <img src={logo} alt="Instaservice" width="150px" height="150px" />
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {props.alert && <Alert type={props.alert.type} message={props.alert.message} handlerCloseAlert={handlerCloseAlert} />}            
             <div className="bg-light d-flex align-items-center" style={{ position: 'absolute', top: '0', left: '0', right: '0', bottom: '0' }}>
                 <div className="container">
                     <div className="row justify-content-center">
