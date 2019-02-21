@@ -11,7 +11,7 @@ const api = {
             },
             body: JSON.stringify(data)
         };
-        const url = '/api/v1/auth/login';
+        const url = 'api/v1/auth/login';
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -27,7 +27,7 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = '/api/v1/users';
+        const url = 'api/v1/users';
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -45,7 +45,7 @@ const api = {
             },
             body: JSON.stringify(data)
         };
-        const url = `/api/v1/users/${id}/changePassword`;
+        const url = `api/v1/users/${id}/changePassword`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -61,7 +61,7 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = `/api/v1/inspectors?limit=${limit}&offset=${offset}`;
+        const url = `api/v1/inspectors?limit=${limit}&offset=${offset}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -77,7 +77,7 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = '/api/v1/inspectors/count';
+        const url = 'api/v1/inspectors/count';
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -95,7 +95,7 @@ const api = {
             },
             body: JSON.stringify(data)
         };
-        const url = '/api/v1/inspectors';
+        const url = 'api/v1/inspectors';
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -112,7 +112,7 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = `/api/v1/inspectors/${inspector_id}`;
+        const url = `api/v1/inspectors/${inspector_id}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -129,7 +129,7 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = `/api/v1/inspectors/user/${user_id}`;
+        const url = `api/v1/inspectors/user/${user_id}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -148,7 +148,7 @@ const api = {
             },
             body: JSON.stringify(data)
         };
-        const url = `/api/v1/inspectors/${id}`;
+        const url = `api/v1/inspectors/${id}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -164,7 +164,7 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = `/api/v1/inspectors/${id}`;
+        const url = `api/v1/inspectors/${id}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -183,7 +183,7 @@ const api = {
         const params = [];
         if (limit) params.push(`limit=${limit}`);
         if (!isNaN(offset)) params.push(`offset=${offset}`);
-        const url = `/api/v1/consumers?${params.join('&')}`;
+        const url = `api/v1/consumers?${params.join('&')}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -199,7 +199,7 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = '/api/v1/consumers/count';
+        const url = 'api/v1/consumers/count';
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -217,7 +217,7 @@ const api = {
             },
             body: JSON.stringify(data)
         };
-        const url = '/api/v1/consumers';
+        const url = 'api/v1/consumers';
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -233,7 +233,7 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = `/api/v1/consumers/${id}`;
+        const url = `api/v1/consumers/${id}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -251,7 +251,7 @@ const api = {
             },
             body: JSON.stringify(data)
         };
-        const url = `/api/v1/consumers/${id}`;
+        const url = `api/v1/consumers/${id}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -267,7 +267,7 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = `/api/v1/consumers/${id}`;
+        const url = `api/v1/consumers/${id}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -283,7 +283,7 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = `/api/v1/meters?limit=${limit}&offset=${offset}`;
+        const url = `api/v1/meters?limit=${limit}&offset=${offset}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -299,7 +299,7 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = '/api/v1/meters/count';
+        const url = 'api/v1/meters/count';
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -315,7 +315,7 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = '/api/v1/meters/notInPlace';
+        const url = 'api/v1/meters/notInPlace';
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -333,7 +333,7 @@ const api = {
             },
             body: JSON.stringify(data)
         };
-        const url = '/api/v1/meters';
+        const url = 'api/v1/meters';
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -349,7 +349,7 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = `/api/v1/meters/${id}`;
+        const url = `api/v1/meters/${id}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -367,7 +367,7 @@ const api = {
             },
             body: JSON.stringify(data)
         };
-        const url = `/api/v1/meters/${id}`;
+        const url = `api/v1/meters/${id}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -383,7 +383,7 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = `/api/v1/meters/${id}`;
+        const url = `api/v1/meters/${id}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -399,7 +399,7 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = '/api/v1/places/count';
+        const url = 'api/v1/places/count';
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -415,7 +415,7 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = `/api/v1/places?limit=${limit}&offset=${offset}`;
+        const url = `api/v1/places?limit=${limit}&offset=${offset}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -431,7 +431,7 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = '/api/v1/places/audit';
+        const url = 'api/v1/places/audit';
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -449,7 +449,7 @@ const api = {
             },
             body: JSON.stringify(data)
         };
-        const url = '/api/v1/places';
+        const url = 'api/v1/places';
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -465,7 +465,7 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = `/api/v1/places/${id}`;
+        const url = `api/v1/places/${id}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -483,7 +483,7 @@ const api = {
             },
             body: JSON.stringify(data)
         };
-        const url = `/api/v1/places/${id}`;
+        const url = `api/v1/places/${id}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -499,7 +499,7 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = `/api/v1/places/${id}`;
+        const url = `api/v1/places/${id}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -515,7 +515,7 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = `/api/v1/reports?limit=${limit}&offset=${offset}`;
+        const url = `api/v1/reports?limit=${limit}&offset=${offset}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -531,7 +531,7 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = `/api/v1/reports/count?inspector_id=${inspector_id || ""}`;
+        const url = `api/v1/reports/count?inspector_id=${inspector_id || ""}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -547,7 +547,7 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = `/api/v1/reports/${id}`;
+        const url = `api/v1/reports/${id}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -564,7 +564,7 @@ const api = {
             },
             responseType: 'blob'
         };
-        const url = `/api/v1/reports/${id}/pdf`;
+        const url = `api/v1/reports/${id}/pdf`;
         return fetch(url, opt)
             .then(response => response.blob())
             .then(blob => saveAs(blob, `report-${Date.now()}.pdf`));
@@ -578,7 +578,7 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = `/api/v1/reports?inspector_id=${inspector_id}&limit=${limit}&offset=${offset}`;
+        const url = `api/v1/reports?inspector_id=${inspector_id}&limit=${limit}&offset=${offset}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -596,7 +596,7 @@ const api = {
             },
             body: JSON.stringify(data)
         };
-        const url = '/api/v1/reports';
+        const url = 'api/v1/reports';
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -614,7 +614,7 @@ const api = {
             },
             body: JSON.stringify(data)
         };
-        const url = `/api/v1/reports/${id}`;
+        const url = `api/v1/reports/${id}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -630,7 +630,7 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = `/api/v1/reports/${id}`;
+        const url = `api/v1/reports/${id}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -646,7 +646,7 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = `/api/v1/data?meter_id=${meter_id || ""}&offset=${offset}&limit=${limit}`;
+        const url = `api/v1/data?meter_id=${meter_id || ""}&offset=${offset}&limit=${limit}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -662,7 +662,7 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = `/api/v1/data/count?meter_id=${meter_id || ""}`;
+        const url = `api/v1/data/count?meter_id=${meter_id || ""}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -680,7 +680,7 @@ const api = {
             },
             body: JSON.stringify(data)
         };
-        const url = '/api/v1/data';
+        const url = 'api/v1/data';
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -699,7 +699,7 @@ const api = {
             },
             body: formData
         };
-        const url = '/api/v1/signs';
+        const url = 'api/v1/signs';
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -715,7 +715,7 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = `/api/v1/signs/${id}`;
+        const url = `api/v1/signs/${id}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -731,7 +731,7 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = `/api/v1/reports/${id}/sendEmail`;
+        const url = `api/v1/reports/${id}/sendEmail`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -747,7 +747,7 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = `/api/v1/registers`;
+        const url = `api/v1/registers`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -766,7 +766,7 @@ const api = {
             },
             body: JSON.stringify(data)
         };
-        const url = '/api/v1/registers';
+        const url = 'api/v1/registers';
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -782,7 +782,7 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = `/api/v1/registers/${id}`;
+        const url = `api/v1/registers/${id}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -801,7 +801,7 @@ const api = {
             },
             body: JSON.stringify(data)
         };
-        const url = `/api/v1/registers/${id}`;
+        const url = `api/v1/registers/${id}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -817,7 +817,7 @@ const api = {
                 'Authorization': `BEARER ${token}`
             }
         };
-        const url = `/api/v1/registers/${id}`;
+        const url = `api/v1/registers/${id}`;
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
@@ -834,7 +834,7 @@ const api = {
             },
             responseType: 'blob'
         };
-        const url = `/api/v1/registers/${id}/xlsx`;
+        const url = `api/v1/registers/${id}/xlsx`;
         return fetch(url, opt)
             .then(response => response.blob())
             .then(blob => saveAs(blob, `register-${Date.now()}.xlsx`));
@@ -849,7 +849,7 @@ const api = {
             },
             responseType: 'blob'
         };
-        const url = `/api/v1/registers/xlsx`;
+        const url = `api/v1/registers/xlsx`;
         return fetch(url, opt)
             .then(response => response.blob())
             .then(blob => saveAs(blob, `register-${Date.now()}.xlsx`));
@@ -864,7 +864,7 @@ const api = {
                     'Authorization': `BEARER ${token}`
                 }
             };
-            const url = `/api/v1/doc/act_01?limit=${limit}&offset=${offset}`;
+            const url = `api/v1/doc/act_01?limit=${limit}&offset=${offset}`;
             return fetch(url, opt)
                 .then(res => {
                     const promise = res.json();
@@ -880,7 +880,7 @@ const api = {
                     'Authorization': `BEARER ${token}`
                 }
             };
-            const url = `/api/v1/doc/act_01/count?inspector_id=${inspector_id || ""}`;
+            const url = `api/v1/doc/act_01/count?inspector_id=${inspector_id || ""}`;
             return fetch(url, opt)
                 .then(res => {
                     const promise = res.json();
@@ -896,7 +896,7 @@ const api = {
                     'Authorization': `BEARER ${token}`
                 }
             };
-            const url = `/api/v1/doc/act_01/${id}`;
+            const url = `api/v1/doc/act_01/${id}`;
             return fetch(url, opt)
                 .then(res => {
                     const promise = res.json();
@@ -913,7 +913,7 @@ const api = {
                 },
                 responseType: 'blob'
             };
-            const url = `/api/v1/doc/act_01/${id}/pdf`;
+            const url = `api/v1/doc/act_01/${id}/pdf`;
             return fetch(url, opt)
                 .then(response => response.blob())
                 .then(blob => saveAs(blob, `act-${Date.now()}.pdf`));
@@ -927,7 +927,7 @@ const api = {
                     'Authorization': `BEARER ${token}`
                 }
             };
-            const url = `/api/v1/doc/act_01?inspector_id=${inspector_id}&limit=${limit}&offset=${offset}`;
+            const url = `api/v1/doc/act_01?inspector_id=${inspector_id}&limit=${limit}&offset=${offset}`;
             return fetch(url, opt)
                 .then(res => {
                     const promise = res.json();
@@ -945,7 +945,7 @@ const api = {
                 },
                 body: JSON.stringify(data)
             };
-            const url = '/api/v1/doc/act_01';
+            const url = 'api/v1/doc/act_01';
             return fetch(url, opt)
                 .then(res => {
                     const promise = res.json();
@@ -963,7 +963,7 @@ const api = {
                 },
                 body: JSON.stringify(data)
             };
-            const url = `/api/v1/doc/act_01/${id}`;
+            const url = `api/v1/doc/act_01/${id}`;
             return fetch(url, opt)
                 .then(res => {
                     const promise = res.json();
@@ -979,7 +979,7 @@ const api = {
                     'Authorization': `BEARER ${token}`
                 }
             };
-            const url = `/api/v1/doc/act_01/${id}`;
+            const url = `api/v1/doc/act_01/${id}`;
             return fetch(url, opt)
                 .then(res => {
                     const promise = res.json();
@@ -995,7 +995,7 @@ const api = {
                     'Authorization': `BEARER ${token}`
                 }
             };
-            const url = `/api/v1/doc/act_01/${id}/sendEmail`;
+            const url = `api/v1/doc/act_01/${id}/sendEmail`;
             return fetch(url, opt)
                 .then(res => {
                     const promise = res.json();
