@@ -8,7 +8,9 @@
     "prepare-db-prod": "cross-env NODE_ENV=production npm run prepare-db",
     "prepare-db-dev": "cross-env NODE_ENV=development npm run prepare-db",
     "prepare-db-test": "cross-env NODE_ENV=test npm run prepare-db",
-    "test": "cross-env NODE_ENV=test mocha"
+    "test": "cross-env NODE_ENV=test mocha",
+    "start-prod": "cross-env NODE_ENV=production PORT=5010 nodemon ./bin/www",
+    "prod": "cross-env NODE_ENV=production"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

@@ -33,7 +33,8 @@ switch (env) {
   case 'production': {
     const logDirectory = path.join(__dirname, 'logs');
     fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
-    app.use(logger('combined', fs.createWriteStream(path.join(__dirname, 'logs', 'access.log'), { flags: 'a' })));
+    app.use(logger('combined', {stream: fs.createWriteStream(path.join(__dirname, 'logs', 'access.log'), { flags: 'a' })}));
+    app.use(logger('dev'));
     break;
   }
 
