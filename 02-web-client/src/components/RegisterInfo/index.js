@@ -61,7 +61,7 @@ class RegisterInfo extends Component {
                 <NavBar {...this.props}>
                     <Link className="nav-link" to={`/owner/registers/${this.state.register.id}/update`}>Изменить</Link>
                     <Link className="nav-link" to={`/owner/registers/${this.state.register.id}/delete`}>Удалить</Link>
-                    <Link className="nav-link" to={`/api/v1/registers/${register.id}/xlsx`} onClick={this.downloadXlsx(register.id)}>Скачать</Link>
+                    <Link className="nav-link" to={`api/v1/registers/${register.id}/xlsx`} onClick={this.downloadXlsx(register.id)}>Скачать</Link>
                 </NavBar>
                 <h3 className="text-center mb-2">Реестр</h3>
                 <div className="table-responsive">
