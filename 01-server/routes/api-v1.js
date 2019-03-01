@@ -56,8 +56,11 @@ router.delete('/consumers/:consumer_id', jwt, allow([ADMIN, OWNER]), consumer.de
 router.get('/meters', jwt, allow([ADMIN, OWNER]), meter.getAll);
 router.get('/meters/count', jwt, allow([ADMIN, OWNER]), meter.count);
 router.get('/meters/notInPlace', jwt, allow([ADMIN, OWNER, INSPECTOR]), meter.getAllNotInPlace);
+router.get('/meters/qrcode', meter.getAllQRcodes);
 router.post('/meters', jwt, allow([ADMIN, OWNER]), meter.create);
 router.get('/meters/:meter_id', jwt, allow([ADMIN, OWNER]), meter.getById);
+// router.get('/meters/:meter_id/qrcode', jwt, allow([ADMIN, OWNER]), meter.getQRcodePngById);
+router.get('/meters/:meter_id/qrcode', meter.getQRcodePngById);
 router.put('/meters/:meter_id', jwt, allow([ADMIN, OWNER]), meter.updateById);  // Change number
 router.delete('/meters/:meter_id', jwt, allow([ADMIN, OWNER]), meter.deleteById);
 
@@ -100,13 +103,13 @@ router.get('/registers/:register_id/xlsx', jwt, allow([ADMIN, OWNER]), register.
 router.put('/registers/:register_id', jwt, allow([ADMIN, OWNER]), register.updateById);
 router.delete('/registers/:register_id', jwt, allow([ADMIN, OWNER]), register.deleteById);
 
-router.get('/doc/act_01', act_01.getAll);
-router.get('/doc/act_01/count', act_01.count);
-router.post('/doc/act_01', act_01.create);
-router.get('/doc/act_01/:id', act_01.getById);
-router.put('/doc/act_01/:id', act_01.updateById);
-router.delete('/doc/act_01/:id', act_01.deleteById);
-router.get('/doc/act_01/:id/pdf', act_01.getPdfById);
-router.get('/doc/act_01/:id/sendEmail', act_01.sendEmailById);
+router.get('/doc/act_01', jwt, allow([ADMIN, OWNER, INSPECTOR]), act_01.getAll);
+router.get('/doc/act_01/count', jwt, allow([ADMIN, OWNER, INSPECTOR]), act_01.count);
+router.post('/doc/act_01', jwt, allow([ADMIN, OWNER, INSPECTOR]), act_01.create);
+router.get('/doc/act_01/:id', jwt, allow([ADMIN, OWNER, INSPECTOR]), act_01.getById);
+router.put('/doc/act_01/:id', jwt, allow([ADMIN, OWNER, INSPECTOR]), act_01.updateById);
+router.delete('/doc/act_01/:id', jwt, allow([ADMIN, OWNER, INSPECTOR]), act_01.deleteById);
+router.get('/doc/act_01/:id/pdf', jwt, allow([ADMIN, OWNER, INSPECTOR]), act_01.getPdfById);
+router.get('/doc/act_01/:id/sendEmail', jwt, allow([ADMIN, OWNER, INSPECTOR]), act_01.sendEmailById);
 
 module.exports = router;

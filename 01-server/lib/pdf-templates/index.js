@@ -2,6 +2,8 @@ const PdfDocument = require('pdfkit');
 const {prettyDate} = require('../../lib/helpers');
 const PdfPrinter = require('pdfmake');
 
+const QRcode = require('qrcode');
+
 module.exports.report = report => {
     const doc = new PdfDocument({});
     doc.registerFont('Roboto', 'fonts/Roboto/Roboto-Regular.ttf');
@@ -584,4 +586,63 @@ module.exports.act_01 = act => {
     // pdfDoc.pipe(fs.createWriteStream('pdfs/basics.pdf'));
     // pdfDoc.end();
     return pdfDoc;
+};
+
+module.exports.getMetersQRcodes = meters => {
+    const fonts = {
+        Roboto: {
+            normal: 'fonts/Roboto/Roboto-Regular.ttf',
+            bold: 'fonts//Roboto/Roboto-Medium.ttf',
+            italics: 'fonts/Roboto/Roboto-Italic.ttf',
+            bolditalics: 'fonts/Roboto/Roboto-MediumItalic.ttf'
+        }
+    };
+    
+    const printer = new PdfPrinter(fonts);
+
+    const size = 3;
+    let arr = [];
+    for (let i = 0; i < Math.ceil(meters.length / size); i++) {
+        arr[i] = meters.slice(i * size, i * size + size);
+    }
+    
+    const dd = {
+        pageSize: 'A4',
+        pageMargins: [ 60, 10, 30, 30 ],
+        content: [
+            // meters.map(p => {
+            //     return {
+            //         qr: p.number,
+            //         eccLevel: 'H',
+            //         mode: 'alphanumeric',
+            //         margin: [0, 0, 0, 10],
+            //     }
+            // }),
+            {
+                table: {
+                    widths: ['*', '*', '*'],
+                    body: [
+                        arr.map(p => {
+                            return [
+                                {
+                                    qr: p[0] ? p[0].number : '',
+                                    margin: [0, 0, 0, 10]
+                                },
+                                {
+                                    qr: p[1] ? p[1].number : '',
+                                    margin: [0, 0, 0, 10]
+                                },
+                                {
+                                    qr: p[2] ? p[2].number : '',
+                                    margin: [0, 0, 0, 10]
+                                }
+                            ];
+                        })
+                    ]
+                },
+            }
+        ],
+    };
+    
+    return printer.createPdfKitDocument(dd);
 };

@@ -357,6 +357,21 @@ const api = {
             });
     },
 
+    getMeterQRcodePngById: (token, id) => {
+        const opt = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/pdf',
+                'Authorization': `BEARER ${token}`
+            },
+            responseType: 'blob'
+        };
+        const url = `api/v1/meters/${id}/qrcode`;
+        return fetch(url, opt)
+            .then(response => response.blob())
+            .then(blob => saveAs(blob, `qrcode-id-${id}.png`));
+    },
+
     updateMeterById: (token, id, number) => {
         const data = {number};
         const opt = {

@@ -37,6 +37,15 @@ class MeterList extends Component {
     }
   };
 
+  downloadQRcode = meter_id => e => {
+    e.preventDefault();
+    const token = this.state.user.token;
+    api.getMeterQRcodePngById(token, meter_id)
+      .catch(({error}) => {
+        this.props.showWarningAlert(error.message);
+      });
+  }
+
   componentDidMount() {
     Promise.resolve()
       .then(this.loadItems(this.state.activePage))
@@ -60,7 +69,7 @@ class MeterList extends Component {
         <NavBar {...this.props}>
           <Link className="nav-link" to="/owner/meters/create">Добавить</Link>
         </NavBar>
-        <Table meters={this.state.meters} />
+        <Table meters={this.state.meters} downloadQRcode={this.downloadQRcode}/>
         {
           this.state.totalItemsCount > this.state.limit ?
             <Pagination
@@ -89,11 +98,12 @@ const Table = props => {
           <tr>
             <th scope="col" className="text-center">Id</th>
             <th scope="col" className="text-center">Number</th>
+            <th scope="col" className="text-center">QR</th>
           </tr>
         </thead>
         <tbody style={{ fontSize: '0.85rem' }}>
           {
-            meters && meters.map(meter => <TableRow key={`${meter.id}-${meter.number}`} meter={meter} />)
+            meters && meters.map(meter => <TableRow key={`${meter.id}-${meter.number}`} meter={meter} downloadQRcode={props.downloadQRcode}/>)
           }
         </tbody>
       </table>
@@ -109,6 +119,7 @@ const TableRow = props => {
         <Link to={`/owner/meters/${meter.id}`}>{meter.id}</Link>
       </td>
       <td className="text-center">{meter.number}</td>
+      <td className="text-center"><a className="text-secondary" onClick={props.downloadQRcode(meter.id)} href={`api/v1/meters/${meter.id}/qrcode`} download={`qrcode-id-${meter.id}.png`}><i className="fas fa-qrcode"></i></a></td>
     </tr>
   );
 };

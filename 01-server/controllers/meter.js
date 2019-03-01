@@ -2,6 +2,9 @@ const createError = require('http-errors');
 const { Meter, Place, Data, Sequelize, sequelize } = require('../models');
 const validator = require('validator');
 const Op = Sequelize.Op;
+const pdfTemplates = require('../lib/pdf-templates');
+
+const QRcode = require('qrcode');
 
 module.exports.count = async (req, res, next) => {
     try {
@@ -141,3 +144,47 @@ module.exports.getAllNotInPlace = async (req, res, next) => {
         return next(createError(500, err.message));
     }
 }
+
+module.exports.getQRcodePngById = async (req, res, next) => {
+    try {    
+        const { meter_id } = req.params;
+        if (!meter_id) {
+            return next(createError(400, 'Incorrect meter id'));
+        }
+
+        const meter = await Meter.findOne({ where: { id: meter_id } });
+        if (!meter) {
+            return next(createError(404, 'Meter not found'));
+        }
+
+        res.set('Content-disposition', `attachment; filename=qrcode-${meter.number}.png`);
+        res.set('Content-Type', 'image/png');
+
+        const qrcodePng = await QRcode.toFileStream(res, meter.number, {
+            errorCorrectionLevel: 'H',
+            mode: 'alphanumeric',
+            version: 2
+        });
+
+    } catch (err) {
+        console.log(err);
+        return next(createError(500, err.message));
+    }
+};
+
+module.exports.getAllQRcodes = async (req, res, next) => {
+    try {
+        const meters = await Meter.findAll();
+
+        const doc = pdfTemplates.getMetersQRcodes(meters);
+
+        res.set('Content-disposition', `attachment; filename=meters-qr-${Date.now()}.pdf`);
+        res.set('Content-Type', 'application/pdf');
+
+        doc.pipe(res);
+        doc.end();
+    } catch (err) {
+        console.log(err);
+        return next(createError(500, err.message));
+    }
+};
