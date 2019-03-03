@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp"
+    tools:context=".InspectorMainMenu">
+
+    <TextView
+        android:id="@+id/tvMenuTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textSize="25dp"
+        android:text="Меню"/>
+
+    <Button
+        android:id="@+id/btnPlaces"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Места"/>
+
+    <Button
+        android:id="@+id/btnActs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Акты"/>
+
+    <Button
+        android:id="@+id/btnQRScanner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="QR cканер"/>
+
+    <TextView
+        android:id="@+id/tvInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>
