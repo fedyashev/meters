@@ -487,6 +487,7 @@ module.exports.sendEmailById = async (req, res, next) => {
         return res.json({ done: true });
       })
       .catch(err => {
+        console.log(err);
         return next(createError(500, err.message));
       });
 

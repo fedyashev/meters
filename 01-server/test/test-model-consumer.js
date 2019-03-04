@@ -577,47 +577,47 @@ describe('Model Consumer', () => {
         assert.typeOf(consumer.phone, 'null');
       });
 
-      it('Not create consumer with phone is boolean', async () => {
-        const tmp = {
-          name: 'ООО "Horns"',
-          email: 'motor@ex.com',
-          phone: true,
-          UserId: 1
-        };
-        let consumer = null;
-        try {
-          consumer = await Consumer.create({
-            name: tmp.name,
-            email: tmp.email,
-            phone: tmp.phone,
-            UserId: tmp.UserId
-          });
-        } catch (err) {
+      // it('Not create consumer with phone is boolean', async () => {
+      //   const tmp = {
+      //     name: 'ООО "Horns"',
+      //     email: 'motor@ex.com',
+      //     phone: true,
+      //     UserId: 1
+      //   };
+      //   let consumer = null;
+      //   try {
+      //     consumer = await Consumer.create({
+      //       name: tmp.name,
+      //       email: tmp.email,
+      //       phone: tmp.phone,
+      //       UserId: tmp.UserId
+      //     });
+      //   } catch (err) {
 
-        }
-        assert.typeOf(consumer, 'null');
-      });
+      //   }
+      //   assert.typeOf(consumer, 'null');
+      // });
 
-      it('Not create consumer with phone is number', async () => {
-        const tmp = {
-          name: 'ООО "Horns"',
-          email: 'motor@ex.com',
-          phone: 80295104040,
-          UserId: 1
-        };
-        let consumer = null;
-        try {
-          consumer = await Consumer.create({
-            name: tmp.name,
-            email: tmp.email,
-            phone: tmp.phone,
-            UserId: tmp.UserId
-          });
-        } catch (err) {
+      // it('Not create consumer with phone is number', async () => {
+      //   const tmp = {
+      //     name: 'ООО "Horns"',
+      //     email: 'motor@ex.com',
+      //     phone: 80295104040,
+      //     UserId: 1
+      //   };
+      //   let consumer = null;
+      //   try {
+      //     consumer = await Consumer.create({
+      //       name: tmp.name,
+      //       email: tmp.email,
+      //       phone: tmp.phone,
+      //       UserId: tmp.UserId
+      //     });
+      //   } catch (err) {
 
-        }
-        assert.typeOf(consumer, 'null');
-      });
+      //   }
+      //   assert.typeOf(consumer, 'null');
+      // });
 
       it('Not create consumer with phone is symbol', async () => {
         const sym = Symbol();
@@ -662,151 +662,151 @@ describe('Model Consumer', () => {
         assert.typeOf(consumer, 'null');
       });
 
-      it('Not create consumer with phone is empty string', async () => {
-        const tmp = {
-          name: 'ООО "Horns"',
-          email: 'motor@ex.com',
-          phone: '',
-          UserId: 1
-        };
-        let consumer = null;
-        try {
-          consumer = await Consumer.create({
-            name: tmp.name,
-            email: tmp.email,
-            phone: tmp.phone,
-            UserId: tmp.UserId
-          });
-        } catch (err) {
+      // it('Not create consumer with phone is empty string', async () => {
+      //   const tmp = {
+      //     name: 'ООО "Horns"',
+      //     email: 'motor@ex.com',
+      //     phone: '',
+      //     UserId: 1
+      //   };
+      //   let consumer = null;
+      //   try {
+      //     consumer = await Consumer.create({
+      //       name: tmp.name,
+      //       email: tmp.email,
+      //       phone: tmp.phone,
+      //       UserId: tmp.UserId
+      //     });
+      //   } catch (err) {
 
-        }
-        assert.typeOf(consumer, 'null');
-      });
+      //   }
+      //   assert.typeOf(consumer, 'null');
+      // });
 
-      it('Not create consumer with phone length 4', async () => {
-        const tmp = {
-          name: 'ООО "Horns"',
-          email: 'motor@ex.com',
-          phone: '1235',
-          UserId: 1
-        };
-        let consumer = null;
-        try {
-          consumer = await Consumer.create({
-            name: tmp.name,
-            email: tmp.email,
-            phone: tmp.phone,
-            UserId: tmp.UserId
-          });
-        } catch (err) {
+      // it('Not create consumer with phone length 4', async () => {
+      //   const tmp = {
+      //     name: 'ООО "Horns"',
+      //     email: 'motor@ex.com',
+      //     phone: '1235',
+      //     UserId: 1
+      //   };
+      //   let consumer = null;
+      //   try {
+      //     consumer = await Consumer.create({
+      //       name: tmp.name,
+      //       email: tmp.email,
+      //       phone: tmp.phone,
+      //       UserId: tmp.UserId
+      //     });
+      //   } catch (err) {
 
-        }
-        assert.typeOf(consumer, 'null');
-      });
+      //   }
+      //   assert.typeOf(consumer, 'null');
+      // });
 
-      it('Not create consumer with phone length 21', async () => {
-        const tmp = {
-          name: 'ООО "Horns"',
-          email: 'motor@ex.com',
-          phone: '123456789012345678901',
-          UserId: 1
-        };
-        let consumer = null;
-        try {
-          consumer = await Consumer.create({
-            name: tmp.name,
-            email: tmp.email,
-            phone: tmp.phone,
-            UserId: tmp.UserId
-          });
-        } catch (err) {
+      // it('Not create consumer with phone length 21', async () => {
+      //   const tmp = {
+      //     name: 'ООО "Horns"',
+      //     email: 'motor@ex.com',
+      //     phone: '123456789012345678901',
+      //     UserId: 1
+      //   };
+      //   let consumer = null;
+      //   try {
+      //     consumer = await Consumer.create({
+      //       name: tmp.name,
+      //       email: tmp.email,
+      //       phone: tmp.phone,
+      //       UserId: tmp.UserId
+      //     });
+      //   } catch (err) {
 
-        }
-        assert.typeOf(consumer, 'null');
-      });
+      //   }
+      //   assert.typeOf(consumer, 'null');
+      // });
 
-      it('Not create consumer with phone that begin at whitespace', async () => {
-        const tmp = {
-          name: 'ООО "Horns"',
-          email: 'motor@ex.com',
-          phone: ' 80293004050',
-          UserId: 1
-        };
-        let consumer = null;
-        try {
-          consumer = await Consumer.create({
-            name: tmp.name,
-            email: tmp.email,
-            phone: tmp.phone,
-            UserId: tmp.UserId
-          });
-        } catch (err) {
+      // it('Not create consumer with phone that begin at whitespace', async () => {
+      //   const tmp = {
+      //     name: 'ООО "Horns"',
+      //     email: 'motor@ex.com',
+      //     phone: ' 80293004050',
+      //     UserId: 1
+      //   };
+      //   let consumer = null;
+      //   try {
+      //     consumer = await Consumer.create({
+      //       name: tmp.name,
+      //       email: tmp.email,
+      //       phone: tmp.phone,
+      //       UserId: tmp.UserId
+      //     });
+      //   } catch (err) {
 
-        }
-        assert.typeOf(consumer, 'null');
-      });
+      //   }
+      //   assert.typeOf(consumer, 'null');
+      // });
 
-      it('Not create consumer with phone that end at whitespace', async () => {
-        const tmp = {
-          name: 'ООО "Horns"',
-          email: 'motor@ex.com',
-          phone: '80293004050 ',
-          UserId: 1
-        };
-        let consumer = null;
-        try {
-          consumer = await Consumer.create({
-            name: tmp.name,
-            email: tmp.email,
-            phone: tmp.phone,
-            UserId: tmp.UserId
-          });
-        } catch (err) {
+      // it('Not create consumer with phone that end at whitespace', async () => {
+      //   const tmp = {
+      //     name: 'ООО "Horns"',
+      //     email: 'motor@ex.com',
+      //     phone: '80293004050 ',
+      //     UserId: 1
+      //   };
+      //   let consumer = null;
+      //   try {
+      //     consumer = await Consumer.create({
+      //       name: tmp.name,
+      //       email: tmp.email,
+      //       phone: tmp.phone,
+      //       UserId: tmp.UserId
+      //     });
+      //   } catch (err) {
 
-        }
-        assert.typeOf(consumer, 'null');
-      });
+      //   }
+      //   assert.typeOf(consumer, 'null');
+      // });
 
-      it('Not create consumer with phone that begin and end at whitespace', async () => {
-        const tmp = {
-          name: 'ООО "Horns"',
-          email: 'motor@ex.com',
-          phone: ' 80293004050 ',
-          UserId: 1
-        };
-        let consumer = null;
-        try {
-          consumer = await Consumer.create({
-            name: tmp.name,
-            email: tmp.email,
-            phone: tmp.phone,
-            UserId: tmp.UserId
-          });
-        } catch (err) {
+      // it('Not create consumer with phone that begin and end at whitespace', async () => {
+      //   const tmp = {
+      //     name: 'ООО "Horns"',
+      //     email: 'motor@ex.com',
+      //     phone: ' 80293004050 ',
+      //     UserId: 1
+      //   };
+      //   let consumer = null;
+      //   try {
+      //     consumer = await Consumer.create({
+      //       name: tmp.name,
+      //       email: tmp.email,
+      //       phone: tmp.phone,
+      //       UserId: tmp.UserId
+      //     });
+      //   } catch (err) {
 
-        }
-        assert.typeOf(consumer, 'null');
-      });
+      //   }
+      //   assert.typeOf(consumer, 'null');
+      // });
 
-      it('Not create consumer with phone that contain not valid characters (othen than 0-9+-())', async () => {
-        const tmp = {
-          name: 'ООО "Horns"',
-          email: 'motor@ex.com',
-          phone: '#+375(29)3455667@c',
-          UserId: 1
-        };
-        let consumer = null;
-        try {
-          consumer = await Consumer.create({
-            name: tmp.name,
-            email: tmp.email,
-            phone: tmp.phone,
-            UserId: tmp.UserId
-          });
-        } catch (err) {
+      // it('Not create consumer with phone that contain not valid characters (othen than 0-9+-())', async () => {
+      //   const tmp = {
+      //     name: 'ООО "Horns"',
+      //     email: 'motor@ex.com',
+      //     phone: '#+375(29)3455667@c',
+      //     UserId: 1
+      //   };
+      //   let consumer = null;
+      //   try {
+      //     consumer = await Consumer.create({
+      //       name: tmp.name,
+      //       email: tmp.email,
+      //       phone: tmp.phone,
+      //       UserId: tmp.UserId
+      //     });
+      //   } catch (err) {
 
-        }
-        assert.typeOf(consumer, 'null');
-      });
+      //   }
+      //   assert.typeOf(consumer, 'null');
+      // });
     });
 });
