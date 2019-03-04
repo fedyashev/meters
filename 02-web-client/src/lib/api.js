@@ -361,7 +361,7 @@ const api = {
         const opt = {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/pdf',
+                'Content-Type': 'image/png',
                 'Authorization': `BEARER ${token}`
             },
             responseType: 'blob'
@@ -370,6 +370,21 @@ const api = {
         return fetch(url, opt)
             .then(response => response.blob())
             .then(blob => saveAs(blob, `qrcode-id-${id}.png`));
+    },
+
+    getAllMetersQRcodePdf: (token) => {
+        const opt = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/pdf',
+                'Authorization': `BEARER ${token}`
+            },
+            responseType: 'blob'
+        };
+        const url = `api/v1/meters/qrcode`;
+        return fetch(url, opt)
+            .then(response => response.blob())
+            .then(blob => saveAs(blob, `meters-qr-${Date.now()}.pdf`));
     },
 
     updateMeterById: (token, id, number) => {

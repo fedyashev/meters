@@ -59,8 +59,7 @@ router.get('/meters/notInPlace', jwt, allow([ADMIN, OWNER, INSPECTOR]), meter.ge
 router.get('/meters/qrcode', meter.getAllQRcodes);
 router.post('/meters', jwt, allow([ADMIN, OWNER]), meter.create);
 router.get('/meters/:meter_id', jwt, allow([ADMIN, OWNER]), meter.getById);
-// router.get('/meters/:meter_id/qrcode', jwt, allow([ADMIN, OWNER]), meter.getQRcodePngById);
-router.get('/meters/:meter_id/qrcode', meter.getQRcodePngById);
+router.get('/meters/:meter_id/qrcode', jwt, allow([ADMIN, OWNER]), meter.getQRcodePngById);
 router.put('/meters/:meter_id', jwt, allow([ADMIN, OWNER]), meter.updateById);  // Change number
 router.delete('/meters/:meter_id', jwt, allow([ADMIN, OWNER]), meter.deleteById);
 

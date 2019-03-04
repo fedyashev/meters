@@ -176,7 +176,7 @@ module.exports.getAllQRcodes = async (req, res, next) => {
     try {
         const meters = await Meter.findAll();
 
-        const doc = pdfTemplates.getMetersQRcodes(meters);
+        const doc = await pdfTemplates.getMetersQRcodes(meters);
 
         res.set('Content-disposition', `attachment; filename=meters-qr-${Date.now()}.pdf`);
         res.set('Content-Type', 'application/pdf');

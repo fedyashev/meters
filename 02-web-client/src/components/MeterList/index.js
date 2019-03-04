@@ -46,6 +46,15 @@ class MeterList extends Component {
       });
   }
 
+  downloadAllQRcodes = e => {
+    e.preventDefault();
+    const token = this.state.user.token;
+    api.getAllMetersQRcodePdf(token)
+      .catch(({error}) => {
+        this.props.showWarningAlert(error.message);
+      });
+  }
+
   componentDidMount() {
     Promise.resolve()
       .then(this.loadItems(this.state.activePage))
@@ -68,6 +77,7 @@ class MeterList extends Component {
       <div className="container justify-content-center">
         <NavBar {...this.props}>
           <Link className="nav-link" to="/owner/meters/create">Добавить</Link>
+          <Link className="nav-link" to="/owner/meters/qrcodes" onClick={this.downloadAllQRcodes}>Скачать QR коды</Link>
         </NavBar>
         <Table meters={this.state.meters} downloadQRcode={this.downloadQRcode}/>
         {

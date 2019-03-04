@@ -588,7 +588,7 @@ module.exports.act_01 = act => {
     return pdfDoc;
 };
 
-module.exports.getMetersQRcodes = meters => {
+module.exports.getMetersQRcodes = async (meters) => {
     const fonts = {
         Roboto: {
             normal: 'fonts/Roboto/Roboto-Regular.ttf',
@@ -600,45 +600,65 @@ module.exports.getMetersQRcodes = meters => {
     
     const printer = new PdfPrinter(fonts);
 
-    const size = 3;
+    const qr = await Promise
+        .all(meters.map(async (p) => {
+            return {
+                id: p.id,
+                number: p.number,
+                qrcode: await QRcode.toDataURL(p.number)
+            };
+        }));
+
+    const size = 5;
     let arr = [];
-    for (let i = 0; i < Math.ceil(meters.length / size); i++) {
-        arr[i] = meters.slice(i * size, i * size + size);
+    for (let i = 0; i < Math.ceil(qr.length / size); i++) {
+        arr[i] = qr.slice(i * size, i * size + size);
     }
-    
+
     const dd = {
         pageSize: 'A4',
-        pageMargins: [ 60, 10, 30, 30 ],
+        pageMargins: [ 10, 10, 10, 10 ],
         content: [
-            // meters.map(p => {
-            //     return {
-            //         qr: p.number,
-            //         eccLevel: 'H',
-            //         mode: 'alphanumeric',
-            //         margin: [0, 0, 0, 10],
-            //     }
-            // }),
             {
                 table: {
-                    widths: ['*', '*', '*'],
-                    body: [
-                        arr.map(p => {
-                            return [
-                                {
-                                    qr: p[0] ? p[0].number : '',
-                                    margin: [0, 0, 0, 10]
+                    widths: Array(size).fill('*'),
+                    body: arr.map(p => {
+                        return Array(size).fill({}).map((q, i) => {
+                            return {
+                                table: {
+                                    body: [
+                                        [
+                                            p[i] ?
+                                            {
+                                                image: p[i].qrcode,
+                                                width: 75,
+                                                height: 75,
+                                                alignment: 'center',
+                                                padding: [0, 0, 0, 0]
+                                            } :
+                                            {
+                                                text: '',
+                                                border: [0, 0, 0, 0]
+                                            },
+                                        ],
+                                        [
+                                            p[i] ?
+                                            {
+                                                text: p[i] ? p[i].number : '',
+                                                alignment: 'center',
+                                            } :
+                                            {
+                                                text: '',
+                                                border: [0, 0, 0, 0]
+                                            }
+                                        ]
+                                    ]
                                 },
-                                {
-                                    qr: p[1] ? p[1].number : '',
-                                    margin: [0, 0, 0, 10]
-                                },
-                                {
-                                    qr: p[2] ? p[2].number : '',
-                                    margin: [0, 0, 0, 10]
-                                }
-                            ];
-                        })
-                    ]
+                                alignment: 'center',
+                                border: [0, 0, 0, 0]
+                            }
+                        });
+                    }),
                 },
             }
         ],
