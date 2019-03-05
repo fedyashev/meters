@@ -1,8 +1,9 @@
 {
+    "service": "Mail.ru",
     "noreply": {
         "url": "noreply.meters@instaservice.by",
         "username": "noreply.meters@instaservice.by",
-        "password": "Noreply2019"
+        "password": "catcat"
     },
     "reports": {
         "url": "reports.meters@instaservice.by"
