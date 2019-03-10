@@ -6,6 +6,8 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const env = process.env.NODE_ENV || 'development';
 
+const helmet = require('helmet');
+
 require('./models');
 require('./models/hooks');
 require('./models/methods');
@@ -28,6 +30,8 @@ const app = express();
 //   .catch(err => {
 //     console.log("DB Error");
 //   });
+
+app.use(helmet());
 
 switch (env) {
   case 'production': {
