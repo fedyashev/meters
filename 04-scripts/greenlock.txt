@@ -1,0 +1,1 @@
+.\node_modules\.bin\greenlock certonly --standalone --acme-version draft-11 --acme-url https://acme-staging-v02.api.letsencrypt.org/directory --agree-tos --email fireporing@yandex.ru --domains instaservice.by,www.instaservice.com --config-dir ~/acme/etc

@@ -19,6 +19,7 @@
     "dateformat": "^3.0.3",
     "debug": "~2.6.9",
     "express": "~4.16.0",
+    "greenlock-express": "^2.6.8",
     "hat": "0.0.3",
     "helmet": "^3.15.1",
     "http-errors": "~1.6.2",
