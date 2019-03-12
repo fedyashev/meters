@@ -4,73 +4,15 @@
  * Module dependencies.
  */
 
-var app = require('../app');
-var debug = require('debug')('01-server:server');
-var http = require('http');
+const app = require('../app');
+const debug = require('debug')('01-server:server');
+const http = require('http');
 const https = require('https');
 const fs = require('fs');
 
-var privateKey  = fs.readFileSync('sslcert/domain-key.txt', 'utf8');
-var certificate = fs.readFileSync('sslcert/domain-crt.txt', 'utf8');
-
-// ///var credentials = {key: privateKey, cert: certificate};
-var credentials = {key: privateKey, cert: certificate};
-
-// const PROD = false;
-
-// // const approvedDomains = (opts, certs, cb) => {
-// //   if (!/^localhost$/.test(opts.domains)) {
-// //     cb(new Error('No config found for "' + opts.domain + '"'));
-// //   }
-
-// //   opts.email = 'fireporing@yandex.ru';
-// //   opts.agreeTos = true;
-// //   opts.domains = ['instasertvice', 'www.instaservice.by'];
-
-// //   cb(null, {options: opts, certs: certs});
-// // };
-
-// const lex = require('greenlock-express').create({
-//   version: 'draft-11',
-//   server: PROD ? 'https://acme-v02.api.letsencrypt.org/directory' : 'https://acme-staging-v02.api.letsencrypt.org/directory',
-//   // approveDomains: (opts, certs, cb) => {
-//   //   if (certs) {
-//   //     // change domain list here
-//   //     //opts.domains = ['example.com', 'yourdomain.com'];
-//   //     opts.domains = ['localhost', 'instaservice.by']
-//   //   } else { 
-//   //     // change default email to accept agreement
-//   //     opts.email = 'fireporing@yandex.ru'; 
-//   //     opts.agreeTos = true;
-//   //   }
-//   //   cb(null, { options: opts, certs: certs });
-//   // }
-//   // // optional: see "Note 3" at the end of the page
-//   // // communityMember: true
-
-//   // Let's Encrypt v2 is ACME draft 11
-//     // Note: If at first you don't succeed, stop and switch to staging
-//     // https://acme-staging-v02.api.letsencrypt.org/directory
-
-//     // You MUST change this to a valid email address
-//     email: 'fireporing@yandex.ru',
-
-//     // You MUST NOT build clients that accept the ToS without asking the user
-//     agreeTos: true,
-
-//     // You MUST change these to valid domains
-//     // NOTE: all domains will validated and listed on the certificate
-//     approvedDomains: ['localhost', 'instaservice.by', 'www.instaservice.by'],
-
-//     // You MUST have access to write to directory where certs are saved
-//     // ex: /home/foouser/acme/etc
-//     configDir: '~/.config/acme/',
-
-//     // Get notified of important updates and help me make greenlock better
-//     //communityMember: true
-// });
-
-// const middlewareWrapper = lex.middleware;
+const privateKey  = fs.readFileSync('sslcert/domain-key.txt', 'utf8');
+const certificate = fs.readFileSync('sslcert/domain-crt.txt', 'utf8');
+const credentials = {key: privateKey, cert: certificate};
 
 /**
  * Get port from environment and store in Express.
@@ -82,24 +24,16 @@ const defaultPortHttps = 5443;
 var portHttp = normalizePort(process.env.PORT || defaultPortHttp);
 var portHttps = normalizePort(process.env.PORT_HTTPS || defaultPortHttps);
 
-//app.set('port', port);
-
 /**
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
-// const httpsServer = https.createServer(
-//   lex.httpsOptions, 
-//   middlewareWrapper(app)
-// );
+const server = http.createServer(app);
 const httpsServer = https.createServer(credentials, app);
  
-
 /**
  * Listen on provided port, on all network interfaces.
  */
-
 
 const onError = port => error => {
   if (error.syscall !== 'listen') {
@@ -125,9 +59,11 @@ const onError = port => error => {
   }
 }
 
-
-
 server.listen(portHttp);
+server.on('request', require('redirect-https')({
+  port: portHttps,
+  trustProxy: true
+}));
 server.on('error', onError(portHttp));
 server.on('listening', onListening);
 
@@ -154,58 +90,6 @@ function normalizePort(val) {
 
   return false;
 }
-
-/**
- * Event listener for HTTP server "error" event.
- */
-
-// function onError(error) {
-//   if (error.syscall !== 'listen') {
-//     throw error;
-//   }
-
-//   var bind = typeof port === 'string'
-//     ? 'Pipe ' + port
-//     : 'Port ' + port;
-
-//   // handle specific listen errors with friendly messages
-//   switch (error.code) {
-//     case 'EACCES':
-//       console.error(bind + ' requires elevated privileges');
-//       process.exit(1);
-//       break;
-//     case 'EADDRINUSE':
-//       console.error(bind + ' is already in use');
-//       process.exit(1);
-//       break;
-//     default:
-//       throw error;
-//   }
-// }
-
-// const onError = port => error => {
-//   if (error.syscall !== 'listen') {
-//     throw error;
-//   }
-
-//   var bind = typeof port === 'string'
-//     ? 'Pipe ' + port
-//     : 'Port ' + port;
-
-//   // handle specific listen errors with friendly messages
-//   switch (error.code) {
-//     case 'EACCES':
-//       console.error(bind + ' requires elevated privileges');
-//       process.exit(1);
-//       break;
-//     case 'EADDRINUSE':
-//       console.error(bind + ' is already in use');
-//       process.exit(1);
-//       break;
-//     default:
-//       throw error;
-//   }
-// }
 
 /**
  * Event listener for HTTP server "listening" event.
