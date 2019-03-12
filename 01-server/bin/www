@@ -60,10 +60,10 @@ const onError = port => error => {
 }
 
 server.listen(portHttp);
-server.on('request', require('redirect-https')({
-  port: portHttps,
-  trustProxy: true
-}));
+// server.on('request', require('redirect-https')({
+//   port: portHttps,
+//   trustProxy: true
+// }));
 server.on('error', onError(portHttp));
 server.on('listening', onListening);
 
