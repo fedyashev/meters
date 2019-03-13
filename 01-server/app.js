@@ -35,6 +35,16 @@ app.use(helmet());
 
 switch (env) {
   case 'production': {
+
+    app.enable('trust proxy');
+    app.use((req, res, next) => {
+      if (req.secure) {
+        next();
+      } else {
+        res.redirect('https://' + req.headers.host + req.url);
+      }
+    });
+
     const logDirectory = path.join(__dirname, 'logs');
     fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
     app.use(logger('combined', {stream: fs.createWriteStream(path.join(__dirname, 'logs', 'access.log'), { flags: 'a' })}));
