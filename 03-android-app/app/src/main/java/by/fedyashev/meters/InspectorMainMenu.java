@@ -1,7 +1,10 @@
 package by.fedyashev.meters;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +34,15 @@ public class InspectorMainMenu extends AppCompatActivity {
 
         final InspectorMainMenu context = this;
         final TextView tvInfo = this.findViewById(R.id.tvInfo);
+
+        Button btnScan = this.findViewById(R.id.btnQRScanner);
+        btnScan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, QrScanner.class);
+                context.startActivity(intent);
+            }
+        });
 
         if (user != null) {
             NetworkService
