@@ -35,6 +35,14 @@ public class InspectorMainMenu extends AppCompatActivity {
         final InspectorMainMenu context = this;
         final TextView tvInfo = this.findViewById(R.id.tvInfo);
 
+        Button btnPlaces = this.findViewById(R.id.btnPlaces);
+        btnPlaces.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(InspectorMainMenu.this, PlaceListActivity.class));
+            }
+        });
+
         Button btnScan = this.findViewById(R.id.btnQRScanner);
         btnScan.setOnClickListener(new View.OnClickListener() {
             @Override

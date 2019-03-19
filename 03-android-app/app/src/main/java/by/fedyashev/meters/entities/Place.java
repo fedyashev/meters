@@ -3,6 +3,10 @@ package by.fedyashev.meters.entities;
 import com.google.gson.annotations.SerializedName;
 
 public class Place {
+
+    @SerializedName("id")
+    private int id;
+
     @SerializedName("name")
     private String name;
 
@@ -15,11 +19,20 @@ public class Place {
     @SerializedName("isSignNeed")
     private boolean isSignNeed;
 
-    public Place(String name, Consumer consumer, Meter meter, boolean isSignNeed) {
+    public Place(int id, String name, Consumer consumer, Meter meter, boolean isSignNeed) {
+        this.id = id;
         this.name = name;
         this.consumer = consumer;
         this.meter = meter;
         this.isSignNeed = isSignNeed;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {

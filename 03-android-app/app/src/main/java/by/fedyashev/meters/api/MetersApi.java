@@ -15,5 +15,5 @@ public interface MetersApi {
     Call<Inspector> getInspectorByUserId(@Header("Authorization") String token, @Path("id") int id);
 
     @GET("api/v1/places")
-    Call<List<Place>> getPlaceList();
+    Call<List<Place>> getPlaceList(@Header("Authorization") String token);
 }
