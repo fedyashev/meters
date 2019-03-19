@@ -44,7 +44,6 @@ class InspectorPlaceAddData extends Component {
     }
 
     handleCreateReport = async (value, signData) => {
-        console.log(value);
         const { place } = this.state;
         if (!place.meter) {
             return this.props.showWarningAlert("Отсутствует счетчик");
@@ -96,8 +95,6 @@ class InspectorPlaceAddData extends Component {
             });
         }
         else {
-            //api.sendReport(token, report.id)
-            console.log(act);
             api.act_01.sendEmailById(token, act.id)
                 .then(done => {
                     this.setState({...this.state, isProcess: false}, () => {

@@ -48,7 +48,6 @@ class UserList extends Component {
 
 const Table = props => {
   const {users} = props;
-  console.log(users);
   return (
     <table className="table table-bordered table-hover table-sm">
       <thead className="thead-dark">

@@ -38,7 +38,6 @@ class Owner extends Component {
 
     render() {
         const { user } = this.state;
-        console.log('OWNER', user);
         return (
             <div>
                 <Header user={user} handlerLogout={this.props.handlerLogout} />

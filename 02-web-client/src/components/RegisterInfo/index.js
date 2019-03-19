@@ -26,7 +26,6 @@ class RegisterInfo extends Component {
         api.getRegisterById(token, register_id)
             .then(register => {
                 if (register) {
-                    console.log(register);
                     const consumptionGroup = calculateConsumptionGroup(register.group_abonent);
                     const consumptionSubs = calculateConsumptionSub(register.sub_abonents);
                     this.setState({ ...this.state, consumptionGroup, consumptionSubs, register, isLoaded: true });
@@ -38,7 +37,6 @@ class RegisterInfo extends Component {
                 }
             })
             .catch(err => {
-                console.log(err);
                 this.props.showWarningAlert(err.error && err.error.message ? err.error.message : err);
                 this.props.history.goBack();
             });

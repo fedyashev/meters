@@ -14,7 +14,6 @@ const MeterAddData = props => {
       return;
     }
     const date = formatDate(Date.now());
-    console.log(meter_id, date, val.value);
     api.createData(token, meter_id, date, val.value)
       .then(data => {
         if (data) {

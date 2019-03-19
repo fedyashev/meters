@@ -7,7 +7,6 @@ const Alert = props => {
         e.preventDefault();
         handlerCloseAlert();
     }
-    console.log(type, message);
     switch (type) {
         
         case "warnig" : return (

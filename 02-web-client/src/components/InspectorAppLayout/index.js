@@ -53,7 +53,6 @@ class InspectorAppLayout extends Component {
     render() {
         if (!this.state.isLoaded) return null;
         const { user } = this.state;
-        console.log('INSPECTOR', user);
         return (
             <div>
                 <Header user={user} handlerLogout={this.props.handlerLogout} />

@@ -68,26 +68,20 @@ class RegisterCreate extends Component {
 
         const onClickRegisterCreate = e => {
             e.preventDefault();
-            //console.log(name.value, group_abonent_id.value);
             this.handleCreateRegister(name.value, this.state.group_abonent_id, this.state.sub_abonentes);
         };
 
         const onChangeGroupAbonent = e => {
-            //console.log(e);
-            console.log(typeof group_abonent_id.value, group_abonent_id.value);
             const id = group_abonent_id.value !== "0" ? group_abonent_id.value : null;
             this.setState({...this.state, group_abonent_id: id});
         };
 
         const onDoubleClickSubAbonentSelectList = e => {
-            console.log(sub_abonentes_select.value);
-
             this.setState({...this.state, sub_abonentes: [...this.state.sub_abonentes, sub_abonentes_select.value]});
         };
 
         const handlerClickBtnAdd = e => {
             e.preventDefault();
-            //console.log(sub_abonentes_select.list);
             let sub = [];
             const options = sub_abonentes_select.options;
             for (let i = 0; i < options.length; i++) {
@@ -98,7 +92,6 @@ class RegisterCreate extends Component {
             if (sub.length > 0) {
                 this.setState({...this.state, sub_abonentes: [...this.state.sub_abonentes, ...sub]});
             }
-            //console.log(sub);
         };
 
         const handlerClickBtnRemove = e => {

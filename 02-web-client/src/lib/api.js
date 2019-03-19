@@ -116,7 +116,6 @@ const api = {
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
-                console.log(promise);
                 return res.ok ? promise : promise.then(err => {throw err});
             });
     },
@@ -133,7 +132,6 @@ const api = {
         return fetch(url, opt)
             .then(res => {
                 const promise = res.json();
-                console.log(promise);
                 return res.ok ? promise : promise.then(err => {throw err});
             });
     },
@@ -786,7 +784,6 @@ const api = {
     },
 
     createRegister: (token, name, group_abonent_id, sub_abonentes) => {
-        console.log(name, group_abonent_id, sub_abonentes);
         const data = {name, group_abonent_id, sub_abonentes: sub_abonentes};
         const opt = {
             method: 'POST',
@@ -821,7 +818,6 @@ const api = {
     },
 
     updateRegisterById: (token, id, name, group_abonent_id, sub_abonentes) => {
-        console.log(name, group_abonent_id, sub_abonentes);
         const data = {name, group_abonent_id, sub_abonentes: sub_abonentes};
         const opt = {
             method: 'PUT',

@@ -19,7 +19,6 @@ class PlaceAuditList extends Component {
     api.getAllPlacesForAudit(token)
       .then(
         places => {
-          console.log(places);
           if (places) {
             this.setState({ ...this.state, places, isLoaded: true });
           }

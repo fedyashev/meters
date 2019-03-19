@@ -71,8 +71,6 @@ class RegisterUpdate extends Component {
     render() {
         if (!this.state.isLoaded) return <ProgressBar />;
 
-        console.log(this.state);
-
         let name, group_abonent_id, sub_abonents_select, sub_abonents_list;
 
         const onClickUpdateRegister = e => {
@@ -86,8 +84,6 @@ class RegisterUpdate extends Component {
         };
 
         const onDoubleClickSubAbonentSelectList = e => {
-            console.log(sub_abonents_select.value);
-
             this.setState({ ...this.state, sub_abonents: [...this.state.sub_abonents, sub_abonents_select.value] });
         };
 

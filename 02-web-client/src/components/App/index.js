@@ -125,7 +125,6 @@ class App extends Component {
 
   render() {
     const { user } = this.state;
-    console.log("APP", user);
     return (
       <div>
         <Switch>

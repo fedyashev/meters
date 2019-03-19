@@ -54,7 +54,6 @@ class CanvasSign extends Component {
                 ctx.stroke();
                 this.ongoingTouches.splice(idx, 1, this.copyTouch(touches[i]));  // swap in the new touch record
             } else {
-                console.log("can't figure out which touch to continue");
             }
         }
     };
@@ -76,7 +75,6 @@ class CanvasSign extends Component {
                 //ctx.fillRect(touches[i].pageX - this.dX() - 4, touches[i].pageY - this.dY() - 4, 8, 8);  // and a square at the end
                 this.ongoingTouches.splice(idx, 1);  // remove it; we're done
             } else {
-                console.log("can't figure out which touch to end");
             }
         }
     };
@@ -99,7 +97,6 @@ class CanvasSign extends Component {
     //     g = g.toString(16); // make it a hex digit
     //     b = b.toString(16); // make it a hex digit
     //     const color = "#" + r + g + b;
-    //     console.log("color for touch with identifier " + touch.identifier + " = " + color);
     //     return color;
     // }
 

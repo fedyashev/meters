@@ -50,7 +50,6 @@ class ConsumerUpdate extends Component {
                 }
             })
             .catch(err => {
-                console.log(err);
                 this.props.showWarningAlert(err.error.message);
             });
     }
