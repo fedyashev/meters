@@ -23,7 +23,7 @@ app.set('port', port);
 
 let server = null;
 if (process.env.NODE_ENV === 'production') {
-  const metersApp = require('express')().use('meters', app);
+  const metersApp = require('express')().use('/meters', app);
   server = http.createServer(metersApp);
 } else {
   server = http.createServer(app);

@@ -18,7 +18,7 @@
     "username": "instaser_dbuser",
     "password": "shta555sss",
     "database": "instaser_db",
-    "host": "93.125.99.124",
+    "host": "localhost",
     "dialect": "mysql"
   },
   "production-old": {
