@@ -15,6 +15,13 @@
     "logging": false
   },
   "production": {
+    "username": "instaser_dbuser",
+    "password": "shta555sss",
+    "database": "instaser_db",
+    "host": "93.125.99.124",
+    "dialect": "mysql"
+  },
+  "production-old": {
     "username": "instaservice_adm",
     "password": "qzKAapUNwf",
     "database": "instaservice_insta",
