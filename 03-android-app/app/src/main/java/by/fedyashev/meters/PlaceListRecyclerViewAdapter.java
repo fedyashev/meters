@@ -1,6 +1,8 @@
 package by.fedyashev.meters;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,8 @@ import by.fedyashev.meters.entities.Place;
 
 public class PlaceListRecyclerViewAdapter extends RecyclerView.Adapter<PlaceListRecyclerViewAdapter.PlaceViewHolder> {
 
+    static final String PLACE_TAG = "PLACE";
+
     public static class PlaceViewHolder extends RecyclerView.ViewHolder {
 
         TextView tvId;
@@ -22,6 +26,8 @@ public class PlaceListRecyclerViewAdapter extends RecyclerView.Adapter<PlaceList
         TextView tvConsumer;
         TextView tvMeter;
         TextView tvIsSingNeed;
+
+        CardView cardPlace;
 
         public PlaceViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -32,6 +38,7 @@ public class PlaceListRecyclerViewAdapter extends RecyclerView.Adapter<PlaceList
             tvMeter = itemView.findViewById(R.id.tvMeter);
             tvIsSingNeed = itemView.findViewById(R.id.tvIsSignNeed);
 
+            cardPlace = itemView.findViewById(R.id.cardPlace);
         }
     }
 
@@ -51,7 +58,7 @@ public class PlaceListRecyclerViewAdapter extends RecyclerView.Adapter<PlaceList
 
     @Override
     public void onBindViewHolder(@NonNull PlaceViewHolder placeViewHolder, int i) {
-        Place place = places.get(i);
+        final Place place = places.get(i);
         if (place != null) {
 
             Consumer consumer = place.getConsumer();
@@ -62,6 +69,15 @@ public class PlaceListRecyclerViewAdapter extends RecyclerView.Adapter<PlaceList
             placeViewHolder.tvConsumer.setText(consumer != null ? consumer.getName() : "---");
             placeViewHolder.tvMeter.setText(meter != null ? meter.getNumber() : "---");
             placeViewHolder.tvIsSingNeed.setText(place.isSignNeed() ? "Подпись - ДА" : "Подпись - НЕТ");
+
+            placeViewHolder.cardPlace.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(v.getContext(), PlaceInfoActivity.class);
+                    intent.putExtra(Place.class.getCanonicalName(), place);
+                    v.getContext().startActivity(intent);
+                }
+            });
 
         }
     }

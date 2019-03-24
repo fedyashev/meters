@@ -2,7 +2,9 @@ package by.fedyashev.meters.entities;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Meter {
+import java.io.Serializable;
+
+public class Meter implements Serializable {
 
     @SerializedName("id")
     private int id;

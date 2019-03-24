@@ -2,7 +2,9 @@ package by.fedyashev.meters.entities;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Place {
+import java.io.Serializable;
+
+public class Place implements Serializable {
 
     @SerializedName("id")
     private int id;
