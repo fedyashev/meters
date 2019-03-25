@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">meters</string>
+    <string name="app_name">Инстасервис - Инспектор</string>
+    <string name="last_data_label">Предыдущие показания</string>
+    <string name="place_name_label">Место установки счетчика</string>
+    <string name="consumer_name_label">Потребитель</string>
+    <string name="meter_number_label">Счетчик</string>
 </resources>

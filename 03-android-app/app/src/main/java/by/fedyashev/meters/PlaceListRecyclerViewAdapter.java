@@ -12,6 +12,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import by.fedyashev.meters.entities.Consumer;
+import by.fedyashev.meters.entities.Data;
 import by.fedyashev.meters.entities.Meter;
 import by.fedyashev.meters.entities.Place;
 
@@ -21,22 +22,26 @@ public class PlaceListRecyclerViewAdapter extends RecyclerView.Adapter<PlaceList
 
     public static class PlaceViewHolder extends RecyclerView.ViewHolder {
 
-        TextView tvId;
-        TextView tvName;
+        //TextView tvId;
+        TextView tvPlaceName;
         TextView tvConsumer;
-        TextView tvMeter;
+        TextView tvMeterNumber;
         TextView tvIsSingNeed;
+        TextView tvLastDate;
+        TextView tvLastValue;
 
         CardView cardPlace;
 
         public PlaceViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            tvId = itemView.findViewById(R.id.tvId);
-            tvName = itemView.findViewById(R.id.tvName);
+            //tvId = itemView.findViewById(R.id.tvId);
+            tvPlaceName = itemView.findViewById(R.id.tvPlaceName);
             tvConsumer = itemView.findViewById(R.id.tvConsumer);
-            tvMeter = itemView.findViewById(R.id.tvMeter);
+            tvMeterNumber = itemView.findViewById(R.id.tvMeterNumber);
             tvIsSingNeed = itemView.findViewById(R.id.tvIsSignNeed);
+            tvLastDate = itemView.findViewById(R.id.tvLastDate);
+            tvLastValue = itemView.findViewById(R.id.tvLastValue);
 
             cardPlace = itemView.findViewById(R.id.cardPlace);
         }
@@ -64,11 +69,21 @@ public class PlaceListRecyclerViewAdapter extends RecyclerView.Adapter<PlaceList
             Consumer consumer = place.getConsumer();
             Meter meter = place.getMeter();
 
-            placeViewHolder.tvId.setText(place.getId() + "");
-            placeViewHolder.tvName.setText(place.getName());
+            //placeViewHolder.tvId.setText(place.getId() + "");
+            placeViewHolder.tvPlaceName.setText(place.getName());
             placeViewHolder.tvConsumer.setText(consumer != null ? consumer.getName() : "---");
-            placeViewHolder.tvMeter.setText(meter != null ? meter.getNumber() : "---");
-            placeViewHolder.tvIsSingNeed.setText(place.isSignNeed() ? "Подпись - ДА" : "Подпись - НЕТ");
+            placeViewHolder.tvMeterNumber.setText(meter != null ? meter.getNumber() : "---");
+            placeViewHolder.tvIsSingNeed.setText(place.isSignNeed() ? "ДА" : "НЕТ");
+
+            Data lastData = meter != null ? meter.getLastData() : null;
+
+            if (lastData != null) {
+                placeViewHolder.tvLastDate.setText(android.text.format.DateFormat.format("dd.MM.yyyy HH:mm:ss", lastData.getDate()));
+                placeViewHolder.tvLastValue.setText(Integer.toString(lastData.getValue()));
+            } else {
+                placeViewHolder.tvLastDate.setText("---");
+                placeViewHolder.tvLastValue.setText("---");
+            }
 
             placeViewHolder.cardPlace.setOnClickListener(new View.OnClickListener() {
                 @Override
