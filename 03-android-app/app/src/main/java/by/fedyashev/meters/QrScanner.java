@@ -19,7 +19,19 @@ import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
+import com.google.gson.Gson;
+
 import java.io.IOException;
+import java.util.List;
+
+import by.fedyashev.meters.entities.Error;
+import by.fedyashev.meters.entities.Place;
+import by.fedyashev.meters.entities.User;
+import by.fedyashev.meters.service.NetworkService;
+import by.fedyashev.meters.storage.AppStorage;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class QrScanner extends AppCompatActivity {
 
@@ -30,6 +42,8 @@ public class QrScanner extends AppCompatActivity {
     private static final int REQUEST_CAMERA_PERMISSION = 201;
     Button btnAction;
     String intentData = "";
+
+    Place place = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,23 +60,16 @@ public class QrScanner extends AppCompatActivity {
 
         btnAction.setVisibility(View.GONE);
 
-
-//        btnAction.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                if (intentData.length() > 0) {
-//                    if (isEmail)
-//                        //startActivity(new Intent(QrScanner.this, EmailActivity.class).putExtra("email_address", intentData));
-//                        Toast.makeText(QrScanner.this,"Click", Toast.LENGTH_SHORT).show();
-//                    else {
-//                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(intentData)));
-//                    }
-//                }
-//
-//
-//            }
-//        });
+        btnAction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (place != null) {
+                    Intent intent = new Intent(QrScanner.this, PlaceAddDataActivity.class);
+                    intent.putExtra(Place.class.getCanonicalName(), place);
+                    startActivity(intent);
+                }
+            }
+        });
     }
 
     private void initialiseDetectorsAndSources() {
@@ -117,16 +124,60 @@ public class QrScanner extends AppCompatActivity {
                 final SparseArray<Barcode> barcodes = detections.getDetectedItems();
                 if (barcodes.size() != 0) {
 
-
                     txtBarcodeValue.post(new Runnable() {
 
                         @Override
                         public void run() {
-                            String barcodeData = barcodes.valueAt(0).displayValue;
+                            final String barcodeData = barcodes.valueAt(0).displayValue;
                             if (barcodeData.matches("^\\d+$")) {
-                                intentData = barcodeData;
-                                btnAction.setVisibility(View.VISIBLE);
-                                txtBarcodeValue.setText("Счетчик №" + barcodeData);
+                                if (!intentData.equalsIgnoreCase(barcodeData)) {
+                                    intentData = barcodeData;
+
+                                    User user = AppStorage
+                                            .getInstance()
+                                            .getUser();
+
+                                    String token = user != null ? user.getToken() : "";
+
+                                    NetworkService
+                                            .getInstance()
+                                            .getMeterApi()
+                                            .getPlaceByMeterNumber("BEARER" + token, barcodeData)
+                                            .enqueue(new Callback<Place>() {
+                                                @Override
+                                                public void onResponse(Call<Place> call, Response<Place> response) {
+                                                    if (response.isSuccessful()) {
+                                                        Place p = response.body();
+                                                        if (p != null) {
+                                                            place = p;
+                                                            btnAction.setVisibility(View.VISIBLE);
+                                                            txtBarcodeValue.setText("Счетчик №" + barcodeData);
+                                                        }
+                                                    }
+                                                    else {
+                                                        Gson gson = new Gson();
+                                                        place = null;
+                                                        btnAction.setVisibility(View.GONE);
+                                                        txtBarcodeValue.setText("Не найден счетчик или место");
+                                                        try {
+                                                            Error error = gson.fromJson(response.errorBody().string(), Error.class);
+                                                            Toast.makeText(QrScanner.this, error.getError().getCode() + " - " + error.getError().getMessage(), Toast.LENGTH_SHORT).show();
+                                                        } catch (IOException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onFailure(Call<Place> call, Throwable t) {
+                                                    place = null;
+                                                    btnAction.setVisibility(View.GONE);
+                                                    txtBarcodeValue.setText("Не найден счетчик или место");
+                                                    Toast.makeText(QrScanner.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                                                    t.printStackTrace();
+                                                }
+                                            });
+                                }
                             } else {
                                 btnAction.setVisibility(View.GONE);
                                 txtBarcodeValue.setText("Номер счетчика\nне найден");

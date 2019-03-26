@@ -16,4 +16,7 @@ public interface MetersApi {
 
     @GET("api/v1/places")
     Call<List<Place>> getPlaceList(@Header("Authorization") String token);
+
+    @GET("api/v1/places/meter/{number}")
+    Call<Place> getPlaceByMeterNumber(@Header("Authorization") String token, @Path("number") String number);
 }

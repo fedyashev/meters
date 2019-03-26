@@ -2,7 +2,12 @@ package by.fedyashev.meters;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
+import android.util.DisplayMetrics;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import by.fedyashev.meters.entities.Consumer;
 import by.fedyashev.meters.entities.Data;
@@ -17,6 +22,12 @@ public class PlaceAddDataActivity extends AppCompatActivity {
     TextView tvIsSignNeed;
     TextView tvLastDate;
     TextView tvLastValue;
+
+    Button btnClearSign;
+
+    PaintView pvSign;
+
+    CardView cardSign;
 
     Place place;
 
@@ -35,6 +46,21 @@ public class PlaceAddDataActivity extends AppCompatActivity {
         tvIsSignNeed = findViewById(R.id.tvIsSignNeed);
         tvLastDate = findViewById(R.id.tvLastDate);
         tvLastValue = findViewById(R.id.tvLastValue);
+
+        pvSign = findViewById(R.id.pvSign);
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        pvSign.init(metrics);
+
+        cardSign = findViewById(R.id.cardSign);
+
+        btnClearSign = findViewById(R.id.btnClearSign);
+        btnClearSign.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pvSign.clear();
+            }
+        });
 
         place = (Place) getIntent().getSerializableExtra(Place.class.getCanonicalName());
 
@@ -55,6 +81,13 @@ public class PlaceAddDataActivity extends AppCompatActivity {
                 tvLastDate.setText("---");
                 tvLastValue.setText("---");
             }
+
+            if (!place.isSignNeed()) {
+                cardSign.setVisibility(View.GONE);
+            }
+
+        } else {
+            Toast.makeText(PlaceAddDataActivity.this, "Место не найдено", Toast.LENGTH_SHORT).show();
         }
     }
 }

@@ -88,7 +88,8 @@ public class PlaceListRecyclerViewAdapter extends RecyclerView.Adapter<PlaceList
             placeViewHolder.cardPlace.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(v.getContext(), PlaceInfoActivity.class);
+                    //Intent intent = new Intent(v.getContext(), PlaceInfoActivity.class);
+                    Intent intent = new Intent(v.getContext(), PlaceAddDataActivity.class);
                     intent.putExtra(Place.class.getCanonicalName(), place);
                     v.getContext().startActivity(intent);
                 }
