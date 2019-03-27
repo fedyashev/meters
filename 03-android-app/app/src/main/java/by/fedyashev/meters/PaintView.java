@@ -14,7 +14,12 @@ import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 
 public class PaintView extends View {
@@ -55,6 +60,8 @@ public class PaintView extends View {
     private Canvas mCanvas;
     private Paint mBitmapPaint = new Paint(Paint.DITHER_FLAG);
 
+    private int emptyBitmapSize;
+
     public PaintView(Context context) {
         this(context, null);
     }
@@ -79,11 +86,27 @@ public class PaintView extends View {
         int height = metrics.heightPixels;
         int width = metrics.widthPixels;
 
+        //mBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        mBitmap = Bitmap.createBitmap(width, width, Bitmap.Config.ARGB_8888);
+        mCanvas = new Canvas(mBitmap);
+
+        currentColor = DEFAULT_COLOR;
+        strokeWidth = BRUSH_SIZE;
+
+        emptyBitmapSize = mBitmap.getByteCount();
+    }
+
+    public void init(int width, int height) {
+//        int height = metrics.heightPixels;
+//        int width = metrics.widthPixels;
+
         mBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         mCanvas = new Canvas(mBitmap);
 
         currentColor = DEFAULT_COLOR;
         strokeWidth = BRUSH_SIZE;
+
+        emptyBitmapSize = mBitmap.getByteCount();
     }
 
     public void normal() {
@@ -108,12 +131,29 @@ public class PaintView extends View {
         invalidate();
     }
 
-    public boolean isEmpty() {
-        return mPath.isEmpty();
+    public File getFile(Context context) throws IOException {
+        Date date = new Date();
+        final String filename = "sing-" + date.getTime() + ".png";
+        File f = new File(context.getCacheDir(), filename);
+        f.createNewFile();
+
+        //Convert bitmap to byte array
+        Bitmap bitmap = mBitmap;
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos);
+        byte[] bitmapdata = bos.toByteArray();
+
+        //write the bytes in file
+        FileOutputStream fos = new FileOutputStream(f);
+        fos.write(bitmapdata);
+        fos.flush();
+        fos.close();
+        return f;
     }
 
-    public void getData() {
-
+    public boolean isEmpty() {
+        return paths.isEmpty();
+        //return emptyBitmapSize == mBitmap.getByteCount();
     }
 
     @Override

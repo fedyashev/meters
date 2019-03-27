@@ -24,75 +24,92 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity {
+
+    EditText etLogin;
+    EditText etPassword;
+    Button btnLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        AppStorage
-                .getInstance()
-                .clear();
+        initViews();
+    }
 
-        Button btnLogin = this.findViewById(R.id.btnLogin);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        clearState();
+    }
 
-        final EditText etLogin = this.findViewById(R.id.etLogin);
-        final EditText etPassword = this.findViewById(R.id.etPassword);
-
-        final MainActivity context = this;
-
+    private void initViews() {
+        btnLogin = this.findViewById(R.id.btnLogin);
+        etLogin = this.findViewById(R.id.etLogin);
+        etPassword = this.findViewById(R.id.etPassword);
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                String login = etLogin.getText().toString();
-                String password = etPassword.getText().toString();
-
-                NetworkService
-                        .getInstance()
-                        .getAuthApi()
-                        .authLogin(login, password)
-                        .enqueue(new Callback<User>() {
-                            @Override
-                            public void onResponse(Call<User> call, Response<User> response) {
-                                User user = response.body();
-                                if (response.isSuccessful() && user != null) {
-
-                                    if (!user.getRole().equalsIgnoreCase("inspector")) {
-                                        Toast.makeText(context, "Incorrect login or password", Toast.LENGTH_SHORT).show();
-                                        return;
-                                    }
-
-                                    AppStorage
-                                            .getInstance()
-                                            .setUser(user);
-
-                                    Intent intent = new Intent(context, InspectorMainMenu.class);
-                                    context.startActivity(intent);
-                                }
-                                else {
-                                    Gson gson = new Gson();
-                                    try {
-                                        Error error = gson.fromJson(response.errorBody().string(), Error.class);
-                                        Toast.makeText(context, error.getError().getCode() + " - " + error.getError().getMessage(), Toast.LENGTH_SHORT).show();
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Call<User> call, Throwable t) {
-                                Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
-                                t.printStackTrace();
-                            }
-                        });
+                login();
             }
         });
+    }
 
+    private void clearState() {
+        AppStorage
+                .getInstance()
+                .clear();
+    }
 
+    private void login() {
+        String login = etLogin.getText().toString();
+        String password = etPassword.getText().toString();
+
+        if (!login.matches("^\\w{2,16}$") || !password.matches("^\\w{2,16}$")) {
+            Toast.makeText(MainActivity.this, "Неправильный логин или пароль", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        NetworkService
+                .getInstance()
+                .getAuthApi()
+                .authLogin(login, password)
+                .enqueue(new Callback<User>() {
+                    @Override
+                    public void onResponse(Call<User> call, Response<User> response) {
+                        User user = response.body();
+                        if (response.isSuccessful() && user != null) {
+
+                            if (!user.getRole().equalsIgnoreCase("inspector")) {
+                                Toast.makeText(MainActivity.this, "Неправильный логин или пароль", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+
+                            AppStorage
+                                    .getInstance()
+                                    .setUser(user);
+
+                            Intent intent = new Intent(MainActivity.this, InspectorMainMenu.class);
+                            startActivity(intent);
+                        }
+                        else {
+                            Gson gson = new Gson();
+                            try {
+                                Error error = gson.fromJson(response.errorBody().string(), Error.class);
+                                Toast.makeText(MainActivity.this, error.getError().getCode() + " - " + error.getError().getMessage(), Toast.LENGTH_SHORT).show();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<User> call, Throwable t) {
+                        Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                        t.printStackTrace();
+                    }
+                });
     }
 }

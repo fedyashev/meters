@@ -10,12 +10,18 @@
     tools:context=".InspectorMainMenu">
 
     <TextView
-        android:id="@+id/tvMenuTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="20dp"
         android:textAlignment="center"
-        android:textSize="25dp"
-        android:text="Меню"/>
+        android:text="Инспектор"/>
+
+    <TextView
+        android:id="@+id/tvInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:textAlignment="center"/>
 
     <Button
         android:id="@+id/btnPlaces"
@@ -35,9 +41,6 @@
         android:layout_height="wrap_content"
         android:text="QR cканер"/>
 
-    <TextView
-        android:id="@+id/tvInfo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+
 
 </LinearLayout>

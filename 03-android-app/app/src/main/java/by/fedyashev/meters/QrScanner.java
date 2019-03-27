@@ -142,7 +142,7 @@ public class QrScanner extends AppCompatActivity {
                                     NetworkService
                                             .getInstance()
                                             .getMeterApi()
-                                            .getPlaceByMeterNumber("BEARER" + token, barcodeData)
+                                            .getPlaceByMeterNumber("BEARER " + token, barcodeData)
                                             .enqueue(new Callback<Place>() {
                                                 @Override
                                                 public void onResponse(Call<Place> call, Response<Place> response) {

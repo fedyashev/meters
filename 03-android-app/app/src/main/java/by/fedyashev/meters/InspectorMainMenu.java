@@ -66,7 +66,7 @@ public class InspectorMainMenu extends AppCompatActivity {
                                         .getInstance()
                                         .setInspector(inspector);
 
-                                tvInfo.setText(inspector.getId() + "\n" + inspector.getLogin() + "\n" + inspector.getName());
+                                tvInfo.setText(inspector.getName());
                             }
                             else {
                                 Gson gson = new Gson();

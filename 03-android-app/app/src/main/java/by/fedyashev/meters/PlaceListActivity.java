@@ -30,56 +30,58 @@ public class PlaceListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place_list);
-
         initView();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fillRecyclerView();
+    }
+
     private void initView() {
-
         tvInfo = this.findViewById(R.id.tvInfo);
-
         rvPlaceList = this.findViewById(R.id.rvPlaceList);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rvPlaceList.setLayoutManager(llm);
+    }
 
-        final PlaceListActivity context = this;
-
-        User user = AppStorage
+    private void fillRecyclerView() {
+        String token = AppStorage
                 .getInstance()
-                .getUser();
+                .getUser()
+                .getToken();
 
-        if (user != null) {
-            NetworkService
-                    .getInstance()
-                    .getMeterApi()
-                    .getPlaceList("BEARER " + user.getToken())
-                    .enqueue(new Callback<List<Place>>() {
-                        @Override
-                        public void onResponse(Call<List<Place>> call, Response<List<Place>> response) {
-                            if (response.isSuccessful()) {
-                                List<Place> places = response.body();
-                                if (places != null) {
-                                    PlaceListRecyclerViewAdapter adapter = new PlaceListRecyclerViewAdapter(places);
-                                    rvPlaceList.setAdapter(adapter);
-                                }
-                            }
-                            else {
-                                Gson gson = new Gson();
-                                try {
-                                    Error error = gson.fromJson(response.errorBody().string(), Error.class);
-                                    Toast.makeText(context, error.getError().getCode() + " - " + error.getError().getMessage(), Toast.LENGTH_SHORT).show();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
+        NetworkService
+                .getInstance()
+                .getMeterApi()
+                .getPlaceList("BEARER " + token)
+                .enqueue(new Callback<List<Place>>() {
+                    @Override
+                    public void onResponse(Call<List<Place>> call, Response<List<Place>> response) {
+                        if (response.isSuccessful()) {
+                            List<Place> places = response.body();
+                            if (places != null) {
+                                PlaceListRecyclerViewAdapter adapter = new PlaceListRecyclerViewAdapter(places);
+                                rvPlaceList.setAdapter(adapter);
                             }
                         }
-
-                        @Override
-                        public void onFailure(Call<List<Place>> call, Throwable t) {
-                            Toast.makeText(PlaceListActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
-                            t.printStackTrace();
+                        else {
+                            Gson gson = new Gson();
+                            try {
+                                Error error = gson.fromJson(response.errorBody().string(), Error.class);
+                                Toast.makeText(PlaceListActivity.this, error.getError().getCode() + " - " + error.getError().getMessage(), Toast.LENGTH_SHORT).show();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    });
-        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Place>> call, Throwable t) {
+                        Toast.makeText(PlaceListActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                        t.printStackTrace();
+                    }
+                });
     }
 }

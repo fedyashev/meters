@@ -70,8 +70,7 @@ router.post('/places', jwt, allow([ADMIN, OWNER, INSPECTOR]), place.create);
 router.get('/places/:place_id', jwt, allow([ADMIN, OWNER, INSPECTOR]), place.getById);
 router.put('/places/:place_id', jwt, allow([ADMIN, OWNER, INSPECTOR]), place.updateById); // Change name, isSignNeed, Consumer, Meter
 router.delete('/places/:place_id', jwt, allow([ADMIN, OWNER]), place.deleteById);
-//router.get('/places/meter/:number', jwt, allow([ADMIN, OWNER, INSPECTOR]), place.getPlaceByMeterNumber);
-router.get('/places/meter/:number', place.getPlaceByMeterNumber);
+router.get('/places/meter/:number', jwt, allow([ADMIN, OWNER, INSPECTOR]), place.getPlaceByMeterNumber);
 
 router.get('/data', jwt, allow([ADMIN, OWNER]), data.getAll);
 router.get('/data/count', jwt, allow([ADMIN, OWNER]), data.count);

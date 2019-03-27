@@ -1,6 +1,8 @@
 package by.fedyashev.meters;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.icu.util.Calendar;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
 
 import by.fedyashev.meters.entities.Consumer;
@@ -85,10 +89,25 @@ public class PlaceListRecyclerViewAdapter extends RecyclerView.Adapter<PlaceList
                 placeViewHolder.tvLastValue.setText("---");
             }
 
+            if (consumer == null || meter == null) {
+                placeViewHolder.cardPlace.setCardBackgroundColor(Color.parseColor("#bdbdbd"));
+            } else if (lastData != null) {
+                int currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1;
+                Calendar c = Calendar.getInstance();
+                c.setTime(lastData.getDate());
+                int dateMonth = c.get(Calendar.MONTH) + 1;
+                if (currentMonth == dateMonth) {
+                    placeViewHolder.cardPlace.setCardBackgroundColor(Color.parseColor("#ff867c"));
+                } else {
+                    placeViewHolder.cardPlace.setCardBackgroundColor(Color.parseColor("#9ccc65"));
+                }
+            } else {
+                placeViewHolder.cardPlace.setCardBackgroundColor(Color.parseColor("#9ccc65"));
+            }
+
             placeViewHolder.cardPlace.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //Intent intent = new Intent(v.getContext(), PlaceInfoActivity.class);
                     Intent intent = new Intent(v.getContext(), PlaceAddDataActivity.class);
                     intent.putExtra(Place.class.getCanonicalName(), place);
                     v.getContext().startActivity(intent);
