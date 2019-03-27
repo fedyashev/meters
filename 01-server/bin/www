@@ -21,15 +21,15 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-let server = null;
-if (process.env.NODE_ENV === 'production') {
-  const metersApp = require('express')().use('/meters', app);
-  server = http.createServer(metersApp);
-} else {
-  server = http.createServer(app);
-}
+// let server = null;
+// if (process.env.NODE_ENV === 'production') {
+//   const metersApp = require('express')().use('/meters', app);
+//   server = http.createServer(metersApp);
+// } else {
+//   server = http.createServer(app);
+// }
 
-//var server = http.createServer(app);
+var server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
