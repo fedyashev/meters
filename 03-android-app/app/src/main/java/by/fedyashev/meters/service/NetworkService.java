@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class NetworkService {
     private static NetworkService instance;
     //private static final String BASE_URL = "http://192.168.100.3:5000";
-    private static final String BASE_URL = "https://instaserice.by/meters/";
+    private static final String BASE_URL = "https://instaservice.by/meters/";
     private Retrofit retrofit;
 
     private NetworkService() {

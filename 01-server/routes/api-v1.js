@@ -56,7 +56,7 @@ router.delete('/consumers/:consumer_id', jwt, allow([ADMIN, OWNER]), consumer.de
 router.get('/meters', jwt, allow([ADMIN, OWNER]), meter.getAll);
 router.get('/meters/count', jwt, allow([ADMIN, OWNER]), meter.count);
 router.get('/meters/notInPlace', jwt, allow([ADMIN, OWNER, INSPECTOR]), meter.getAllNotInPlace);
-router.get('/meters/qrcode', meter.getAllQRcodes);
+router.get('/meters/qrcode', jwt, allow([ADMIN, OWNER]), meter.getAllQRcodes);
 router.post('/meters', jwt, allow([ADMIN, OWNER]), meter.create);
 router.get('/meters/:meter_id', jwt, allow([ADMIN, OWNER]), meter.getById);
 router.get('/meters/:meter_id/qrcode', jwt, allow([ADMIN, OWNER]), meter.getQRcodePngById);
