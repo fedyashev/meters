@@ -198,21 +198,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="5dp"
-                android:layout_marginBottom="5dp"
-                android:background="@android:color/holo_blue_light">
+                android:layout_marginBottom="5dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:gravity="center"
-                    android:padding="5dp">
+                    android:padding="3dp"
+                    android:background="@android:color/holo_blue_light">
 
                     <by.fedyashev.meters.PaintView
                         android:id="@+id/pvSign"
                         android:layout_width="match_parent"
-                        android:layout_height="300dp"
-                        android:background="@drawable/sign_border">
+                        android:layout_height="300dp">
 
                     </by.fedyashev.meters.PaintView>
 

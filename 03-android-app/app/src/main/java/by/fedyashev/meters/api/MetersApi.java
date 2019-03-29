@@ -33,6 +33,9 @@ public interface MetersApi {
     @POST("api/v1/signs")
     Call<Sign> createSign(@Header("Authorization") String token, @Part MultipartBody.Part image);
 
+    @GET("api/v1/doc/act_01")
+    Call<List<Act01>> getAct01List(@Header("Authorization") String token);
+
     @POST("api/v1/doc/act_01")
     @FormUrlEncoded
     Call<Act01> createAct01(@Header("Authorization") String token,

@@ -4,23 +4,6 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 
-/*
-{
-    "id":10,
-    "date":"2019-03-27T19:56:37.000Z",
-    "inspector":"Прохоров",
-    "consumer":"ИП Романов",
-    "place":"Ролет Х1",
-    "meter":"010",
-    "last_date":"2019-03-10T12:50:06.000Z",
-    "last_value":0,
-    "current_date":"2019-03-27T19:56:37.000Z",
-    "current_value":18,
-    "createdAt":"2019-03-27T19:56:51.000Z",
-    "updatedAt":"2019-03-27T19:56:51.000Z",
-    "ConsumerSignId":18
-}
-*/
 public class Act01 {
     @SerializedName("id")
     int id;
@@ -41,31 +24,31 @@ public class Act01 {
     String meterNumber;
 
     @SerializedName("last_date")
-    Date last_date;
+    Date lastDate;
 
     @SerializedName("last_value")
-    int last_value;
+    Float lastValue;
 
     @SerializedName("current_date")
-    Date current_date;
+    Date currentDate;
 
     @SerializedName("current_value")
-    int current_value;
+    Float currentValue;
 
     @SerializedName("ConsumerSignId")
     int signId;
 
-    public Act01(int id, Date date, String inspectorName, String consumerName, String placeName, String meterNumber, Date last_date, int last_value, Date current_date, int current_value, int signId) {
+    public Act01(int id, Date date, String inspectorName, String consumerName, String placeName, String meterNumber, Date lastDate, Float lastValue, Date currentDate, Float currentValue, int signId) {
         this.id = id;
         this.date = date;
         this.inspectorName = inspectorName;
         this.consumerName = consumerName;
         this.placeName = placeName;
         this.meterNumber = meterNumber;
-        this.last_date = last_date;
-        this.last_value = last_value;
-        this.current_date = current_date;
-        this.current_value = current_value;
+        this.lastDate = lastDate;
+        this.lastValue = lastValue;
+        this.currentDate = currentDate;
+        this.currentValue = currentValue;
         this.signId = signId;
     }
 
@@ -117,36 +100,36 @@ public class Act01 {
         this.meterNumber = meterNumber;
     }
 
-    public Date getLast_date() {
-        return last_date;
+    public Date getLastDate() {
+        return lastDate;
     }
 
-    public void setLast_date(Date last_date) {
-        this.last_date = last_date;
+    public void setLastDate(Date lastDate) {
+        this.lastDate = lastDate;
     }
 
-    public int getLast_value() {
-        return last_value;
+    public Float getLastValue() {
+        return lastValue;
     }
 
-    public void setLast_value(int last_value) {
-        this.last_value = last_value;
+    public void setLastValue(Float lastValue) {
+        this.lastValue = lastValue;
     }
 
-    public Date getCurrent_date() {
-        return current_date;
+    public Date getCurrentDate() {
+        return currentDate;
     }
 
-    public void setCurrent_date(Date current_date) {
-        this.current_date = current_date;
+    public void setCurrentDate(Date currentDate) {
+        this.currentDate = currentDate;
     }
 
-    public int getCurrent_value() {
-        return current_value;
+    public Float getCurrentValue() {
+        return currentValue;
     }
 
-    public void setCurrent_value(int current_value) {
-        this.current_value = current_value;
+    public void setCurrentValue(Float currentValue) {
+        this.currentValue = currentValue;
     }
 
     public int getSignId() {

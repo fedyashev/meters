@@ -23,19 +23,29 @@ import retrofit2.Response;
 
 public class InspectorMainMenu extends AppCompatActivity {
 
+    TextView tvInfo;
+
+    Button btnPlaces;
+    Button btnActs;
+    Button btnScan;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inspector_main_menu);
+        initViews();
+    }
 
-        User user = AppStorage
-                .getInstance()
-                .getUser();
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fillContent();
+    }
 
-        final InspectorMainMenu context = this;
-        final TextView tvInfo = this.findViewById(R.id.tvInfo);
+    private void initViews() {
+        tvInfo = this.findViewById(R.id.tvInfo);
 
-        Button btnPlaces = this.findViewById(R.id.btnPlaces);
+        btnPlaces = this.findViewById(R.id.btnPlaces);
         btnPlaces.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -43,14 +53,27 @@ public class InspectorMainMenu extends AppCompatActivity {
             }
         });
 
-        Button btnScan = this.findViewById(R.id.btnQRScanner);
+        btnActs = findViewById(R.id.btnActs);
+        btnActs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(InspectorMainMenu.this, Act01ListActivity.class));
+            }
+        });
+
+        btnScan = this.findViewById(R.id.btnQRScanner);
         btnScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, QrScanner.class);
-                context.startActivity(intent);
+                startActivity(new Intent(InspectorMainMenu.this, QrScanner.class));
             }
         });
+    }
+
+    private void fillContent() {
+        User user = AppStorage
+                .getInstance()
+                .getUser();
 
         if (user != null) {
             NetworkService
@@ -72,7 +95,7 @@ public class InspectorMainMenu extends AppCompatActivity {
                                 Gson gson = new Gson();
                                 try {
                                     Error error = gson.fromJson(response.errorBody().string(), Error.class);
-                                    Toast.makeText(context, error.getError().getCode() + " - " + error.getError().getMessage(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(InspectorMainMenu.this, error.getError().getCode() + " - " + error.getError().getMessage(), Toast.LENGTH_SHORT).show();
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
@@ -81,7 +104,7 @@ public class InspectorMainMenu extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<Inspector> call, Throwable t) {
-                            Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(InspectorMainMenu.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                             t.printStackTrace();
                         }
                     });
